@@ -4,6 +4,8 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import { connect } from 'react-redux';
 
+require('./App.scss')
+
 const loading = () => <div className="animated fadeIn pt-3 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
 
 // Containers
@@ -33,16 +35,38 @@ const Page404 = Loadable({
 //   loading
 // });
 
-class App extends Component {
+localStorage.setItem('theme','light');
 
-  render() { 
-    const theme = localStorage.getItem('theme');// this.props.theme
-    if(theme === 'dark'){
+window.addEventListener("storage", function (e) {
+  console.log('hello world')
+});
+
+var orignalSetItem = localStorage.setItem;
+
+localStorage.setItem = function(key,newValue){
+      var setItemEvent = new Event("setItemEvent");
+      setItemEvent.newValue = newValue;
+      window.dispatchEvent(setItemEvent);
+      orignalSetItem.apply(this,arguments);
+}
+window.addEventListener("setItemEvent", function (e) {
+    if(e.newValue === 'dark'){
       require('./Dark.scss');
+    }else{
+      window.location.reload();
     }
-    if(theme === 'light'){
-      require('./App.scss');
-    }
+});
+
+class App extends Component {
+  render() { 
+    // localStorage.setItem('theme','light')
+    // const theme = localStorage.getItem('theme');// this.props.theme
+    // if(theme === 'dark'){
+    //   require('./Dark.scss');
+    // }
+    // if(theme === 'light'){
+    //   require('./App.scss');
+    // }
 
     return (
       <HashRouter>

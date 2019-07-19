@@ -245,12 +245,12 @@ class DefaultAside extends Component {
                   const theme = localStorage.getItem('theme');
                   if(theme === 'dark'){
                     localStorage.setItem('theme','light');
-                    window.location.reload();
+                    // window.location.reload();
                     // this.props.changetheme('light');
                   };
                   if(theme === 'light'){
                     localStorage.setItem('theme','dark');
-                    window.location.reload();
+                    // window.location.reload();
                     // this.props.changetheme('dark');
                   }
                 }}/>
