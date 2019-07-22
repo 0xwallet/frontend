@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 // import { renderRoutes } from 'react-router-config';
 import Loadable from 'react-loadable';
-import { connect } from 'react-redux';
 
 require('./App.scss')
 
@@ -59,15 +58,6 @@ window.addEventListener("setItemEvent", function (e) {
 
 class App extends Component {
   render() { 
-    // localStorage.setItem('theme','light')
-    // const theme = localStorage.getItem('theme');// this.props.theme
-    // if(theme === 'dark'){
-    //   require('./Dark.scss');
-    // }
-    // if(theme === 'light'){
-    //   require('./App.scss');
-    // }
-
     return (
       <HashRouter>
         <Switch>
@@ -82,10 +72,4 @@ class App extends Component {
   }
 }
 
-function mapStateToProps(state){
-  return{
-    theme : state.updatetheme.theme
-  }
-};
-
-export default connect(mapStateToProps)(App);
+export default App;
