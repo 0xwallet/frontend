@@ -1,3 +1,10 @@
 import React from 'react';
+import Chat2 from './Chat2'
 
-export default ()=><div>hello client</div>
+export default ()=>{
+   return( 
+        <div>
+            <Chat2/>
+        </div>
+    )
+}

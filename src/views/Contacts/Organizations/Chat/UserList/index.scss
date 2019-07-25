@@ -1,0 +1,73 @@
+.userlist{
+    height : 100%;
+    flex : 1;
+    border-right: 1px solid #c8ced3;
+    overflow: auto;
+    &:hover{
+        cursor: pointer; 
+    }
+
+    .search{
+        height : 3rem;
+        padding: .2rem 0;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        form{
+            width: 100%;
+        }
+        label{
+            width : 2rem;
+            text-align: center;
+        }
+        input{
+            display: inline-block;
+            width: calc( 100% - 2rem) ;
+            height: 100%;
+            border: none;
+            outline: none;
+        }
+    }
+
+    .listitem{
+        height: 4rem;
+        padding: 0 .7rem;
+        display: flex;
+        align-items: center;
+        &:hover{
+            background: #63c2de;   
+        }
+
+        .circle{
+            height: 2.6rem;
+            width: 2.6rem;
+            border-radius: 50%;
+            background: url('../../../../../assets/img/avatars/3.jpg') no-repeat;
+            background-size: cover;
+            margin-right: .8rem;
+            overflow: hidden;
+            img{
+                height: 100%;
+                width: 100%;
+            }
+        }
+
+        .msg{
+            flex : 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            // border-bottom: 1px solid #ccc;
+            box-sizing: border-box;
+            .username{
+                margin: 0;
+                font-weight: 600;
+                font-size: 1rem;
+            }
+
+            .recentmsg{
+                margin : 0;
+            }
+        }
+    }
+}

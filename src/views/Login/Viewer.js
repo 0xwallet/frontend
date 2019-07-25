@@ -28,14 +28,14 @@ export default (props)=>{
                             <i className="fa fa-envelope-o"></i>
                         </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="email" id="email" name="email" placeholder="Email" />            
+                    <Input type="email" id="email" name="email" placeholder="Email" required/>            
                 </InputGroup>
                 {
                     props.toLogin ?   <InputGroup>
                     <InputGroupAddon addonType="append">
                       <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
                     </InputGroupAddon>
-                    <Input type="text" id="text" name="verification" placeholder="Verification Code" autoComplete="current-password"/>
+                    <Input type="text" id="sig" name="verification" placeholder="Verification Code" autoComplete="current-password"/>
                   </InputGroup>: ""
                 }
                 <div style={{marginTop : '1.3rem'}}>
@@ -47,8 +47,9 @@ export default (props)=>{
                      {
                          xx(props.toLogin,props.sendAgain,props.count,props.sendMessage)
                      }
-                    <span  style={{float : 'right'}}  className="webauthn">WebAuthn</span>
+                    <span  style={{float : 'right'}}  className="webauthn" onClick={props.webauthn}>WebAuthn</span>
                 </div>
+             
             </Form>
 
         </div>

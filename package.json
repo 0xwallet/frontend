@@ -43,6 +43,7 @@
     "identicon.js": "^2.3.3",
     "node-sass": "^4.11.0",
     "prop-types": "^15.7.2",
+    "qs": "^6.7.0",
     "react": "^16.8.4",
     "react-app-polyfill": "^0.2.2",
     "react-big-calendar": "0.19.2",
@@ -75,7 +76,9 @@
     "react-perf-tool": "^0.2.3",
     "react-router": "^5.0.1",
     "react-scripts": "2.1.8",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "redux-saga": "^1.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

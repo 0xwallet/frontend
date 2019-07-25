@@ -1,0 +1,16 @@
+.chatRoot{
+    display: flex;
+    height: 42.5rem;
+    .chatlist{
+        background: #f0f3f5;
+        width: 25vw;
+        height: 100%;
+        overflow: auto;
+        border-right: 1px solid #cfb5b5;
+    }
+    .chatbody{
+        background: #fff;
+        width: 75vw;
+        height: 100%;
+    }
+}

@@ -1,0 +1,13 @@
+.chatbody{
+    position: relative;
+    padding: 1rem;
+    footer{
+        position: absolute;
+        bottom: 1rem;
+        width: calc( 100% - 2rem);
+        input{
+            border-radius: 0;
+            width: 100%;
+        }
+    }
+}

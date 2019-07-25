@@ -1,0 +1,18 @@
+.chatlist{
+    .nav{
+        height: 2.5rem;
+        display: flex;
+        line-height: 2.5rem;
+        font-size: 1.5rem;
+        padding-left: .5rem;
+        color: #5c6873;
+    }
+    .listitem{
+        border: none;
+        border-radius: 0;
+        background-color: #f0f3f5;
+        &:hover{
+            background: #cdedd8
+        }
+    }
+}

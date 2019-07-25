@@ -1,0 +1,16 @@
+.chatBody{
+    height : 100%;  
+    flex: 2;
+    position: relative;
+    .username{
+        color: #999;
+    }
+    .inputmsg{
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        input{
+            width: 100%;
+        }
+    }
+}

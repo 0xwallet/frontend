@@ -36,10 +36,6 @@ const Page404 = Loadable({
 
 localStorage.setItem('theme','light');
 
-window.addEventListener("storage", function (e) {
-  console.log('hello world')
-});
-
 var orignalSetItem = localStorage.setItem;
 
 localStorage.setItem = function(key,newValue){
@@ -55,6 +51,13 @@ window.addEventListener("setItemEvent", function (e) {
       window.location.reload();
     }
 });
+
+window.history.pushState(null, null, document.URL);
+window.addEventListener('popstate', function () {
+        window.history.pushState(null, null, document.URL);
+});
+
+
 
 class App extends Component {
   render() { 

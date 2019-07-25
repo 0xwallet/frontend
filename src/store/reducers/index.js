@@ -19,14 +19,23 @@ function upgrade(state={auth : false},action){
 function updatetheme(state={theme : 'light'},action){
     switch(action.type){
         case 'updatetheme': return {...state,theme: action.payload.theme};
+        case 'CHANGE_NAME': return state;
         default : return state
+    }
+}
+
+function account(state={register:false},action){
+    switch(action.type){
+        case 'register' : return {...state,register:action.payload.info};
+        default: return state;
     }
 }
 
 const rootRudecer = combineReducers({
     login,
     upgrade,
-    updatetheme
+    updatetheme,
+    account
 })
 
 export default rootRudecer
