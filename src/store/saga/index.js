@@ -1,6 +1,15 @@
-import {call,put,takeEvery} from 'redux-saga';
+import { call, put, takeEvery } from 'redux-saga';
+
 
 function* learnsage(action){
-    console.log(action);
-    //SFMyNTY.g3QAAAACZAAEZGF0YW0AAAATMTc4MzYyMDMyMThAc2luYS5jbmQABnNpZ25lZG4GALPpXihsAQ.10keZElY4s474CnPFeLsb2dgIDCSTDYOT-o_yKe3kv8
+    try{
+        const user = yield call('https://api_hhe',action);
+        yield put({
+            type : 'user_succ'
+        })
+    }catch(e){
+        yield put({
+            type : "user_error"
+        })
+    }
 }

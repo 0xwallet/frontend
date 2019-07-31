@@ -2,6 +2,7 @@ import React, { Component, Suspense } from 'react';
 import { Route, Switch, Redirect} from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
+import  axios  from 'axios'
 
 import {
   AppAside,
@@ -41,6 +42,16 @@ class DefaultLayout extends Component {
 
   upgrade(){
     this.props.history.push('/upgrade')
+  }
+
+  componentDidMount(){
+    axios.get('https://owaf.io/v2api/verify_auth_token',{
+      params : {
+        token : localStorage.getItem('token')
+      }
+    }).then((res)=>{
+      console.log(res,'resres')
+    })
   }
 
   render() {

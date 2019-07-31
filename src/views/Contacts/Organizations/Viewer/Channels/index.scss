@@ -1,0 +1,37 @@
+@media (min-width: 576px){
+    .channels{
+        max-width: 95%;
+    }
+}
+
+.channelswrap{
+    position: relative;
+    height: 86vh;
+    section{
+        height: 90%;
+        border-radius: 0 .2rem .2rem .2rem;
+        border: 1px solid #c8ced3;
+        border-top:none;
+        position: relative;
+        border-bottom: none;
+        .search{
+            width: 40%;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 1.5rem;
+        }
+
+        .message{
+            height: 90%;
+        }
+    }
+    .plus{
+        display: flex;
+        align-items: center;
+        margin-left: 1rem;
+    }
+}   
+
+
