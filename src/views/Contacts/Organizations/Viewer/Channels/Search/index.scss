@@ -1,97 +1,49 @@
-#fakebox-container {
-    display: flex;
-    height: 3rem;
-    box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
-    border-radius: 1.5rem;
-    #fakebox-search-icon{
-        height: 100%;
-        width: 1.5rem;
-        border-radius: 1.5rem 0 0 1.5rem;
+.searchlogo{
+    .logo{
+       width: 33%;
+       height: 5rem;
+       background: pink;
+       margin: 20vh auto 5vh;
+       background: url('../../../../../../assets/logo.png') no-repeat;
+       background-size:contain;
     }
-    .svgsearch{
+    #fakebox-container {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 1rem;
-        margin-top:1rem;
-        width: 1rem;
-        // background: pink;
-    }
-    #voice{
-        height: 100%;
-        width: 3rem;
-        border-radius: 0 1.5rem 1.5rem 0;    
-    }
-    input {
-        width: 100%;
-        border: none;
-        box-sizing: border-box;
-        padding-inline-start: 1rem;
-        color: rgb(117, 117, 117);
-        // bottom: 0;
-        // box-sizing: border-box;
-        // left: 0;
-        // margin: 0;
-        // opacity: 0;
-        // padding-inline-start: 20px;
+        height: 3rem;
+        box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
+        border-radius: 1.5rem;
         // position: absolute;
-        // top: 0;
-        // width: 100%;
+        // top:50%;
+        width: 33%;
+        margin: 0 auto;
+        // left: 50%; 
+        // top: 33%;
+        // transform: translate(-50%);
+        #fakebox-search-icon{
+            height: 100%;
+            width: 1.5rem;
+            border-radius: 1.5rem 0 0 1.5rem;
+        }
+        .svgsearch{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 1rem;
+            margin-top:1rem;
+            width: 1rem;
+            // background: pink;
+        }
+        #voice{
+            height: 100%;
+            width: 3rem;
+            border-radius: 0 1.5rem 1.5rem 0;    
+        }
+        #fakebox-input {
+            width: 100%;
+            border: none;
+            box-sizing: border-box;
+            padding-inline-start: 1rem;
+            color: rgb(117, 117, 117);
+        }
     }
-
-    // #fakebox {
-    //     background: zz;
-    //     box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
-    //     box-sizing: border-box;
-    //     font-size: 16px;
-    //     line-height: 21px;
-    //     max-width: 584px;
-    //     transition: none;
-        
-    // }
-    // #fakebox-search-icon {
-    //     mask-image: url('../../../../../../assets/img/avatars/1.jpg');
-    //     mask-repeat: no-repeat;
-    //     mask-size: 100%;
-    //     background: 24px 24px rgb(117, 117, 117);
-    //     bottom: 0;
-    //     display: none;
-    //     height: 24px;
-    //     left: 0;
-    //     margin: auto 0;
-    //     margin-inline-start: 16px;
-    //     position: absolute;
-    //     top: 0;
-    //     width: 24px;
-    //     display: block;
-    // }
-    // #fakebox-text {
-    //     bottom: 0;
-    //     color: rgb(117, 117, 117);
-    //     font-size: 16px;
-    //     height: 21px;
-    //     margin: auto 0;
-    //     right: 44px;
-    //     top: 0;
-    //     padding-inline-start: 48px
-    // }
-    // #fakebox-cursor {
-    //     left: 48px;
-    //     bottom: 14px;
-    //     top: 14px;
-    // }
-    // #fakebox-microphone {
-    //     background-size: 21px 21px;
-    //     margin-inline-end: 16px;
-    //     width: 21px;
-    // }
-    // #fakebox-microphone {
-    //     background: url('../../../../../../assets/img/avatars/1.jpg') no-repeat center;
-    //     bottom: 0;
-    //     cursor: pointer;
-    //     padding: 22px 12px 0;
-    //     position: absolute;
-    //     right: 0;
-    //     top: 0;
-    // }
 }

@@ -245,21 +245,13 @@ class DefaultAside extends Component {
                   const theme = localStorage.getItem('theme');
                   if(theme === 'dark'){
                     localStorage.setItem('theme','light');
-                    // window.location.reload();
-                    // this.props.changetheme('light');
                   };
                   if(theme === 'light'){
                     localStorage.setItem('theme','dark');
-                    // window.location.reload();
-                    // this.props.changetheme('dark');
                   }
                 }}/>
               </div>
-              {/* <div>
-                <small className="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua.
-                </small>
-              </div> */}
+            
             </div>
 
             {/* <div className="aside-options">

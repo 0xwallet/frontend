@@ -2,7 +2,7 @@ import React, { Component, Suspense } from 'react';
 import { Route, Switch, Redirect} from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
-import  axios  from 'axios'
+import axios from 'axios';
 
 import {
   AppAside,
@@ -35,23 +35,13 @@ class DefaultLayout extends Component {
   loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
 
   logout(){
-    sessionStorage.clear();
+    localStorage.clear();
     this.props.tologin(false);
     this.props.history.push('/login')
   }
 
   upgrade(){
     this.props.history.push('/upgrade')
-  }
-
-  componentDidMount(){
-    axios.get('https://owaf.io/v2api/verify_auth_token',{
-      params : {
-        token : localStorage.getItem('token')
-      }
-    }).then((res)=>{
-      console.log(res,'resres')
-    })
   }
 
   render() {
@@ -89,12 +79,30 @@ class DefaultLayout extends Component {
                         )} />
                     ) : (null);
                   })}
+                  {/* {
+                    localStorage.getItem('token')?
+                    axios.get('http://161.117.83.227/v2api/verify_token',{
+      params: {
+        token:localStorage.getItem('token')
+      }
+    }).then(({data})=>{
+      if(data.r === 'token invalid'){
+       return <Redirect from="/" to="/login"/>
+      }else{
+        return <Redirect from="/" to="/dashboard"/>
+      }
+    }):<Redirect from="/" to="/login"/>
+                  } */}
+                  {/* <Redirect from="/" to="/dashboard" /> */}
                   {/* <Redirect from="/" to="/dashboard" /> */}
                   {/* <Redirect from="/" to="/login" /> */}
-                  {
+                  {/* {
                     sessionStorage.getItem('user') ?
                     <Redirect from="/" to="/dashboard" /> :
                     <Redirect from="/" to="/login" />
+                  } */}
+                  {
+                     <Redirect from="/" to="/login" />
                   }
                 </Switch>
               </Suspense>

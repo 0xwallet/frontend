@@ -6,8 +6,8 @@ import { bindActionCreators } from 'redux';
 
 class Account extends PureComponent{
     state={
-        token : sessionStorage.getItem('token'),
-        email : sessionStorage.getItem('user')
+        token : localStorage.getItem('token'),
+        email : localStorage.getItem('user')
     }
     registerFido = ()=>{
         this.props.actions.register(this.state.token,this.state.email);
@@ -17,11 +17,21 @@ class Account extends PureComponent{
         this.props.actions.login(this.state.token,this.state.email);
     }
 
+    vefifytoken = ()=>{
+        this.props.actions.vefifytoken(this.state.token)
+    }
+
+    keylist = ()=>{
+        this.props.actions.listkey(this.state.token)
+    }
+
     render(){
         return(
             <div>
-            <Button color="success" onClick={this.registerFido}>register</Button>
-            <Button color="info" onClick={this.loginFido}>checkout</Button>
+                <Button color="success" onClick={this.registerFido}>注册一</Button>
+                <Button color="info" onClick={this.loginFido}>注册2</Button>
+                <Button color="success" onClick={this.vefifytoken}>验证token</Button>
+                <Button color="info" onClick={this.keylist}>获取所有key</Button>
             </div>
         )
     }

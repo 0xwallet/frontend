@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore,applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import promise from 'redux-promise'
 
 import './index.css';
 
@@ -14,7 +15,7 @@ import App from './App';
 
 import * as serviceWorker from './serviceWorker';
 
-let store = createStore(rootReducer,applyMiddleware(thunk));
+let store = createStore(rootReducer,applyMiddleware(thunk,promise));
 
 ReactDOM.render(
     <Provider store={store}>

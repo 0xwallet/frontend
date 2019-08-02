@@ -43,7 +43,9 @@ class Login extends Component {
       }else{
         this.tick();
       }
-      axios.get('https://owaf.io/v2api/get_auth_code', {   
+      // https://owaf.io/v2api/get_auth_code
+      // http://161.117.83.227/v2api/doc
+      axios.get(' http://161.117.83.227/v2api/get_auth_code', {   
         params : {
           email : formdata.get('email'),  
         }
@@ -60,7 +62,7 @@ class Login extends Component {
       });
     }
     if(this.props.info === true){
-      axios.get('https://owaf.io/v2api/verify_auth_code', {   
+      axios.get('http://161.117.83.227/v2api/verify_auth_code', {   
         params : {
           email : formdata.get('email'),  
           code : formdata.get('verification')
@@ -68,8 +70,8 @@ class Login extends Component {
       })
       .then(function ({data : {r}}) {
         if(r !== 'wrong code'){
-          sessionStorage.setItem('user',formdata.get('email'));
-          sessionStorage.setItem('token',r.token);
+          // localStorage.setItem('user',formdata.get('email'));
+          localStorage.setItem('token',r.token);
 
           that.props.changeToLogin(true);
           that.props.changeSendMsg(false);

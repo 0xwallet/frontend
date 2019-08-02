@@ -3,8 +3,12 @@ import './index.scss'
 
 export default ()=>{
     return(
+        <div className="searchlogo">
+        <div className="logo">
+            
+        </div>
         <div id="fakebox-container">
-        
+               
                 <div id="fakebox-search-icon" class="">
                 </div>
                 <div className="svgsearch">
@@ -12,6 +16,7 @@ export default ()=>{
                 </div>
                 <input id="fakebox-input" autocomplete="off" tabindex="-1" type="text" aria-hidden="true" placeholder="search"/>
                 <div id="voice"></div>
+        </div>
         </div>
     )
 }

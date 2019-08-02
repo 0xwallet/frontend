@@ -1,6 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Redirect } from 'react-router-dom'
+// import { Redirect } from 'react-router-dom'
 import {
   Badge,
   Button,
@@ -346,11 +346,11 @@ class Dashboard extends Component {
 
     return (
       <div className="animated fadeIn">
-         {
+         {/* {
             sessionStorage.getItem('user') ?
              '':
             <Redirect from="/" to="/login" />
-          }
+          } */}
         <Row>
           <Col xs="12" sm="6" lg="3">
             <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id="card1" isOpen={this.state.card1}  name="text-white bg-warning"/>                        

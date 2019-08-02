@@ -2,12 +2,13 @@ import axios from 'axios';
 const exampleAction = {
   register:(token,email)=>{
       return (dispatch, getState) =>{
-          axios.get('https://owaf.io/v2api/webauthn_register',{
+          axios.get('http://161.117.83.227/v2api/webauthn_register',{
               params : {
-                email,
-                token
+                token,
+                origin: window.location.origin
               }
           }).then(({data})=>{
+              // console.log(data)
               function _base64ToArrayBuffer(base64) {
                 var binary_string =  window.atob(base64);
                 var len = binary_string.length;
@@ -26,6 +27,8 @@ const exampleAction = {
                       id: data.rp_id,
                       name: 'Wax FTW'
                     },
+
+                    origin: data.origin,
             
                     // User:
                     user: {
@@ -48,6 +51,7 @@ const exampleAction = {
             };
               navigator.credentials.create(createCredentialDefaultArgs)
               .then((cred) => {
+                  // console.log(_arrayBufferToString(cred.response.clientDataJSON))
                   function _arrayBufferToBase64( buffer ) {
                     var binary = '';
                     var bytes = new Uint8Array( buffer );
@@ -67,7 +71,7 @@ const exampleAction = {
                     }
                     return binary;
                   }                  
-                  axios.get('https://owaf.io/v2api/webauthn_register2',{
+                  axios.get('http://161.117.83.227/v2api/webauthn_register2',{
                     params : {
                       type: cred.type,
                       rawID: _arrayBufferToBase64(cred.rawId),
@@ -102,34 +106,32 @@ const exampleAction = {
   }),
 
   login: (token,email)=>{
-    return (dispatch,getState)=>{
-      axios.get('https://owaf.io/v2api/list_webauthn_keys',{
-        params : {
+    return(dispatch,getState)=>{
+      // `https://owaf.io/v2api/verify_auth_code?token=${token}`
+      fetch(`http://161.117.83.227/v2api/doc`,{
+        method:'get',
+        // mode: "no-cors"
+      }).then((res)=>res.json()).then(data=>console.log(data))
+    }
+  },
+  listkey : (token)=>{
+    return(dispatch,getState)=>{
+      axios.get('http://161.117.83.227/v2api/list_webauthn_keys',{
+        params: {
           token
         }
-    }).then((res)=>{
-      console.log(res,'res')
-      // register / create a new credential;
-    //   navigator.credentials.get({
-    //     publicKey: {
-    //     challenge:'',
-    //     allowCredentials: [
-    //       {
-    //         id:'',
-    //         type: "public-key"
-    //       }
-    //     ],
-    //     timeout: 15000,
-    //     authenticatorSelection: { userVerification: "preferred" }
-    //   }
-    // })
-    // .then(res => {
-    //       // var json = publicKeyCredentialToJSON(res);
-    // }).catch(err => {
-    //       alert(err);
-    // });
-    }).catch()
-
+      })
+    }
+  },
+  vefifytoken : (token)=>{
+    return(dispatch,getState)=>{
+      axios.get('http://161.117.83.227/v2api/verify_token',{
+        params: {
+          token
+        }
+      }).then((res)=>{
+        console.log(res)
+      })
     }
   }
 }

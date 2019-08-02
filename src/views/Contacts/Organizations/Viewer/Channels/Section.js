@@ -1,13 +1,14 @@
 import React from 'react';
+import ChatBody from './ChatBody'
 
 export default (props)=>{
     const {channel} = props;
+    
     return(
         <section>
-            {
-                props.children ?    
-                <div className="search">{props.children}</div> : <div> chat with {channel}</div>
-            }
+                <ChatBody channel={channel} {...props}>
+                    {props.children}
+                </ChatBody>
         </section>
     )
 }
