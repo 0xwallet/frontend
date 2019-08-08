@@ -1,117 +1,73 @@
 import React,{PureComponent}from 'react';
-import { Card, CardBody, CardHeader ,Row,Col} from 'reactstrap';
-// import { Line } from 'react-chartjs-2';
-// import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
+import { Card, CardBody, CardHeader ,Row,Col,ButtonGroup,Dropdown,DropdownToggle,DropdownMenu,DropdownItem} from 'reactstrap';
 
-import Channels from './Channels';
-
-// import Widget01 from './Widget01';
-// import Widget03 from './Widget03';
 import Widget04 from './Widget04';
-// import Widget02 from './Widget02';
-  
-// // Brand Card Chart
-// const makeSocialBoxData = (dataSetNo) => {
-//     const socialBoxData = [
-//       { data: [65, 59, 84, 84, 51, 55, 40], label: 'facebook' },
-//       { data: [1, 13, 9, 17, 34, 41, 38], label: 'twitter' },
-//       { data: [78, 81, 80, 45, 34, 12, 40], label: 'linkedin' },
-//       { data: [35, 23, 56, 22, 97, 23, 64], label: 'google' },
-//     ];
-  
-//     const dataset = socialBoxData[dataSetNo];
-//     const data = {
-//       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-//       datasets: [
-//         {
-//           backgroundColor: 'rgba(255,255,255,.1)',
-//           borderColor: 'rgba(255,255,255,.55)',
-//           pointHoverBackgroundColor: '#fff',
-//           borderWidth: 2,
-//           data: dataset.data,
-//           label: dataset.label,
-//         },
-//       ],
-//     };
-//     return () => data;
-//   };
-
-//   const socialChartOpts = {
-//     tooltips: {
-//       enabled: false,
-//       custom: CustomTooltips
-//     },
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     legend: {
-//       display: false,
-//     },
-//     scales: {
-//       xAxes: [
-//         {
-//           display: false,
-//         }],
-//       yAxes: [
-//         {
-//           display: false,
-//         }],
-//     },
-//     elements: {
-//       point: {
-//         radius: 0,
-//         hitRadius: 10,
-//         hoverRadius: 4,
-//         hoverBorderWidth: 3,
-//       },
-//     },
-//   };
+import CreateOrgModal from './CreateOrgModal';
 
 export default class Viewer extends PureComponent{
     constructor(){
-        super()
-        this.myRef = React.createRef();
+        super();
+        this.orgref = React.createRef();
+    }
+    state = {
+        card4 : true,
+        card3 : true,
+        card2 : true,
+        card1 : true,
+        orgisopen : false,
+        orgname: 'My organizations',
+        orglist : ['0waf','github','bsvorg']
+    }
+    selorg=(_e,v)=>{
+       this.setState({
+           orgname: v
+       })
+    }
+    openisOrg=()=>{
+        this.orgref.current.toggle()
     }
     render(){
-        // console.log(this.myRef)
         return(
             <Card>
-                <CardHeader>
-                    <i className="icon-calendar"></i>My organizations{' '}
-                    {/* <a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a> */}
-                    <div className="card-header-actions">
-                    <a href="https://github.com/intljusticemission/react-big-calendar" rel="noopener noreferrer" target="_blank" className="card-header-action">
-                        <small className="text-muted">docs</small>
-                    </a>
-                    </div>
+                <CardHeader style={{display: 'flex',alignItems: 'center'}}>    
+                <ButtonGroup >
+                  <Dropdown id='org' isOpen={this.state.orgisopen} toggle={() => { this.setState({ orgisopen: !this.state.orgisopen }); }}>
+                    <DropdownToggle caret className="p-0" color="#000">
+                    <i className="icon-equalizer"></i>{'  '}
+                     {this.state.orgname}{' '} 
+                    </DropdownToggle>
+                    <DropdownMenu left="true">
+                      {
+                          this.state.orglist.map((v,i)=>{
+                              return(
+                                <DropdownItem onClick={(e)=>{
+                                    this.selorg(e,v)
+                                }} key={i}>{v}</DropdownItem> 
+                              )
+                          })
+                      }
+                    </DropdownMenu>
+                  </Dropdown>
+                </ButtonGroup>
+                <span style={{color:'#20a8d8',marginLeft:'1rem',cursor:'pointer'}} onClick={this.openisOrg}>create</span>
                 </CardHeader>
                 <CardBody>
                     <Row>
-                        <Col xs="12" sm="6" lg="3">
-                            {/* <Widget01 color="danger" variant="inverse" header="$98.111,00" smallText="">
-                                <small className="text-muted">Excepteur sint occaecat...</small>
-                            </Widget01> */}
-                            <Widget04 icon="icon-people" color="info" header="87.500" value="25">Visitors</Widget04>
-
+                        <Col xs="12" sm="6" lg="3">  
+                            <Widget04 icon="fa fa-laptop" color="info" header="99999.99" value="50" id="income">Income</Widget04>
                         </Col>
                         <Col xs={12} sm={6} md={3} >
-                             <Widget04 icon="icon-people" color="info" header="87.500" value="25" onClick={()=>{this.myRef.current.toggle()}}>Visitors</Widget04>
-                            {/* <Widget03 dataBox={() => ({ variant: 'twitter', followers: '973k', tweets: '1.792' })}  >
-                                <div className="chart-wrapper" onClick={()=>{this.myRef.current.toggle()}}>
-                                    <Line data={makeSocialBoxData(1)} options={socialChartOpts} height={90} />
-                                </div>
-                            </Widget03> */}
+                             <Widget04 icon="fa fa-podcast" color="info" header="33333" value="25" id="channels">Users</Widget04>                           
                          </Col>
                          <Col xs="12" sm="6" lg="3">
-                             <Widget04 icon="icon-people" color="info" header="87.500" value="25">Visitors</Widget04>
-                            {/* <Widget02 header="$1.999,50" mainText="Income" icon="fa fa-cogs" color="primary" /> */}
+                             <Widget04 icon="icon-people" color="info" header="55555" value="25" id="org">Members</Widget04>
                         </Col>
                         <Col xs={12} sm={6} md={3}>
-                            <Widget04 icon="icon-people" color="info" header="87.500" value="25">Visitors</Widget04>
-                            {/* <Widget04 icon="icon-pie-chart" color="primary" header="28%" value="25">Returning Visitors</Widget04> */}
+                            <Widget04 icon="icon-pie-chart" color="info" header="87.500" value="25" id="all">Statistics</Widget04>
                         </Col>
                     </Row>
                 </CardBody>
-                 <Channels ref={this.myRef}/>
+                <CreateOrgModal ref={this.orgref}/>
             </Card>
         )
     }

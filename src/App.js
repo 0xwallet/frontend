@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
-import {browserHistory} from 'react-router'
-// import { renderRoutes } from 'react-router-config';
 import Loadable from 'react-loadable';
-// import {connect} from 'react-redux';
-// import exampleAction from './store/actions'
-// import { bindActionCreators } from 'redux';
-
 require('./App.scss')
 
 const loading = () => <div className="animated fadeIn pt-3 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
@@ -18,10 +12,6 @@ const DefaultLayout = Loadable({
 });
 
 // Pages
-const Login = Loadable({
-  loader: () => import('./views/Login'),
-  loading
-});
 
 // const Register = Loadable({
 //   loader: () => import('./views/Pages/Register'),
@@ -60,24 +50,14 @@ window.history.pushState(null, null, document.URL);
 window.addEventListener('popstate', function () {
         window.history.pushState(null, null, document.URL);
 });
-
-const enterTab = () => {
-  console.log('进入路由做一些事情，嘿嘿嘿')
-}
-const leaveTab = () => {
-  console.log('要离开路由了')
-}
-
 class App extends Component {
+
   render() { 
     return (
-      <HashRouter history={browserHistory}>
+      <HashRouter>
         <Switch>
-          <Route exact path="/login" name="Login Page" component={Login} onEnter={enterTab.bind(this)} onLeave={leaveTab.bind(this)}/>
-          {/* <Route exact path="/register" name="Register Page" component={Register} /> */}
           <Route exact path="/404" name="Page 404" component={Page404} />
-          {/* <Route exact path="/500" name="Page 500" component={Page500} /> */}
-          <Route path="/" name="Home" component={DefaultLayout} />
+          <Route path="/" name="Home" component={DefaultLayout} />  
         </Switch>
       </HashRouter>
     );
@@ -85,16 +65,3 @@ class App extends Component {
 }
 
 export default App;
-
-// const mapStateToProps = ()=>{
-//   return {
-//   }
-// }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     actions : bindActionCreators(exampleAction,dispatch)
-//   }
-// }
-
-// export default connect(mapStateToProps,mapDispatchToProps)(App);

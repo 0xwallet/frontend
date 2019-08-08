@@ -31,11 +31,30 @@ function account(state={register:false},action){
     }
 }
 
+function webauthnlogin(state={webauthnlogin: false},action){
+    switch(action.type){
+        case 'webauthnlogin': return {...state,webauthnlogin: action.payload.info};
+        default: return state;
+    }
+}
+// 控制是否渲染verify code框
+function codelogin(state={sendcode: false,errcode: false,register: false},action){
+    switch(action.type){
+        case 'sendcode': return {...state,sendcode:action.payload.info,register:{...state,register:action.payload.register}};
+        case 'isregister': return {...state,sendcode:action.payload.info};
+        case 'errcode' : return {...state,errcode: action.payload.info};
+
+        default: return state;
+    }
+}
+
 const rootRudecer = combineReducers({
     login,
     upgrade,
     updatetheme,
-    account
+    account,
+    webauthnlogin,
+    codelogin
 })
 
 export default rootRudecer

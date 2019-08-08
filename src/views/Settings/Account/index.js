@@ -25,6 +25,10 @@ class Account extends PureComponent{
         this.props.actions.listkey(this.state.token)
     }
 
+    webauthnlogin = ()=>{
+        this.props.actions.webauthnlogin(this.state.email)
+    }
+
     render(){
         return(
             <div>
@@ -32,6 +36,7 @@ class Account extends PureComponent{
                 <Button color="info" onClick={this.loginFido}>注册2</Button>
                 <Button color="success" onClick={this.vefifytoken}>验证token</Button>
                 <Button color="info" onClick={this.keylist}>获取所有key</Button>
+                <Button color="info" onClick={this.webauthnlogin}>webauthnlogin</Button>
             </div>
         )
     }

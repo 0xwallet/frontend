@@ -1,0 +1,24 @@
+.keys{
+    // .keysitem{
+    //     display: flex;
+    //     .keysection{
+    //         flex: 1,
+    //     }
+    // }
+    .keysitem{
+        display: flex;
+        .delete{
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+        .keysection{
+            flex: 1;
+        }
+    }
+    .keysbtn{
+        .add{
+            margin-top:1rem;
+        }
+    }
+}

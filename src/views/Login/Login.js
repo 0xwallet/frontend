@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import axios from 'axios';
 import qs from 'qs';
+import exampleAction from '../../store/actions/index';
+import { bindActionCreators } from 'redux';
+import {message} from 'antd';
+import "antd/dist/antd.css";
 
 import Viewer from './Viewer';
 import './Login.scss'
@@ -22,95 +26,51 @@ class Login extends Component {
     this.sendAgain = this.sendAgain.bind(this);
     this.state = {
       count  : 60,
-      alias : "Guest"
+      user: 'Guest'
     }
   }
 
-  register(e){
-    e.preventDefault()
-    const that = this;
+  get email(){
     var form=document.querySelector('#login');
     const formdata = new FormData(form);
+    const email = formdata.get('email')
+    return email
+  }
 
-    if(this.props.info === false){
-      that.props.changeInfo(true)
-      if(this.state.count === 0 ){
-        this.setState({
-          count : 60
-        },()=>{
-          this.tick();
-        })
-      }else{
-        this.tick();
-      }
-      // https://owaf.io/v2api/get_auth_code
-      // http://161.117.83.227/v2api/doc
-      axios.get(' http://161.117.83.227/v2api/get_auth_code', {   
-        params : {
-          email : formdata.get('email'),  
-        }
-      })
-      .then(function ({data:{r}}) {
-        if(r.registered){
-          that.setState({
-            alias : formdata.get('email')
-          })
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+  get code(){
+    var form=document.querySelector('#login');
+    const formdata = new FormData(form);
+    const code = formdata.get('verification')
+    return code
+  }
+
+  webauthnlogin = ()=>{
+    this.props.actions.webauthnlogin(this.email)
+  }
+
+  register(e){
+    e.preventDefault();
+    if(this.props.sendcode === true){
+      this.props.actions.verifycode(this.email,this.code).then((res)=>message.success(res)).catch(res=>message.error(res))
     }
-    if(this.props.info === true){
-      axios.get('http://161.117.83.227/v2api/verify_auth_code', {   
-        params : {
-          email : formdata.get('email'),  
-          code : formdata.get('verification')
-        }
-      })
-      .then(function ({data : {r}}) {
-        if(r !== 'wrong code'){
-          // localStorage.setItem('user',formdata.get('email'));
-          localStorage.setItem('token',r.token);
-
-          that.props.changeToLogin(true);
-          that.props.changeSendMsg(false);
-          that.props.history.push('/dashboard')// yanzheng to home
-        }else{
-          that.props.changeSendMsg(true); // send again
-          that.props.changeInfo(false);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    if(this.props.sendcode === false){
+      const that = this;
+      this.props.actions.sendcode(this.email).then((res)=>{
+        that.tick();
+        that.setState({
+          user: that.email
+        })
+      }).catch()
     }
   }
 
   sendAgain(){
-    var form=document.querySelector('#login');
-    const formdata = new FormData(form);
-    if(this.props.info){
-      this.props.changeInfo(false);
-    }else{
-      this.props.changeInfo(true);
-    }
+    this.props.actions.sendcode(this.email);
     this.setState({
-      count : 60,
+      count:60
     },()=>{
       this.tick()
     })
-    axios.get('https://owaf.io/v2api/get_auth_code', {   
-      params : {
-        email : formdata.get('email'),  
-      }
-    })
-    .then(function ({data : {r}}) {
-      console.log(r)
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
   }
 
   tick = ()=>{
@@ -125,9 +85,6 @@ class Login extends Component {
       })
     },1000)
   }
-  webauthn = ()=>{
-
-  }
 
   componentWillUnmount(){
       clearInterval(this.timer);
@@ -136,12 +93,13 @@ class Login extends Component {
   render() {
     const props = {
       register : this.register,
-      toLogin : this.props.info,
-      sendMessage : this.props.sendMessage,
-      sendAgain : this.sendAgain,
-      count : this.state.count,
-      alias : this.state.alias,
-      webauthn : this.webauthn
+      webauthn : this.webauthnlogin,
+      sendcode: this.props.sendcode,
+      user: this.state.user,
+      isregister: this.props.isregister,
+      errcode: this.props.errcode,
+      count: this.state.count,
+      sendAgain: this.sendAgain,
     }
 
     return (
@@ -154,16 +112,16 @@ class Login extends Component {
 
 const mapStateToProps = (state)=>{
   return {
-    info : state.login.info,
-    sendMessage : state.login.sendAgain
+    sendcode: state.codelogin.sendcode, // sendcode  ,
+    isregister: state.codelogin.register,
+    errcode: state.codelogin.errcode,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeInfo : (info)=> dispatch({type : "login",payload : { info }}),
-    changeSendMsg : (info)=> dispatch({type : "sendAgain",payload : { sendAgain : info }}),
-    changeToLogin : (info)=> dispatch({type : "tologin",payload : { tologin : info }}),
+    actions : bindActionCreators(exampleAction,dispatch)
   }
 }
+
 export default connect(mapStateToProps,mapDispatchToProps)(Login);

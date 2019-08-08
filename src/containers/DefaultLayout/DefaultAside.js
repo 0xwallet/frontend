@@ -251,7 +251,12 @@ class DefaultAside extends Component {
                   }
                 }}/>
               </div>
-            
+              <div className="clearfix mt-4">
+                <small><b>是否展开</b></small>
+                <AppSwitch className={'float-right'} variant={'pill'} label color={'success'} defaultChecked size={'sm'} onClick={()=>{
+                
+                }}/>
+              </div>
             </div>
 
             {/* <div className="aside-options">

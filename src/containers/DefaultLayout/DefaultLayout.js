@@ -1,9 +1,9 @@
 import React, { Component, Suspense } from 'react';
 import { Route, Switch, Redirect} from 'react-router-dom';
 import { Container } from 'reactstrap';
-import { connect } from 'react-redux';
-import axios from 'axios';
-
+import {connect} from 'react-redux';
+import exampleAction from '../../store/actions/index';
+import { bindActionCreators } from 'redux';
 import {
   AppAside,
   AppBreadcrumb,
@@ -20,6 +20,7 @@ import {
 import navigation from '../../_nav';
 // routes config
 import routes from '../../routes';
+import Login from '../../views/Login'
 
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
@@ -30,22 +31,33 @@ class DefaultLayout extends Component {
     super();
     this.logout = this.logout.bind(this);
     this.upgrade = this.upgrade.bind(this);
+    this.state = {
+      token: localStorage.getItem('token')
+    }
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
 
   logout(){
-    localStorage.clear();
-    this.props.tologin(false);
-    this.props.history.push('/login')
+    this.props.actions.logout()    
+  }
+
+  login = ()=>{
+    this.props.actions.rootlogin()
   }
 
   upgrade(){
     this.props.history.push('/upgrade')
   }
 
+  componentDidMount(){
+    this.props.actions.vefifytoken(this.state.token)
+  }
+  
+
   render() {
     return (
+      this.props.islogin ? 
       <div className="app">
         <AppHeader fixed>
           <Suspense fallback={this.loading()}>
@@ -79,31 +91,7 @@ class DefaultLayout extends Component {
                         )} />
                     ) : (null);
                   })}
-                  {/* {
-                    localStorage.getItem('token')?
-                    axios.get('http://161.117.83.227/v2api/verify_token',{
-      params: {
-        token:localStorage.getItem('token')
-      }
-    }).then(({data})=>{
-      if(data.r === 'token invalid'){
-       return <Redirect from="/" to="/login"/>
-      }else{
-        return <Redirect from="/" to="/dashboard"/>
-      }
-    }):<Redirect from="/" to="/login"/>
-                  } */}
-                  {/* <Redirect from="/" to="/dashboard" /> */}
-                  {/* <Redirect from="/" to="/dashboard" /> */}
-                  {/* <Redirect from="/" to="/login" /> */}
-                  {/* {
-                    sessionStorage.getItem('user') ?
-                    <Redirect from="/" to="/dashboard" /> :
-                    <Redirect from="/" to="/login" />
-                  } */}
-                  {
-                     <Redirect from="/" to="/login" />
-                  }
+                   <Redirect from="/" to="/dashboard" />
                 </Switch>
               </Suspense>
             </Container>
@@ -120,22 +108,22 @@ class DefaultLayout extends Component {
           </Suspense>
         </AppFooter>
       </div>
-    );
+    : (
+      <Login login={this.login}/>
+    ));
   }
 }
 
-function mapStateToProps(state){
+const mapStateToProps = (state)=>{
   return {
-    tologin : state.login.tologin,
+    islogin: state.webauthnlogin.webauthnlogin
   }
 }
 
-function mapDispatchToProps(dispatch){
+const mapDispatchToProps = (dispatch) => {
   return {
-    tologin : (info)=> dispatch({type: 'login',payload : {info}})
+    actions : bindActionCreators(exampleAction,dispatch)
   }
 }
 
-export default connect(
-  mapStateToProps,mapDispatchToProps
-)(DefaultLayout);
+export default connect(mapStateToProps,mapDispatchToProps)(DefaultLayout);

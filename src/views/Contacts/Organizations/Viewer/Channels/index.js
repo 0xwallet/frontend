@@ -9,7 +9,8 @@ export default class Channels extends PureComponent{
         super(props);
         this.state = {
             modal : false,
-            navItems : [{id:0,name:"lailssssi",auth:0},{id:1,name:"lafsfsili",auth:0},{id:2,name:"lsfsfsssfs234234234fsfsfsaili",auth:1}],
+            navItems: [],
+            // navItems : [{id:0,name:"lailssssi",auth:0},{id:1,name:"lafsfsili",auth:0},{id:2,name:"lsfsfsssfs234234234fsfsfsaili",auth:1}],
             active : 0,
             dropdownOpen : [false,false],
             newtab : [],
@@ -25,13 +26,21 @@ export default class Channels extends PureComponent{
         }
     }
 
-    toggle = ()=>{
+    toggle = (v)=>{
         this.setState({
-            modal:!this.state.modal
+            modal:!this.state.modal,
+            navItems: [...this.state.navItems,{id: v,name: v}]
+        })
+    }
+
+    toggleclose = ()=>{
+        this.setState({
+            modal: !this.state.modal
         })
     }
 
     toggletab = (i,channel)=>{
+        console.log('cc')
         this.setState({
             active : i,
             currnetname : channel,
@@ -48,7 +57,7 @@ export default class Channels extends PureComponent{
     }
 
     opentab = ()=>{
-        const newarr = [...this.state.navItems,{name:'newtab',auth:0,id:Date.now()}];
+        const newarr = [...this.state.navItems,{name:'newtab',id:Date.now()}];
         this.setState({
             navItems: newarr,
             active : newarr.length - 1 ,
@@ -56,14 +65,29 @@ export default class Channels extends PureComponent{
         })
     }
 
-    closetab = (id)=>{
-        const index = this.state.navItems.findIndex(v=>v.id === id);
-        let closetab = [...this.state.navItems];
-        closetab.splice(index,1);
-       
-        this.setState({
-            navItems: closetab
-        })
+    closetab = (e,id)=>{
+        // const evt = e || window.event;
+        // evt.stopPropagation();
+      
+        // const index = this.state.navItems.findIndex(v=>v.id === id);
+        // let closetab = [...this.state.navItems];
+        // closetab.splice(index,1);
+        // console.log(index-1,'closeindex',this.state.active,'currentindex')
+        // // let active = index -1;
+        // this.setState({
+        //     navItems: closetab,
+        //     active: 0
+        // },()=>{
+        //     console.log(this.state.active,'activeactive')
+        // })
+        // const index = this.state.navItems.findIndex(v=>v.id === id);
+        // let closetab = [...this.state.navItems];
+        // closetab.splice(index,1);
+        // console.log(closetab,'close',this.state.active)
+        // this.setState({
+        //     active: 0,
+        //     navItems: closetab
+        // })
     }
 
     likehover = (i,info)=>{
@@ -90,7 +114,6 @@ export default class Channels extends PureComponent{
         if(e.keyCode === 13){ 
             const sectionDom = document.querySelector('#section');
             sectionDom.scrollTop = sectionDom.scrollHeight ;
-            // const time =  checkoutseconds(Date.now())
             
             this.setState({
                 chatmsg : [...this.state.chatmsg,{...chatitem}],
@@ -115,7 +138,7 @@ export default class Channels extends PureComponent{
         return(
             <>
             <Modal isOpen={this.state.modal} toggle={this.toggle} className="channels">
-                  <ModalHeader toggle={this.toggle} className="channelheader">Channels</ModalHeader>
+                  <ModalHeader toggle={this.toggleclose} className="channelheader">Channels</ModalHeader>
                   <ModalBody className="channelswrap">
                         <Nav tabs className="nav">
                             {
@@ -133,8 +156,8 @@ export default class Channels extends PureComponent{
                                         {v.name}
                                         </span>
                                         <span className="closeicon">
-                                            <i className="fa fa-close" onClick={()=>{
-                                             this.closetab(v.id)
+                                            <i className="fa fa-close" onClick={(e)=>{
+                                             this.closetab(e,v.id)
                                             }}></i>
                                         </span>
                                         <span className="divider" style={{opacity:this.state.active === i || this.state.active === i + 1 || this.state.hoveractive === i + 1? 0 : ''}}></span> 
