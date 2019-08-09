@@ -8,7 +8,9 @@ import {message} from 'antd';
 import "antd/dist/antd.css";
 
 import Viewer from './Viewer';
-import './Login.scss'
+import './Login.scss';
+
+let timer1 = undefined;
 
 axios.interceptors.request.use((config) => {
   if(config.method  === 'post'){
@@ -45,7 +47,8 @@ class Login extends Component {
   }
 
   webauthnlogin = ()=>{
-    this.props.actions.webauthnlogin(this.email)
+    this.props.actions.webauthnlogin(this.email).then(res=>message.success(res))
+    .catch(err=>message.error(err));
   }
 
   register(e){
@@ -56,7 +59,7 @@ class Login extends Component {
     if(this.props.sendcode === false){
       const that = this;
       this.props.actions.sendcode(this.email).then((res)=>{
-        that.tick();
+        that.timerStart1();
         that.setState({
           user: that.email
         })
@@ -69,25 +72,30 @@ class Login extends Component {
     this.setState({
       count:60
     },()=>{
-      this.tick()
+      this.timerStart1()
     })
   }
 
-  tick = ()=>{
-    clearInterval(this.timer)
-    this.timer = setInterval(()=>{
-      this.setState({
-        count : this.state.count - 1
-      },()=>{
-        if(this.state.count === 0){
-          clearInterval(this.timer);
-        }
-      })
-    },1000)
+  timerStop1= () => {
+    clearInterval(timer1);
+  }
+
+  record1 = () => {
+    this.setState((prevState) => ({
+      count: prevState.count - 1
+    }));
+  }
+
+  timerStart1 = () =>  {
+    timer1 = setInterval(() => this.record1(), 1000);
   }
 
   componentWillUnmount(){
-      clearInterval(this.timer);
+    clearInterval(timer1);
+  }
+
+  componentDidMount(){
+    // this.timerStart1();
   }
 
   render() {
@@ -100,6 +108,7 @@ class Login extends Component {
       errcode: this.props.errcode,
       count: this.state.count,
       sendAgain: this.sendAgain,
+      timerStop1: this.timerStop1
     }
 
     return (

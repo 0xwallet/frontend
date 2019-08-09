@@ -28,7 +28,7 @@ function _arrayBufferToString( buffer ) {
   return binary;
 } 
 const exampleAction = {
-  register:(token,email)=>{
+  register:(token)=>{
       return (dispatch, getState) =>{
           axios.get('http://161.117.83.227/v2api/webauthn_register',{
               params : {
@@ -69,7 +69,8 @@ const exampleAction = {
                 }
             };
               navigator.credentials.create(createCredentialDefaultArgs)
-              .then((cred) => {                                 
+              .then((cred) => {
+                  const transports = cred.response.getTransports()[0];
                   axios.get('http://161.117.83.227/v2api/webauthn_register2',{
                     params : {
                       type: cred.type,
@@ -77,32 +78,26 @@ const exampleAction = {
                       clientDataJSON: _arrayBufferToString(cred.response.clientDataJSON),
                       sref:data.sref,
                       token,
+                      transports,
                       attestationObject:_arrayBufferToBase64(cred.response.attestationObject)
                     }
                   }).then((res)=>{
-                    console.log(res)
+                    console.log(res,'success register')
                   })
               })
               .then((assertion) => {
-                  console.log("ASSERTION", assertion);
+                  console.log(assertion,'hello world')
+                  // console.log("ASSERTION", assertion);
               })
               .catch((err) => {
-                  console.log("ERROR", err);
+                  console.log('create defeat')
+                  // console.log("ERROR", err);
               });
-              // dispatch(exampleAction.asyncSuccess(true))  
           }).catch((err)=>{
-              console.log(err,'error')
-              // dispatch(exampleAction.asyncError(false))              
+              console.log(err,'get chanllage defeat')
           })
       }
   },
-  
-  asyncSuccess:(info)=>({
-      type:'register',
-      payload:{
-        info
-      }
-  }),
 
   login: (token,email)=>{
     return(dispatch,getState)=>{ fetch(`http://161.117.83.227/v2api/doc`,{
@@ -112,13 +107,15 @@ const exampleAction = {
     }
   },
   listkey : (token)=>{
-    return(dispatch,getState)=>{
+    return(dispatch,getState)=>new Promise((resolve,reject)=>{
       axios.get('http://161.117.83.227/v2api/list_webauthn_keys',{
         params: {
           token
         }
+      }).then((res)=>{
+        resolve(res.data)
       })
-    }
+    })
   },
   vefifytoken : (token)=>{
     return(dispatch,getState)=>{
@@ -148,83 +145,92 @@ const exampleAction = {
     }
   },
   webauthnlogin: (email)=>{
-    return(dispatch,getState)=>{
-      axios.get('http://161.117.83.227/v2api/webauthn_login',{
-        params:{
-          email,
-          origin: window.location.origin
-        }
-      }).then(res=>{
-        const data = JSON.parse(res.data.data)
-        const allowCredentials = data.cred_ids.map(function(x){
-          return {
-              id: _base64ToArrayBuffer(x),
-              type: "public-key",
-              transports: ['usb','nfc','ble']
-          }
-        })
-      const sref = res.data.sref;
-      navigator.credentials.get({
-        publicKey: {
-          challenge: _base64ToArrayBuffer(data.challenge),
-          allowCredentials
-        }
-      }).then((newCredential)=>{     
-        axios.get('http://161.117.83.227/v2api/webauthn_login2',{
+    return(dispatch,getState)=>new Promise((resolve,reject)=>{
+        axios.get('http://161.117.83.227/v2api/webauthn_login',{
           params:{
-            sref,
-            rawID: _arrayBufferToBase64(newCredential.rawId),
-            type: newCredential.type,
-            clientDataJSON: _arrayBufferToString(newCredential.response.clientDataJSON),
-            authenticatorData: _arrayBufferToBase64(newCredential.response.authenticatorData),
-            sig: _arrayBufferToBase64(newCredential.response.signature)
+            email,
+            origin: window.location.origin
           }
-        }).then((res)=>{
-          localStorage.setItem('token',res.data.token) // save
+        }).then(res=>{
+          const data = JSON.parse(res.data.data)
+          const allowCredentials = data.cred_ids.map(function(x){
+            return {
+                id: _base64ToArrayBuffer(x),
+                type: "public-key",
+                transports: ['usb','nfc','ble'] // internal
+            }
+          })
+        const sref = res.data.sref;
+        navigator.credentials.get({
+          publicKey: {
+            challenge: _base64ToArrayBuffer(data.challenge),
+            allowCredentials
+          }
+        }).then((newCredential)=>{     
+          axios.get('http://161.117.83.227/v2api/webauthn_login2',{
+            params:{
+              sref,
+              rawID: _arrayBufferToBase64(newCredential.rawId),
+              type: newCredential.type,
+              clientDataJSON: _arrayBufferToString(newCredential.response.clientDataJSON),
+              authenticatorData: _arrayBufferToBase64(newCredential.response.authenticatorData),
+              sig: _arrayBufferToBase64(newCredential.response.signature)
+            }
+          }).then((res)=>{
+            localStorage.setItem('token',res.data.token) // save
+            dispatch({
+              type: 'webauthnlogin',
+              payload: {
+                info: true // login success
+              }
+            })
+            resolve('webauthn login succ')
+          }).catch(err=>{
+            dispatch({
+              type: 'webauthnlogin',
+              payload: {
+                info: false // login error
+              }
+            })
+          })
+  
+        }).catch((err)=>{
+          console.log(err);
+        })
+        }).catch((err)=>{
           dispatch({
             type: 'webauthnlogin',
             payload: {
-              info: true // login success
+              info: false
             }
           })
-        }).catch(err=>{
-          dispatch({
-            type: 'webauthnlogin',
-            payload: {
-              info: false // login error
-            }
-          })
+          reject('invalid email')
         })
-
-      }).catch((err)=>{
-        console.log(err);
       })
-      }).catch((err)=>{
-        dispatch({
-          type: 'webauthnlogin',
-          payload: {
-            info: false
-          }
-        })
-        alert('invalid email')
-      })
-    }
-  },
-  logout : ()=>{
+    },
+  logout : (token)=>{
     return(dispatch)=>{
-      localStorage.clear();
-      dispatch({
-        type: 'webauthnlogin',
-        payload: {
-          info: false
+      axios.get('http://161.117.83.227/v2api/expire_token',{
+        params:{
+          token
         }
-      })
-      dispatch({
-        type: 'sendcode',
-        payload: {
-          info: false
+      }).then((res)=>{
+        if(res.data.r === 'ok'){
+          localStorage.clear();
+          dispatch({
+            type: 'webauthnlogin',
+            payload: {
+              info: false
+            }
+          })
+          dispatch({
+            type: 'sendcode',
+            payload: {
+              info: false
+            }
+          })
         }
-      })
+      })  
     }
   },
   sendcode : (email)=>{

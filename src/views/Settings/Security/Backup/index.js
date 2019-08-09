@@ -1,40 +1,35 @@
-import React ,{useState}from 'react';
-import {Card,CardHeader,CardBody,Button,ListGroupItem} from 'reactstrap';
+import React from 'react';
+import {Card,CardHeader,CardBody,Input,Form,InputGroup,InputGroupAddon,InputGroupText} from 'reactstrap';
 import Locking from '../components/Locking';
 export default (props)=>{
-    const [list,setlist] = useState([]);
-    const {auth = false} = props;
-    function deleteitem(id){
-        const index = list.findIndex(v=>v.id === id);
-        const newlist = [...list];
-        newlist.splice(index,1);
-        setlist(newlist)
-    }
+    const { auth, onAuth } = props;
     return(
         <Card className="keys">
         <CardHeader>Backup
         <div className="card-header-actions">
-            <Locking onAuth={props.onAuth} auth={auth}/>
+            <Locking onAuth={onAuth} auth={auth}/>
         </div>
         </CardHeader>
         <CardBody>
-            <div className="keysbtn"> 
-                  {
-                      list.map((v,idx)=>{
-                          return(
-                            <div className="keysitem" key={idx}>
-                            <ListGroupItem color="success" className="keysection">{v.name} 
-                            </ListGroupItem>   
-                            <div className="delete">
-                              <Button color="danger" size="sm" onClick={
-                                 ()=> deleteitem(v.id)
-                              }>delete</Button>   
-                            </div>
-                            </div>
-                          )
-                      })
-                  }
-                <Button color="primary" className="add" onClick={()=>setlist([...list,{name:`laoli${Date.now()}`,id:Date.now()}])} disabled={auth?false:true}>Add a key</Button>
+            <div className="backup"> 
+                <Form row="true" onSubmit={props.register} id="login">
+                <InputGroup style={{margin : '1.3rem 0'}}>
+                    <InputGroupAddon addonType="append">
+                        <InputGroupText>
+                            <i className="cui cui-phone"></i> 
+                        </InputGroupText>
+                    </InputGroupAddon>
+                    <Input type="email" id="email" name="phone" placeholder="phone" disabled={auth?false:true}/>            
+                </InputGroup>
+                <InputGroup style={{margin : '1.3rem 0'}}>
+                    <InputGroupAddon addonType="append">
+                        <InputGroupText>
+                            <i className="fa fa-envelope-o"></i> 
+                        </InputGroupText>
+                    </InputGroupAddon> 
+                    <Input type="email" id="email" name="email" placeholder="Email" disabled={auth?false:true}/>            
+                </InputGroup>
+                </Form>
             </div>
         </CardBody>
         </Card>

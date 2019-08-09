@@ -1,13 +1,19 @@
 import React ,{PureComponent}from 'react';
 import {Row,Col} from 'reactstrap';
+import {connect} from 'react-redux';
+import exampleAction from '../../../store/actions'
+import { bindActionCreators } from 'redux';
+
 import Config from './Config';
 import Keys from './keys';
 import Backup from './Backup';
-export default class Security extends PureComponent{
+
+class Security extends PureComponent{
     state = {
         Authorizations: false,
         keys: false,
         backup: false,
+        token: localStorage.getItem('token')
     }
 
     handleKeys = ()=>{
@@ -28,7 +34,22 @@ export default class Security extends PureComponent{
         })
     }
 
+    addkeys = ()=>{
+        this.props.actions.register(this.state.token);
+    }
+
+    getkeyslist = ()=>new Promise((resolve)=>{
+        this.props.actions.listkey(this.state.token).then(res=>resolve(res.keys))
+    })
+    
+
     render(){
+        const keysprops = {
+            getkeyslist: this.getkeyslist,
+            auth: this.state.keys,
+            onAuth: this.handleKeys,
+            addkeys: this.addkeys
+        }
         return(
             <Row>
                 <Col xs="24" sm="12" lg="6"> 
@@ -37,7 +58,7 @@ export default class Security extends PureComponent{
                 <Col xs="24" sm="12" lg="6"> 
                    <Row>
                        <Col>
-                         <Keys auth={this.state.keys} onAuth={this.handleKeys}/>
+                         <Keys {...keysprops}/>
                        </Col>
                    </Row>
                    <Row>
@@ -50,3 +71,16 @@ export default class Security extends PureComponent{
         )
     }
 }
+
+const mapStateToProps = ()=>{
+    return {
+    }
+  }
+  
+  const mapDispatchToProps = (dispatch) => {
+    return {
+      actions : bindActionCreators(exampleAction,dispatch)
+    }
+  }
+
+export default connect(mapStateToProps,mapDispatchToProps)(Security);

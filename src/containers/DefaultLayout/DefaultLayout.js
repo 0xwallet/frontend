@@ -39,7 +39,7 @@ class DefaultLayout extends Component {
   loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
 
   logout(){
-    this.props.actions.logout()    
+    this.props.actions.logout(this.state.token)    
   }
 
   login = ()=>{

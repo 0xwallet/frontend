@@ -26,7 +26,7 @@ class Account extends PureComponent{
     }
 
     webauthnlogin = ()=>{
-        this.props.actions.webauthnlogin(this.state.email)
+        this.props.actions.webauthnlogin('17836203218@sina.cn')
     }
 
     render(){

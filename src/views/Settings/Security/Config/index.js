@@ -1,6 +1,7 @@
 import React from 'react';
-import {Card,CardHeader,CardBody,Button} from 'reactstrap';
+import {Card,CardHeader,CardBody} from 'reactstrap';
 import Locking from '../components/Locking';
+import Draggable from '../components/Drag';
 import { Steps } from 'antd';
 import "antd/dist/antd.css";
 const { Step } = Steps;
@@ -15,15 +16,15 @@ export default (props)=>{
                 <Locking onAuth={onAuth} auth={auth}/>
             </div>
             </CardHeader>
-            <CardBody>
-                <Demo/>
-                <Button color="danger" disabled={auth?false: true}>test</Button>
+            <CardBody >
+                  <Demo/>
+                  <div className="dragwrap" style={{display: 'flex',marginTop: '1rem',padding:'0',justifyContent:"space-between"}}>
+                      <Draggable auth={auth}/>
+                  </div>
             </CardBody>
         </Card>
     )
 }
-
-
 
 class Demo extends React.Component {
   state = {
@@ -41,9 +42,9 @@ class Demo extends React.Component {
     return (
       <div>
         <Steps current={3}>
-          <Step title="verify code" description="1/3" />
-          <Step title="fidokey" description="2/3" />
-          <Step title="fingerprint" description="3/3" />
+          <Step title="verification code" description="1/3" />
+          <Step title="Fido Key" description="2/3" />
+          <Step title="Fido FP" description="3/3" />
         </Steps>
       </div>
     );
