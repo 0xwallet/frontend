@@ -26,11 +26,14 @@ function _arrayBufferToString( buffer ) {
     binary += String.fromCharCode( bytes[ i ] );
   }
   return binary;
-} 
+}
+
+const serviceapi = 'https://owaf.io/v2api/';
+
 const exampleAction = {
   register:(token)=>{
       return (dispatch, getState) =>{
-          axios.get('http://161.117.83.227/v2api/webauthn_register',{
+          axios.get(`${serviceapi}webauthn_register`,{
               params : {
                 token,
                 origin: window.location.origin
@@ -71,7 +74,7 @@ const exampleAction = {
               navigator.credentials.create(createCredentialDefaultArgs)
               .then((cred) => {
                   const transports = cred.response.getTransports()[0];
-                  axios.get('http://161.117.83.227/v2api/webauthn_register2',{
+                  axios.get('https://owaf.io/v2api/webauthn_register2',{
                     params : {
                       type: cred.type,
                       rawID: _arrayBufferToBase64(cred.rawId),
@@ -100,7 +103,7 @@ const exampleAction = {
   },
 
   login: (token,email)=>{
-    return(dispatch,getState)=>{ fetch(`http://161.117.83.227/v2api/doc`,{
+    return(dispatch,getState)=>{ fetch(`https://owaf.io/v2api/doc`,{
         method:'get',
         // mode: "no-cors"
       }).then((res)=>res.json()).then(data=>console.log(data))
@@ -108,7 +111,7 @@ const exampleAction = {
   },
   listkey : (token)=>{
     return(dispatch,getState)=>new Promise((resolve,reject)=>{
-      axios.get('http://161.117.83.227/v2api/list_webauthn_keys',{
+      axios.get('https://owaf.io/v2api/list_webauthn_keys',{
         params: {
           token
         }
@@ -119,7 +122,7 @@ const exampleAction = {
   },
   vefifytoken : (token)=>{
     return(dispatch,getState)=>{
-      axios.get('http://161.117.83.227/v2api/verify_token',{
+      axios.get('https://owaf.io/v2api/verify_token',{
         params: {
           token
         }
@@ -146,7 +149,7 @@ const exampleAction = {
   },
   webauthnlogin: (email)=>{
     return(dispatch,getState)=>new Promise((resolve,reject)=>{
-        axios.get('http://161.117.83.227/v2api/webauthn_login',{
+        axios.get('https://owaf.io/v2api/webauthn_login',{
           params:{
             email,
             origin: window.location.origin
@@ -167,7 +170,7 @@ const exampleAction = {
             allowCredentials
           }
         }).then((newCredential)=>{     
-          axios.get('http://161.117.83.227/v2api/webauthn_login2',{
+          axios.get('https://owaf.io/v2api/webauthn_login2',{
             params:{
               sref,
               rawID: _arrayBufferToBase64(newCredential.rawId),
@@ -210,7 +213,7 @@ const exampleAction = {
     },
   logout : (token)=>{
     return(dispatch)=>{
-      axios.get('http://161.117.83.227/v2api/expire_token',{
+      axios.get('https://owaf.io/v2api/expire_token',{
         params:{
           token
         }
@@ -235,7 +238,7 @@ const exampleAction = {
   },
   sendcode : (email)=>{
     return (dispatch)=>new Promise((resolve,reject)=>{
-      axios.get(' http://161.117.83.227/v2api/get_auth_code', {   
+      axios.get('https://owaf.io/v2api/get_auth_code', {   
         params : {
           email
         }
@@ -261,7 +264,7 @@ const exampleAction = {
   },
   verifycode:(email,code)=>{
     return(dispatch)=>new Promise((resolve,reject)=>{
-      axios.get('http://161.117.83.227/v2api/verify_auth_code', {   
+      axios.get('https://owaf.io/v2api/verify_auth_code', {   
         params : {
           email, 
           code

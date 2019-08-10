@@ -70,7 +70,7 @@
     "yup": "^0.26.10"
   },
   "devDependencies": {
-    "antd": "^3.20.7",
+    "antd": "^3.21.4",
     "axios": "^0.19.0",
     "mutationobserver-shim": "^0.3.3",
     "nkn-client": "^0.6.2",
