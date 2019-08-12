@@ -42,9 +42,9 @@ class Demo extends React.Component {
     return (
       <div>
         <Steps current={3}>
-          <Step title="verification code" description="1/3" />
-          <Step title="Fido Key" description="2/3" />
-          <Step title="Fido FP" description="3/3" />
+          <Step title="verification code" description="1 of 3 " />
+          <Step title="Fido Key" description="2 of 3" />
+          <Step title="Fido FP" description="3 of 3" />
         </Steps>
       </div>
     );
