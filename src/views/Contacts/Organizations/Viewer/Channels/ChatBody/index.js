@@ -30,11 +30,6 @@ export default (props)=>{
                              <div>
                                  <div> <span className="user">lcj</span> <span className="date">{formatTime(v.date,'Y年M月D日 h:m:s')}</span></div>
                                  <div className="msgbody">{v.info}</div>
-                                 
-
-                                 {/* {
-                                     v.msg.map()
-                                 } */}
                              </div>
                             </div>
                         )

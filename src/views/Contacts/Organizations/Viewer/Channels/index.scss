@@ -45,18 +45,7 @@
                display: inline-block;
                width: 1px;
                background: #000;
-               transition: .3s;
-            }
-
-            &:hover .divider{
-                background: #f5f5f5;
-            }
-
-
-            &:hover{
-                background: #f5f5f5;
-                border-radius: .7rem .7rem 0 0;
-                border-left: 1px solid #f5f5f5;
+               transition: .1s;
             }
     
             .tabtext{

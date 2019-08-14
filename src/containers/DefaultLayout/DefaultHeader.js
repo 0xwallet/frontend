@@ -40,6 +40,7 @@ class DefaultHeader extends Component {
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
+          <i className="fa fa-compass" style={{fontSize:'1.5rem'}}></i>
           <DefaultHeaderDropdown notif/>
           {/* <DefaultHeaderDropdown tasks/>
           <DefaultHeaderDropdown mssgs/>

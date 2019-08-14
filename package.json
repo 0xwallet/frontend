@@ -55,6 +55,7 @@
     "react-grid-layout": "^0.16.6",
     "react-ladda": "6.0.0",
     "react-loadable": "^5.5.0",
+    "react-phone-number-input": "^2.3.21",
     "react-quill": "1.3.3",
     "react-redux": "^7.1.0",
     "react-router-config": "^4.4.0-beta.6",

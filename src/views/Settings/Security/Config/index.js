@@ -18,7 +18,7 @@ export default (props)=>{
             </CardHeader>
             <CardBody >
                   <Demo/>
-                  <div className="dragwrap" style={{display: 'flex',marginTop: '1rem',padding:'0',justifyContent:"space-between"}}>
+                  <div className="dragwrap" style={{display: 'flex',marginTop: '1rem',padding:'0',justifyContent:"flex-start"}}>
                       <Draggable auth={auth}/>
                   </div>
             </CardBody>
@@ -32,7 +32,6 @@ class Demo extends React.Component {
   };
 
   onChange = current => {
-    console.log('onChange:', current);
     this.setState({ current });
   };
 
@@ -41,10 +40,25 @@ class Demo extends React.Component {
 
     return (
       <div>
-        <Steps current={3}>
-          <Step title="verification code" description="1 of 3 " />
-          <Step title="Fido Key" description="2 of 3" />
-          <Step title="Fido FP" description="3 of 3" />
+        <Steps current={0}>
+          <Step title={
+            <div>
+              <i className="fa fa-circle-o-notch fa-spin"></i>
+              verify code
+            </div>
+          } description="1 of 3 " />
+          <Step title={
+            <div>
+              <i className="fa fa-usb"></i>
+              Fido Key
+            </div>
+          } description="2 of 3" />
+          <Step title={
+            <div>
+              <i className="fa fa-microchip"></i>
+              Fido FP
+            </div>
+          } description="3 of 3" />
         </Steps>
       </div>
     );

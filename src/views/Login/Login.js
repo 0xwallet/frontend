@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
-import axios from 'axios';
-import qs from 'qs';
+import { connect } from 'react-redux';
 import exampleAction from '../../store/actions/index';
 import { bindActionCreators } from 'redux';
-import {message} from 'antd';
+import axios from 'axios';
+import qs from 'qs';
+import { message } from 'antd';
 import "antd/dist/antd.css";
 
 import Viewer from './Viewer';
@@ -94,10 +94,6 @@ class Login extends Component {
     clearInterval(timer1);
   }
 
-  componentDidMount(){
-    // this.timerStart1();
-  }
-
   render() {
     const props = {
       register : this.register,
@@ -121,7 +117,7 @@ class Login extends Component {
 
 const mapStateToProps = (state)=>{
   return {
-    sendcode: state.codelogin.sendcode, // sendcode  ,
+    sendcode: state.codelogin.sendcode,
     isregister: state.codelogin.register,
     errcode: state.codelogin.errcode,
   }

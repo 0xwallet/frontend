@@ -101,14 +101,6 @@ const exampleAction = {
           })
       }
   },
-
-  login: (token,email)=>{
-    return(dispatch,getState)=>{ fetch(`https://owaf.io/v2api/doc`,{
-        method:'get',
-        // mode: "no-cors"
-      }).then((res)=>res.json()).then(data=>console.log(data))
-    }
-  },
   listkey : (token)=>{
     return(dispatch,getState)=>new Promise((resolve,reject)=>{
       axios.get('https://owaf.io/v2api/list_webauthn_keys',{
@@ -181,6 +173,7 @@ const exampleAction = {
             }
           }).then((res)=>{
             localStorage.setItem('token',res.data.token) // save
+            localStorage.setItem('email',email);
             dispatch({
               type: 'webauthnlogin',
               payload: {
@@ -273,6 +266,7 @@ const exampleAction = {
         if( r !== 'wrong code'){
           resolve('login success')
           localStorage.setItem('token',r.token);
+          localStorage.setItem('email',email);
         }else{
           reject('verifycode error')
           dispatch({

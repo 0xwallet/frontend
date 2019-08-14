@@ -42,7 +42,7 @@ class Widget04 extends Component {
       channels: {
         open: false,
         name: 'channels',
-        list: ['# list1','# list2','# list3'],
+        list: ['89547784@qq.com','user_b','user_c'],
         icon: 'fa fa-hashtag',
       },
       org: {
@@ -120,7 +120,6 @@ class Widget04 extends Component {
           <small className="text-muted text-uppercase font-weight-bold">{children}</small>
           <Progress className={progress.style} color={progress.color} value={progress.value} />
         </CardBody>
-          
           <Channels ref={this.myRef}/>
       </Card>
     );

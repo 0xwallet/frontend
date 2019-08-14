@@ -24,7 +24,7 @@ export default class Viewer extends PureComponent{
        })
     }
     openisOrg=()=>{
-        this.orgref.current.toggle()
+        this.orgref.current.toggle();
     }
     render(){
         return(

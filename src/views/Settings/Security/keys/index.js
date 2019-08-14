@@ -25,27 +25,13 @@ export default class Keys extends PureComponent{
         </CardHeader>
         <CardBody>
             <div className="keysbtn"> 
-                  {/* {
-                      list.map((v,idx)=>{
-                          return(
-                            <div className="keysitem" key={idx}>
-                            <ListGroupItem color="success" className="keysection">{v.name} 
-                            </ListGroupItem>   
-                            <div className="delete">
-                              <Button color="danger" size="sm" onClick={
-                                 ()=> deleteitem(v.id)
-                              }>delete</Button>   
-                            </div>
-                            </div>
-                          )
-                      })
-                  } */}
                     {
                         this.state.keys.map((v,idx)=>{
                             return(
-                                <Input defaultValue={v} key={idx} type="text" disabled style={{marginBottom:'.5rem'}}/>
-                                // <ListGroupItem color="success" className="keysection" key={idx}>{v} 
-                                // </ListGroupItem>  
+                               <div key={idx} style={{display: 'flex',alignItems: 'center',marginBottom:'.5rem',justifyContent:'space-between'}}>
+                                    <Input defaultValue={v} type="text" disabled style={{width:'97%'}}/> 
+                                    <i className="fa fa-close"></i>
+                               </div>
                             )
                         })
                     }

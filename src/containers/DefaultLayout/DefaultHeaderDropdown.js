@@ -7,10 +7,12 @@ import crypto from 'crypto'
 import Identicon from 'identicon.js'
 
 let hash = crypto.createHash('md5');
-const useremail = sessionStorage.getItem('user') || '';
+const useremail = localStorage.getItem('email') || '';
 hash.update(useremail); // 传入用户名
 let imgData = new Identicon(hash.digest('hex')).toString()
-let imgUrl = 'data:image/png;base64,'+imgData // 这就是头像的base64码
+let imgUrl = 'data:image/png;base64,'+imgData // 这就是头像的base64码;
+
+// localStorage.setItem('imgurl',imgUrl)
 
 const propTypes = {
   notif: PropTypes.bool,

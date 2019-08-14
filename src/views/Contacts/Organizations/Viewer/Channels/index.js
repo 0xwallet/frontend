@@ -10,7 +10,6 @@ export default class Channels extends PureComponent{
         this.state = {
             modal : false,
             navItems: [],
-            // navItems : [{id:0,name:"lailssssi",auth:0},{id:1,name:"lafsfsili",auth:0},{id:2,name:"lsfsfsssfs234234234fsfsfsaili",auth:1}],
             active : 0,
             dropdownOpen : [false,false],
             newtab : [],
@@ -18,7 +17,6 @@ export default class Channels extends PureComponent{
             chatmsg : [],
             inputval : '',
             minutes : 0,
-            hoveractive: 0,
             time:0,
             chatitem: {
                 msgchildren: []
@@ -26,7 +24,14 @@ export default class Channels extends PureComponent{
         }
     }
 
+    // componentDidMount(){
+    //     document.onclick = this.toggle();
+    // }
+
     toggle = (v)=>{
+        this.setState({
+            modal: true
+        })
         this.setState({
             modal:!this.state.modal,
             navItems: [...this.state.navItems,{id: v,name: v}]
@@ -40,7 +45,6 @@ export default class Channels extends PureComponent{
     }
 
     toggletab = (i,channel)=>{
-        console.log('cc')
         this.setState({
             active : i,
             currnetname : channel,
@@ -66,41 +70,17 @@ export default class Channels extends PureComponent{
     }
 
     closetab = (e,id)=>{
-        // const evt = e || window.event;
-        // evt.stopPropagation();
-      
-        // const index = this.state.navItems.findIndex(v=>v.id === id);
-        // let closetab = [...this.state.navItems];
-        // closetab.splice(index,1);
-        // console.log(index-1,'closeindex',this.state.active,'currentindex')
-        // // let active = index -1;
-        // this.setState({
-        //     navItems: closetab,
-        //     active: 0
-        // },()=>{
-        //     console.log(this.state.active,'activeactive')
-        // })
-        // const index = this.state.navItems.findIndex(v=>v.id === id);
-        // let closetab = [...this.state.navItems];
-        // closetab.splice(index,1);
-        // console.log(closetab,'close',this.state.active)
-        // this.setState({
-        //     active: 0,
-        //     navItems: closetab
-        // })
-    }
-
-    likehover = (i,info)=>{
-        const savei = this.state.active;
-        if(info==='enter'){
-            this.setState({
-                hoveractive: i
-            })
-        }else{
-            this.setState({
-                hoveractive: savei
-            })
-        }
+        const index = this.state.navItems.findIndex(v=>v.id === id);
+        let closetab = [...this.state.navItems];
+        closetab.splice(index,1);
+        this.setState({
+            navItems: closetab,
+            active: 0
+        },()=>{
+            if(this.state.navItems.length === 0 ){
+                this.toggleclose();
+            }
+        })
     }
 
     addmsg = (e)=>{
@@ -144,11 +124,7 @@ export default class Channels extends PureComponent{
                             {
                                 this.state.navItems.length && this.state.navItems.map((v,i)=>{
                                     return(
-                                        <NavItem key={i} className="navtab" onMouseEnter={()=>{
-                                            this.likehover(i,'enter')
-                                        }} onMouseLeave={()=>{
-                                            this.likehover(i,'leave')
-                                        }}>
+                                        <NavItem key={i} className="navtab">
                                         <NavLink href="#" className="tablink" onClick={()=>{
                                             this.toggletab(i,v.name)
                                         }} style={{background:this.state.active === i ? "#fff":"",borderRadius:this.state.active === i ? '.7rem .7rem 0 0' : ''}}>
@@ -160,7 +136,7 @@ export default class Channels extends PureComponent{
                                              this.closetab(e,v.id)
                                             }}></i>
                                         </span>
-                                        <span className="divider" style={{opacity:this.state.active === i || this.state.active === i + 1 || this.state.hoveractive === i + 1? 0 : ''}}></span> 
+                                        <span className="divider" style={{opacity:this.state.active === i || this.state.active === i + 1 ? 0 : ''}}></span> 
                                         </NavLink>
                                      </NavItem>
                                     )

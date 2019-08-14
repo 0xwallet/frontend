@@ -1,0 +1,28 @@
+.avatar{
+    display: flex;
+    flex-direction: column;
+    width: 8rem;
+    height: 20rem;
+    align-items: center;
+    margin-top: 1rem;
+    text-align: center;
+    .avatarinput {
+        opacity: 0;
+    }
+
+    .avatarlabel{
+        color: #20a8d8;
+    }
+
+    .avatarimg{
+        height: 8rem;
+        width: 8rem;
+        border-radius: 4rem;
+        background-size: cover;
+        img{
+            height: 100%;
+            width: 100%;
+            border-radius: 4rem;
+        }
+    }
+}

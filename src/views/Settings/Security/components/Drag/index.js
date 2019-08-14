@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-// import {message} from 'antd';
+import Dragitem from './Dragitem';
+import './index.scss';
+// import { Divider } from 'antd';
 // import "antd/dist/antd.css";
 // fake data generator
 const getItems = (count, offset = 0) =>
@@ -50,26 +52,30 @@ const move = (source, destination, droppableSource, droppableDestination,that) =
     return result;
 };
 
-const grid = 8;
+// const grid = 8;
 
-const getItemStyle = (isDragging, draggableStyle) => ({
-    // some basic styles to make the items look a bit nicer
-    userSelect: 'none',
-    padding: grid * 2,
+// const getItemStyle = (isDragging, draggableStyle) => ({
+//     // some basic styles to make the items look a bit nicer
+//     userSelect: 'none',
+//     padding: grid * 2,
 
-    margin: `0 0 ${grid}px 0`,
-    // change background colour if dragging
-    background: isDragging ? 'lightgreen' : '#f0f3f5', // grey
+//     margin: `0 0 ${grid}px 0`,
+//     // change background colour if dragging
+//     background: isDragging ? 'lightgreen' : '#f0f3f5', // grey
 
-    // styles we need to apply on draggables
-    ...draggableStyle
-});
-// #f0f3f5
-const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? '#fff' : '#fff',// // lightblue lightgrey
-    // padding: grid,
-    width: '30%',
-});
+//     // styles we need to apply on draggables
+//     ...draggableStyle
+// });
+// // #f0f3f5
+// const getListStyle = isDraggingOver => ({
+//     // background: isDraggingOver ? '#fff' : '#fff',// // lightblue lightgrey
+//     // padding: grid,
+//     // borderRight: '1px solid grey',
+//     paddingRight:'1rem',
+//     borderRight:'1px solid grey',
+//     // background:'lightblue',
+//     width: '30%',
+// });
 
 export default class Drag extends Component {
     state = {
@@ -152,7 +158,7 @@ export default class Drag extends Component {
                     {(provided, snapshot) => (
                         <div
                             ref={provided.innerRef}
-                            style={getListStyle(snapshot.isDraggingOver)}>
+                            className="listfirst">
                             {this.state.items.map((item, index) => (
                                 <Draggable
                                     key={item.id}
@@ -163,11 +169,8 @@ export default class Drag extends Component {
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
-                                            style={getItemStyle(
-                                                snapshot.isDragging,
-                                                provided.draggableProps.style
-                                            )}>
-                                            {item.content}
+                                           >
+                                           <Dragitem section={item.content} iclassname='fa fa-bitcoin'/>
                                         </div>
                                     )}
                                 </Draggable>
@@ -176,11 +179,15 @@ export default class Drag extends Component {
                         </div>
                     )}
                 </Droppable>
+                {/* <Divider type="vertical" /> */}
                 <Droppable droppableId="droppable2">
                     {(provided, snapshot) => (
                         <div
                             ref={provided.innerRef}
-                            style={getListStyle(snapshot.isDraggingOver)}>
+                            className="listmid"
+                            style={{
+                                display:'block'
+                            }}>
                             {this.state.selected.map((item, index) => (
                                 <Draggable
                                     key={item.id}
@@ -191,11 +198,8 @@ export default class Drag extends Component {
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
-                                            style={getItemStyle(
-                                                snapshot.isDragging,
-                                                provided.draggableProps.style
-                                            )}>
-                                            {item.content}
+                                            >
+                                           <Dragitem section={item.content} iclassname='fa fa-bitcoin'/>                                           
                                         </div>
                                     )}
                                 </Draggable>
@@ -204,11 +208,13 @@ export default class Drag extends Component {
                         </div>
                     )}
                 </Droppable>
+                {/* <Divider type="vertical" /> */}
                 <Droppable droppableId="droppable3">
                     {(provided, snapshot) => (
                         <div
                             ref={provided.innerRef}
-                            style={getListStyle(snapshot.isDraggingOver)}>
+                            className="lastlist"
+                            style={{display: 'block'}}>
                             {this.state.last.map((item, index) => (
                                 <Draggable
                                     key={item.id}
@@ -219,11 +225,9 @@ export default class Drag extends Component {
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
-                                            style={getItemStyle(
-                                                snapshot.isDragging,
-                                                provided.draggableProps.style
-                                            )}>
-                                            {item.content}
+                                            >
+                                           <Dragitem section={item.content} iclassname='fa fa-bitcoin'/>
+
                                         </div>
                                     )}
                                 </Draggable>
