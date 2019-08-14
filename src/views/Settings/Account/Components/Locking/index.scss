@@ -1,0 +1,34 @@
+.verify{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    %message-common {
+        cursor: pointer;
+        position: relative;
+        font-size: 1rem;
+        color: #20a8d8;
+        &::before{
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -2px;
+            width: 0;
+            height: 2px;
+            background: #20a8d8;
+            transition: all .3s;
+        };
+    }
+    
+    .link{
+        @extend %message-common;
+        &:hover:before{
+            width: 100%;
+            left: 0;
+            right: 0;
+        }
+    }
+}
+
+.verifycodeinput{
+    margin-bottom: 1rem;
+}

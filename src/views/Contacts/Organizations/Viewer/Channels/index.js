@@ -24,10 +24,6 @@ export default class Channels extends PureComponent{
         }
     }
 
-    // componentDidMount(){
-    //     document.onclick = this.toggle();
-    // }
-
     toggle = (v)=>{
         this.setState({
             modal: true

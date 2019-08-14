@@ -1,11 +1,16 @@
 import React from 'react';
 import {Card,CardBody,CardHeader} from 'reactstrap';
-export default ()=>{
+import Locking from '../Components/Locking';
+
+export default (props)=>{
+    const { onAuth ,auth, onVerify} = props
     return(
         <Card>
-            <CardHeader>subscription info</CardHeader>
+            <CardHeader>subscription info
+                <Locking onAuth={onAuth} onVerify={onVerify} auth={auth}/>
+            </CardHeader>
             <CardBody>
-                appinfo
+                {auth?'haveauth': 'noauth'}
             </CardBody>
         </Card>
     )

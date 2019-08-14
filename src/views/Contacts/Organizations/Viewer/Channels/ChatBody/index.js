@@ -1,5 +1,6 @@
 import React from 'react';
-import {Input} from 'reactstrap'
+import {Input} from 'reactstrap';
+import ChatToOne from '../components/ChatToOne';
 import './index.scss';
 function formatNumber (n) {
     n = n.toString()
@@ -21,6 +22,8 @@ function formatTime (number, format) {
 export default (props)=>{
     return(
         <div className="chatbody">
+            <ChatToOne />
+
             <section id="section">
                 {
                     props.chatmsg.map((v,i)=>{

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Card, CardBody, Progress ,Dropdown,DropdownToggle,DropdownMenu,DropdownItem} from 'reactstrap';
 import classNames from 'classnames';
 import { mapToCssModules } from 'reactstrap/lib/utils';
-import Channels from './Channels';
+// import Channels from './Channels';
+import Modal from './Modal';
+import { sendMsg } from './nkn'
 
 const propTypes = {
   header: PropTypes.string,
@@ -31,6 +33,8 @@ class Widget04 extends Component {
     this.myRef = React.createRef();
   }
   state = {
+    isOpen: false,
+    user: '',
     channels : ['channels1','chane2','chane3'],
     control : {
       income: {
@@ -42,7 +46,8 @@ class Widget04 extends Component {
       channels: {
         open: false,
         name: 'channels',
-        list: ['89547784@qq.com','user_b','user_c'],
+        // list: ['heh','hehe','hahaha'],
+        list: [{name: '89547784@qq.com',isOpen: false},{name: 'laolia',isOpen: false},{name: 'laowang',isOpen: false}],
         icon: 'fa fa-hashtag',
       },
       org: {
@@ -67,16 +72,30 @@ class Widget04 extends Component {
       control: newobj
     })
   }
+
   selorg = (_e,v,id)=>{
     const newobj = {...this.state.control};
-    newobj[id].name = v
-    this.setState({
-      control: newobj
-    })
-    if(id === 'channels'){
-      this.myRef.current.toggle(v);
+    if(typeof(v) !== 'object'){
+      newobj[id].name = v;
+      this.setState({
+        control: newobj
+      })
+    }else{
+      newobj[id].name = v.name;
+      this.setState({
+        control: newobj,
+        isOpen: true,
+        user: v.name
+      });
     }
   }
+
+  sendInput = (e)=>{
+    if(e.keyCode === 13){
+      sendMsg(e.target.value,this.state.user)
+    }
+  }
+
   render() {
     const { className, cssModule, header, icon, color, value, children, invert, ...attributes } = this.props;
 
@@ -108,7 +127,7 @@ class Widget04 extends Component {
                               return(
                                 <DropdownItem onClick={(e)=>{
                                     this.selorg(e,v,this.props.id)
-                                }} key={i}>{v}</DropdownItem> 
+                                }} key={i}>{this.props.id === 'channels'?v.name:v}</DropdownItem> 
                               )
                           })
                       }
@@ -120,7 +139,7 @@ class Widget04 extends Component {
           <small className="text-muted text-uppercase font-weight-bold">{children}</small>
           <Progress className={progress.style} color={progress.color} value={progress.value} />
         </CardBody>
-          <Channels ref={this.myRef}/>
+        <Modal toggle={()=>this.setState({isOpen: !this.state.isOpen})} isOpen={this.state.isOpen} user={this.state.user} sendInput={this.sendInput}/>
       </Card>
     );
   }

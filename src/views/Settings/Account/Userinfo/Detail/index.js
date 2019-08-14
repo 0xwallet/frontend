@@ -1,13 +1,14 @@
 import React,{useState} from 'react';
 import './index.scss';
 
-export default ()=>{
+export default (props)=>{
+    const {auth} = props;
     const formlist = [
-        {id:'Username',value:'no set',type:'text',disable: true},
-        {id:'Card Number',value:'8888',type:'text',disable: true},
-        {id:'Channel Nickname',value:'laoli',type:'text',disable: true},
-        {id:'Gender',value:'',type:'text',disable: true},
-        {id:'Region',value:'',type:'text',disable: true},
+        {id:'Username',value:'no set',type:'text'},
+        {id:'Card Number',value:'8888',type:'text'},
+        {id:'Channel Nickname',value:'laoli',type:'text'},
+        {id:'Gender',value:'',type:'text'},
+        {id:'Region',value:'',type:'text'},
     ]
 
     const privatelist = [
@@ -24,25 +25,6 @@ export default ()=>{
     //     var formData = new FormData(form);
     //     console.log(formData.get('Username'))
     // }
-
-    function handleEdit(id){
-        const newlist = list.map(v=>{
-            if(v.id === id){
-                v.disable = false
-            }
-            return {...v}
-        });
-
-        const nolist1 = nolist.map(v=>{
-            if(v.id === id){
-                v.disable = false
-            }
-            return {...v}
-        });
-
-        setFormList(newlist);
-        setNolist(nolist1)
-    }
 
     function watchValue(e,id){
       
@@ -76,8 +58,14 @@ export default ()=>{
                         return(
                             <section key={idx}>
                                 <label htmlFor={v.id}>{v.id}:</label>
-                                <input type={v.type} id={v.id} name={v.id} onChange={(e)=>watchValue(e,v.id)} value={v.value} autoComplete="off" disabled={v.disable}></input>
-                                <span className="edit" onClick={()=>handleEdit(v.id)}>Edit</span>
+                                <input 
+                                type={v.type} 
+                                id={v.id} 
+                                name={v.id} 
+                                onChange={(e)=>watchValue(e,v.id)} 
+                                value={v.value} 
+                                autoComplete="off" 
+                                disabled={!auth}></input>
                             </section>
                         )
                     })
@@ -90,8 +78,13 @@ export default ()=>{
                         return(
                             <section key={idx}>
                                 <label htmlFor={v.id}>{v.id}:</label>
-                                <input type={v.type} id={v.id} disabled={v.disable} onChange={(e)=>watchPrivateValue(e,v.id)} value={v.value} autoComplete="off"></input>
-                                <span className="edit" onClick={()=>handleEdit(v.id)}>Edit</span>
+                                <input 
+                                type={v.type}
+                                id={v.id} 
+                                disabled={!auth} 
+                                onChange={(e)=>watchPrivateValue(e,v.id)} 
+                                value={v.value} 
+                                autoComplete="off"></input>
                             </section>
                         )
                     })
