@@ -264,7 +264,8 @@ const exampleAction = {
         }
       }).then(({data : {r}})=>{
         if( r !== 'wrong code'){
-          resolve('login success')
+          resolve('login success');
+          console.log(r)
           localStorage.setItem('token',r.token);
           localStorage.setItem('email',email);
         }else{

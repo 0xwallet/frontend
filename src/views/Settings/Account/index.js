@@ -1,5 +1,6 @@
 import React,{PureComponent} from 'react';
 import { Row, Col} from 'reactstrap';
+
 import Userinfo from './Userinfo';
 import Payinfo from './Payinfo';
 import Appinfo from './Appinfo';
@@ -34,6 +35,10 @@ export default class Account extends PureComponent{
 
     handleVerigy = ()=>{
         console.log('just verify')
+    }
+
+    verifyAuthCode = ()=>{
+        
     }
 
     render(){

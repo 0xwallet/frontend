@@ -5,7 +5,10 @@ import classNames from 'classnames';
 import { mapToCssModules } from 'reactstrap/lib/utils';
 // import Channels from './Channels';
 import Modal from './Modal';
-import { sendMsg } from './nkn'
+import { sendMsg } from './nkn';
+
+// localStorage.setItem('ReceivedMsg',JSON.stringify('[]'));
+// localStorage.setItem('sendMsg',JSON.stringify('[]'));
 
 const propTypes = {
   header: PropTypes.string,

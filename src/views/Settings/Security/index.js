@@ -1,7 +1,8 @@
 import React ,{PureComponent}from 'react';
-import {Row,Col} from 'reactstrap';
-import {connect} from 'react-redux';
-import exampleAction from '../../../store/actions'
+import { Row, Col } from 'reactstrap';
+import { connect } from 'react-redux';
+import exampleAction from '../../../store/actions';
+import settingAction from '../../../store/actions/setting';
 import { bindActionCreators } from 'redux';
 
 import Config from './Config';
@@ -13,7 +14,8 @@ class Security extends PureComponent{
         Authorizations: false,
         keys: false,
         backup: false,
-        token: localStorage.getItem('token')
+        token: localStorage.getItem('token'),
+        user: localStorage.getItem('email')
     }
 
     handleKeys = ()=>{
@@ -42,6 +44,10 @@ class Security extends PureComponent{
         this.props.actions.listkey(this.state.token).then(res=>resolve(res.keys))
     })
     
+    componentDidMount(){
+        // this.props.verifyAction.verify_auth_code(this.state.token,this.state.user);
+        // this.props.verifyAction.update_state(this.state.token,"%7B%22ok%22:%201%7D");
+    }
 
     render(){
         const keysprops = {
@@ -79,7 +85,8 @@ const mapStateToProps = ()=>{
   
   const mapDispatchToProps = (dispatch) => {
     return {
-      actions : bindActionCreators(exampleAction,dispatch)
+      actions : bindActionCreators(exampleAction,dispatch),
+      verifyAction: bindActionCreators(settingAction,dispatch)
     }
   }
 

@@ -1,3 +1,26 @@
-import React from 'react';
+import React,{ Fragment } from 'react';
+import gql from 'graphql-tag';
+import { Query } from 'react-apollo';
 
-export default ()=><div>hello organizations</div>
+const LAUNCHES_QUERY = gql`
+  query LaunchesQuery {
+    user {
+      accountType
+    }
+  }
+`;
+
+export default ()=>{
+    return(
+        <Fragment>
+            <Query query={LAUNCHES_QUERY}>
+          {
+            ({ loading, error, data }) => {
+              console.log(data,'data')
+              return<div>hello world</div>
+            }
+          }
+            </Query>
+        </Fragment>
+    )
+}
