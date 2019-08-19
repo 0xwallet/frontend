@@ -16,7 +16,7 @@ export default ()=>{
             <Query query={LAUNCHES_QUERY}>
           {
             ({ loading, error, data }) => {
-              console.log(data,'data')
+              console.log(data,'datablackchina')
               return<div>hello world</div>
             }
           }

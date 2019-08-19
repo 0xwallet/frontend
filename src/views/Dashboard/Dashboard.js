@@ -16,8 +16,27 @@ import {
   Table,
 } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { getStyle, hexToRgba } from '@coreui/coreui-pro/dist/js/coreui-utilities'
+import { getStyle, hexToRgba } from '@coreui/coreui-pro/dist/js/coreui-utilities';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
 import MoneyCard from './MoneyCard';
+
+const LAUNCHES_QUERY = gql`
+  query LaunchesQuery {
+    user {
+      overView{
+        cardList{
+          cardNumber,
+           typeList{
+            balance,
+            type,
+            latestTransactions
+          }
+        }
+      },
+    }
+  }
+`;
 
 const Widget03 = lazy(() => import('../../views/Widgets/Widget03'));
 
@@ -54,11 +73,12 @@ const brandWarning = getStyle('--warning')
 const brandDanger = getStyle('--danger')
 
 // Card Chart 4
-const cardChartData4 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April'],
+let cardChartData4 = {
+  // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April'],
+  labels: ['','','','','','','','','','','',''],
   datasets: [
     {
-      label: 'My First dataset',
+      label: 'balance',
       backgroundColor: 'rgba(255,255,255,.3)',
       borderColor: 'transparent',
       data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98],
@@ -324,6 +344,7 @@ class Dashboard extends Component {
     this.state = {
       dropdownOpen: false,
       radioSelected: 2,
+      active: 0
     };
   }
 
@@ -345,29 +366,35 @@ class Dashboard extends Component {
 
     return (
       <div className="animated fadeIn">
-         {/* {
-            sessionStorage.getItem('user') ?
-             '':
-            <Redirect from="/" to="/login" />
-          } */}
-        <Row>
-          <Col xs="12" sm="6" lg="3">
-            <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id="card1" isOpen={this.state.card1}  name="text-white bg-warning"/>                        
-          </Col>
-
-          <Col xs="12" sm="6" lg="3">
-            <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id="card2" isOpen={this.state.card2}  name="text-white bg-info"/>            
-          </Col>
-          {/* CNY */}
-          <Col xs="12" sm="6" lg="3">
-            <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id="card3" isOpen={this.state.card3}  name="text-white bg-danger"/>             
-          </Col>
-
-          {/* GRAM */}
-          <Col xs="12" sm="6" lg="3">
-            <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id="card4" isOpen={this.state.card4}  name="text-white bg-success"/>
-          </Col>
-        </Row>
+        <Query query={LAUNCHES_QUERY}>
+          {
+            ({loading,error,data})=>{
+              let cardInfoList = '';
+              let cardNumber = '';
+              if(data.user !== undefined){
+                cardInfoList = data.user.overView.cardList[0].typeList;
+                cardNumber = data.user.overView.cardList[0].cardNumber;
+              }
+              return (
+                <Row>
+                  {
+                    cardInfoList && cardInfoList.map((v,i)=>{
+                      cardChartData4.datasets[0].data = v.latestTransactions;
+                      return(
+                        <Col xs="12" sm="6" lg="3" key={i}>
+                            <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id={i} isOpen={false}
+                            cardNumber={cardNumber}
+                            balance={v.balance}/>            
+                        </Col>
+                      )
+                    })
+                  }
+                </Row>
+              )
+            }
+          }
+        </Query>
+        
         <Row>
           <Col>
             <Card>

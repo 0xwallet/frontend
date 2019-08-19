@@ -6,7 +6,7 @@ import Detail from './Detail';
 import Locking from './Detail/Components/Locking';
 
 export default (props)=>{
-    const {auth,onAuth,onVerify} = props;
+    const { auth, onAuth, onVerify } = props;
     return(
         <Card>
             <CardHeader>user info

@@ -57,12 +57,12 @@ class App extends Component {
 
   render() { 
     return (
-              <HashRouter>
-                  <Switch>
-                    <Route exact path="/404" name="Page 404" component={Page404} />
-                    <Route path="/" name="Home" component={DefaultLayout} />  
-                  </Switch>
-              </HashRouter>
+      <HashRouter>
+          <Switch>
+            <Route exact path="/404" name="Page 404" component={Page404} />
+            <Route path="/" name="Home" component={DefaultLayout} />  
+          </Switch>
+      </HashRouter>
     );
   }
 }

@@ -1,9 +1,11 @@
-import React, { Component, Suspense } from 'react';
+import React, { Component, Suspense,Fragment } from 'react';
 import { Route, Switch, Redirect} from 'react-router-dom';
 import { Container } from 'reactstrap';
 import {connect} from 'react-redux';
 import exampleAction from '../../store/actions/index';
 import { bindActionCreators } from 'redux';
+import gql from 'graphql-tag';
+import { Query } from 'react-apollo';
 import {
   AppAside,
   AppBreadcrumb,
@@ -20,11 +22,19 @@ import {
 import navigation from '../../_nav';
 // routes config
 import routes from '../../routes';
-import Login from '../../views/Login'
+import Login from '../../views/Login';
 
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
+
+const LAUNCHES_QUERY = gql`
+  query LaunchesQuery {
+    user {
+      accountType,
+    }
+  }
+`;
 
 class DefaultLayout extends Component {
   constructor(){
@@ -69,7 +79,18 @@ class DefaultLayout extends Component {
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
-              <AppSidebarNav navConfig={navigation} {...this.props} />
+            <Fragment>
+                <Query query={LAUNCHES_QUERY}>
+                    {
+                      ({ loading, error, data }) => {
+                          if(data.user){
+                            data.user.accountType === 'basic'? navigation.items.splice(20,1): navigation.items.splice(19,1)
+                          }
+                          return <AppSidebarNav navConfig={navigation} {...this.props} />
+                      }
+                    }
+                </Query>
+            </Fragment>
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />

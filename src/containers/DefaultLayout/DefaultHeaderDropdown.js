@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component ,Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Badge, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Progress } from 'reactstrap';
+import gql from 'graphql-tag';
+import { Query } from 'react-apollo';
 
 // random avatars
 import crypto from 'crypto'
@@ -11,8 +13,6 @@ const useremail = localStorage.getItem('email') || '';
 hash.update(useremail); // 传入用户名
 let imgData = new Identicon(hash.digest('hex')).toString()
 let imgUrl = 'data:image/png;base64,'+imgData // 这就是头像的base64码;
-
-// localStorage.setItem('imgurl',imgUrl)
 
 const propTypes = {
   notif: PropTypes.bool,
@@ -26,6 +26,14 @@ const defaultProps = {
   tasks: false,
   mssgs: false,
 };
+
+const LAUNCHES_QUERY = gql`
+  query LaunchesQuery {
+    user {
+      userName,
+    }
+  }
+`;
 
 class DefaultHeaderDropdown extends Component {
 
@@ -86,7 +94,7 @@ class DefaultHeaderDropdown extends Component {
     );
   }
 
-  dropAccnt() {
+  dropAccnt(userName) {
     return (
       <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
         <DropdownToggle nav>
@@ -94,7 +102,7 @@ class DefaultHeaderDropdown extends Component {
         </DropdownToggle>
         {/* rihgt */}
         <DropdownMenu>
-          <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>
+          <DropdownItem header tag="div" className="text-center"><strong>hello {userName}</strong></DropdownItem>
           <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
@@ -241,7 +249,19 @@ class DefaultHeaderDropdown extends Component {
     const { notif, accnt, tasks, mssgs } = this.props;
     return (
         notif ? this.dropNotif() :
-          accnt ? this.dropAccnt() :
+          accnt ? <Fragment>
+           <Query query={LAUNCHES_QUERY}>
+                    {
+                      ({ loading, error, data }) => {
+                          let userName = ''
+                          if(data.user !== undefined ){
+                              userName = data.user.userName;
+                          }
+                          return this.dropAccnt(userName)
+                      }
+                    }
+                </Query>
+          </Fragment> :
             tasks ? this.dropTasks() :
               mssgs ? this.dropMssgs() : null
     );
