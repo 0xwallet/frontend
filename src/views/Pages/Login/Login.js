@@ -1,25 +1,11 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import exampleAction from '../../store/actions/index';
-import { bindActionCreators } from 'redux';
-import axios from 'axios';
-import qs from 'qs';
+
 import { message } from 'antd';
 import "antd/dist/antd.css";
-
 import Viewer from './Viewer';
 import './Login.scss';
 
 let timer1 = undefined;
-
-axios.interceptors.request.use((config) => {
-  if(config.method  === 'post'){
-    config.data = qs.stringify(config.data);
-  }
-  return config;
-},(error) =>{
-  return Promise.reject(error);
-});
 
 class Login extends Component {
   constructor(){
@@ -115,18 +101,4 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state)=>{
-  return {
-    sendcode: state.codelogin.sendcode,
-    isregister: state.codelogin.register,
-    errcode: state.codelogin.errcode,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    actions : bindActionCreators(exampleAction,dispatch)
-  }
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(Login);
+export default Login;

@@ -5,10 +5,6 @@ import classNames from 'classnames';
 import { mapToCssModules } from 'reactstrap/lib/utils';
 // import Channels from './Channels';
 import Modal from './Modal';
-import { sendMsg } from './nkn';
-
-// localStorage.setItem('ReceivedMsg',JSON.stringify('[]'));
-// localStorage.setItem('sendMsg',JSON.stringify('[]'));
 
 const propTypes = {
   header: PropTypes.string,
@@ -38,6 +34,7 @@ class Widget04 extends Component {
   state = {
     isOpen: false,
     user: '',
+    tabs: [],
     channels : ['channels1','chane2','chane3'],
     control : {
       income: {
@@ -88,15 +85,45 @@ class Widget04 extends Component {
       this.setState({
         control: newobj,
         isOpen: true,
-        user: v.name
+        user: v.name,
+      },()=>{
+        const newarr = [...this.state.tabs];
+        const index = newarr.findIndex(v=>v.user === this.state.user);
+        if(index === -1){
+          newarr.push({
+            id: Date.now(),
+            user: this.state.user
+          })
+          this.setState({
+            tabs: newarr
+          })
+        }
       });
     }
   }
 
-  sendInput = (e)=>{
-    if(e.keyCode === 13){
-      sendMsg(e.target.value,this.state.user)
-    }
+
+  // modal method
+  addTabs = ()=> {
+    this.setState({
+      tabs: [...this.state.tabs,{ user: 'New Tab',id: Date.now() }]
+    })
+  }
+
+  connectChannel = (channelName,id)=>{
+     const cloneTabs = [...this.state.tabs]
+     cloneTabs[id].user = channelName;
+     this.setState({
+       tabs: cloneTabs
+     })
+  }
+
+  closeTab = (i)=>{
+    const cloneTabs = [...this.state.tabs];
+    cloneTabs.splice(i,1);
+    this.setState({
+      tabs: cloneTabs
+    })
   }
 
   render() {
@@ -142,7 +169,9 @@ class Widget04 extends Component {
           <small className="text-muted text-uppercase font-weight-bold">{children}</small>
           <Progress className={progress.style} color={progress.color} value={progress.value} />
         </CardBody>
-        <Modal toggle={()=>this.setState({isOpen: !this.state.isOpen})} isOpen={this.state.isOpen} user={this.state.user} sendInput={this.sendInput}/>
+        <Modal toggle={()=>this.setState({isOpen: !this.state.isOpen})} isOpen={this.state.isOpen} tabs={this.state.tabs} sendInput={this.sendInput}
+        addTabs={this.addTabs} connectChannel={this.connectChannel}
+        closeTab={this.closeTab}/>
       </Card>
     );
   }

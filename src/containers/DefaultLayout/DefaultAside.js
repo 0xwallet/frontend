@@ -324,15 +324,17 @@ class DefaultAside extends Component {
 DefaultAside.propTypes = propTypes;
 DefaultAside.defaultProps = defaultProps;
 
-function mapStateToProps(state){
-  return{
-    theme : state.updatetheme.theme
-  }
-};
-function mapDispatchToProps(Dispatch){
-  return{
-    changetheme : (theme)=> Dispatch({type: 'updatetheme', payload: { theme }})
-  }
-}
+// function mapStateToProps(state){
+//   return{
+//     theme : state.updatetheme.theme
+//   }
+// };
+// function mapDispatchToProps(Dispatch){
+//   return{
+//     changetheme : (theme)=> Dispatch({type: 'updatetheme', payload: { theme }})
+//   }
+// }
 
-export default connect(mapStateToProps,mapDispatchToProps)(DefaultAside);
+// export default connect(mapStateToProps,mapDispatchToProps)(DefaultAside);
+
+export default DefaultAside;

@@ -11,7 +11,7 @@ class Upgrade extends PureComponent{
 
     upGrade(){
         console.log('upgrade');
-        this.props.upGrade(true);
+        // this.props.upGrade(true);
         // axios.get('/test').then((res)=>{
             
         // })
@@ -27,16 +27,18 @@ class Upgrade extends PureComponent{
 }
 
 
-function mapStateToProps(state){
-    return{
-      auth : state.upgrade.auth
-    }
-  }
+// function mapStateToProps(state){
+//     return{
+//       auth : state.upgrade.auth
+//     }
+//   }
   
-  function mapDispatchToProps(Dispatch){
-    return{
-      upGrade : (auth)=> Dispatch({type: 'upgrade', payload:{auth}})
-    }
-}
+//   function mapDispatchToProps(Dispatch){
+//     return{
+//       upGrade : (auth)=> Dispatch({type: 'upgrade', payload:{auth}})
+//     }
+// }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Upgrade)
+// export default connect(mapStateToProps,mapDispatchToProps)(Upgrade)
+
+export default Upgrade;

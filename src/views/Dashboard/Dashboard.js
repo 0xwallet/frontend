@@ -17,26 +17,9 @@ import {
 } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui-pro/dist/js/coreui-utilities';
-import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
+// import { Query } from 'react-apollo';
+// import gql from 'graphql-tag';
 import MoneyCard from './MoneyCard';
-
-const LAUNCHES_QUERY = gql`
-  query LaunchesQuery {
-    user {
-      overView{
-        cardList{
-          cardNumber,
-           typeList{
-            balance,
-            type,
-            latestTransactions
-          }
-        }
-      },
-    }
-  }
-`;
 
 const Widget03 = lazy(() => import('../../views/Widgets/Widget03'));
 
@@ -366,35 +349,14 @@ class Dashboard extends Component {
 
     return (
       <div className="animated fadeIn">
-        <Query query={LAUNCHES_QUERY}>
-          {
-            ({loading,error,data})=>{
-              let cardInfoList = '';
-              let cardNumber = '';
-              if(data.user !== undefined){
-                cardInfoList = data.user.overView.cardList[0].typeList;
-                cardNumber = data.user.overView.cardList[0].cardNumber;
-              }
-              return (
-                <Row>
-                  {
-                    cardInfoList && cardInfoList.map((v,i)=>{
-                      cardChartData4.datasets[0].data = v.latestTransactions;
-                      return(
-                        <Col xs="12" sm="6" lg="3" key={i}>
-                            <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id={i} isOpen={false}
-                            cardNumber={cardNumber}
-                            balance={v.balance}/>            
-                        </Col>
-                      )
-                    })
-                  }
-                </Row>
-              )
-            }
-          }
-        </Query>
-        
+        <Row>
+              <Col xs="12" sm="6" lg="3" key={0}>
+                    <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id={0} isOpen={false}
+                    cardNumber={1231231231}
+                    balance={9090909909099}/>            
+               </Col>
+        </Row>
+      
         <Row>
           <Col>
             <Card>

@@ -1,8 +1,7 @@
-import React, { Component ,Fragment} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Badge, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Progress } from 'reactstrap';
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
 
 // random avatars
 import crypto from 'crypto'
@@ -94,7 +93,7 @@ class DefaultHeaderDropdown extends Component {
     );
   }
 
-  dropAccnt(userName) {
+  dropAccnt() {
     return (
       <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
         <DropdownToggle nav>
@@ -102,7 +101,7 @@ class DefaultHeaderDropdown extends Component {
         </DropdownToggle>
         {/* rihgt */}
         <DropdownMenu>
-          <DropdownItem header tag="div" className="text-center"><strong>hello {userName}</strong></DropdownItem>
+          <DropdownItem header tag="div" className="text-center"><strong>hello world</strong></DropdownItem>
           <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
@@ -116,7 +115,9 @@ class DefaultHeaderDropdown extends Component {
           <DropdownItem onClick={this.props.upgrade}><i className="fa fa-plus-square"></i> Upgrade<Badge color="primary">42</Badge></DropdownItem>
           <DropdownItem divider />
           {/* <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem> */}
-          <DropdownItem onClick={this.props.onLogout}><i className="cui-account-logout icons"></i> Logout</DropdownItem>
+          <DropdownItem onClick={()=>{
+            alert('logou')
+          }}><i className="cui-account-logout icons"></i> Logout</DropdownItem>
           {/*<DropdownItem><i className="fa fa-lock"></i> Logout</DropdownItem>*/}
         </DropdownMenu>
       </Dropdown>
@@ -249,19 +250,22 @@ class DefaultHeaderDropdown extends Component {
     const { notif, accnt, tasks, mssgs } = this.props;
     return (
         notif ? this.dropNotif() :
-          accnt ? <Fragment>
-           <Query query={LAUNCHES_QUERY}>
-                    {
-                      ({ loading, error, data }) => {
-                          let userName = ''
-                          if(data.user !== undefined ){
-                              userName = data.user.userName;
-                          }
-                          return this.dropAccnt(userName)
-                      }
-                    }
-                </Query>
-          </Fragment> :
+          accnt ? 
+          // <Fragment>
+          //  <Query query={LAUNCHES_QUERY}>
+          //           {
+          //             ({ loading, error, data }) => {
+          //                 let userName = ''
+          //                 if(data.user !== undefined ){
+          //                     userName = data.user.userName;
+          //                 }
+          //                 return this.dropAccnt(userName)
+          //             }
+          //           }
+          //       </Query>
+          // </Fragment> 
+          this.dropAccnt()
+          :
             tasks ? this.dropTasks() :
               mssgs ? this.dropMssgs() : null
     );

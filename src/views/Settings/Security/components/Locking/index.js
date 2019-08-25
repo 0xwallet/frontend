@@ -150,15 +150,16 @@ class Locking extends PureComponent{
     }
 }
 
-const mapStateToProps = ()=>{
-    return {
-    }
-}
+// const mapStateToProps = ()=>{
+//     return {
+//     }
+// }
   
-const mapDispatchToProps = (dispatch) => {
-    return {
-      actions : bindActionCreators(lockaction,dispatch)
-    }
-}
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//       actions : bindActionCreators(lockaction,dispatch)
+//     }
+// }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Locking);
+// export default connect(mapStateToProps,mapDispatchToProps)(Locking);
+export default Locking;

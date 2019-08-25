@@ -1,5 +1,5 @@
 import React,{ PureComponent } from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import { Button } from 'reactstrap';
 
 import Model from './Model';
@@ -35,22 +35,24 @@ import Model from './Model';
     }
 
     render(){
-        return this.props.auth ? <div>you have auth</div> : 
-       (<div>
-          <p>
-            <Button color="info" onClick={this.openModal}>open model</Button>
-          </p>
-          <Model visibility={this.state.visibility} onOk={this.onOk} onCancel={this.onCancel}>
-            <p>childrec</p>
-          </Model>
-        </div>)
+        return (
+          <div>
+            <p>
+              <Button color="info" onClick={this.openModal}>open model</Button>
+            </p>
+            <Model visibility={this.state.visibility} onOk={this.onOk} onCancel={this.onCancel}>
+              <p>childrec</p>
+            </Model>
+          </div>
+        )
     }
 }
 
-function mapStateToProps(state){
-    return{
-      auth : state.upgrade.auth
-    }
-  }
+// function mapStateToProps(state){
+//     return{
+//       auth : state.upgrade.auth
+//     }
+//   }
   
-export default connect(mapStateToProps)(Management)
+// export default connect(mapStateToProps)(Management);
+export default Management

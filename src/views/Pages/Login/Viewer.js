@@ -3,10 +3,10 @@ import {Button,Input,Form,InputGroup,InputGroupAddon,InputGroupText} from 'react
 
 import './Viewer.scss'
 
-import imgUrl from '../../assets/img/brand/logo.jpg';
+import imgUrl from '../../../assets/logo.png';
 
 export default (props)=>{
-    const { sendcode ,user,errcode,count,sendAgain,isregister,timerStop1} = props;
+    const { sendcode=true ,user,errcode,count,sendAgain=false,isregister=false,timerStop1} = props;
     if(count === 0){
         timerStop1()
     }

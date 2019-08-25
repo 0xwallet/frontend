@@ -1,9 +1,9 @@
 import React ,{PureComponent}from 'react';
 import { Row, Col } from 'reactstrap';
-import { connect } from 'react-redux';
-import exampleAction from '../../../store/actions';
-import settingAction from '../../../store/actions/setting';
-import { bindActionCreators } from 'redux';
+// import { connect } from 'react-redux';
+// import exampleAction from '../../../store/actions';
+// import settingAction from '../../../store/actions/setting';
+// import { bindActionCreators } from 'redux';
 
 import Config from './Config';
 import Keys from './keys';
@@ -37,11 +37,11 @@ class Security extends PureComponent{
     }
 
     addkeys = ()=>{
-        this.props.actions.register(this.state.token);
+        // this.props.actions.register(this.state.token);
     }
 
     getkeyslist = ()=>new Promise((resolve)=>{
-        this.props.actions.listkey(this.state.token).then(res=>resolve(res.keys))
+        // this.props.actions.listkey(this.state.token).then(res=>resolve(res.keys))
     })
     
     componentDidMount(){
@@ -78,16 +78,17 @@ class Security extends PureComponent{
     }
 }
 
-const mapStateToProps = ()=>{
-    return {
-    }
-  }
+// const mapStateToProps = ()=>{
+//     return {
+//     }
+//   }
   
-  const mapDispatchToProps = (dispatch) => {
-    return {
-      actions : bindActionCreators(exampleAction,dispatch),
-      verifyAction: bindActionCreators(settingAction,dispatch)
-    }
-  }
+//   const mapDispatchToProps = (dispatch) => {
+//     return {
+//       actions : bindActionCreators(exampleAction,dispatch),
+//       verifyAction: bindActionCreators(settingAction,dispatch)
+//     }
+//   }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Security);
+// export default connect(mapStateToProps,mapDispatchToProps)(Security);;
+export default Security;

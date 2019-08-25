@@ -39,7 +39,7 @@ export default (props)=> {
                 {/* fa fa-bitcoin */}
                 <div className="text-value"><i className={icons[id]}></i>{ balance }</div>
                 
-                <div>{ format(cardNumber) }</div>
+                {/* <div>{ format(cardNumber) }</div> */}
               </CardBody>
               <div className="chart-wrapper mt-3 mx-3" style={{ height: '70px' }}>
                 <Bar data={chartData} options={chartOpts} height={70} />
@@ -48,10 +48,10 @@ export default (props)=> {
     )
 }
 
-function format(str){
-  const str1 = str.substring(0,4);
-  const str2 = str.substring(4,8);
-  const str3 = str.substring(8,12);
-  const str4 = str.substring(12,16);
-  return str1 + ' ' + str2 + ' ' + str3 + ' ' + str4
-}
+// function format(str){
+//   const str1 = str.substring(0,4);
+//   const str2 = str.substring(4,8);
+//   const str3 = str.substring(8,12);
+//   const str4 = str.substring(12,16);
+//   return str1 + ' ' + str2 + ' ' + str3 + ' ' + str4
+// }
