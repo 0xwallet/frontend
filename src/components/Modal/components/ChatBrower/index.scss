@@ -1,0 +1,23 @@
+.chatBrower{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    .logo{
+        height:6rem;
+        width: 22.26rem;
+        margin-bottom: 2rem;
+        img{
+            height: 100%;
+            height: 100%;
+        }
+    }
+
+    .sendmsg{
+        width: 100%;
+        input{
+            width: 100%;
+        }
+    }
+
+}

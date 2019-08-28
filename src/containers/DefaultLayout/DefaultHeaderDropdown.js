@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Badge, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Progress } from 'reactstrap';
-import gql from 'graphql-tag';
+import { withApollo } from "react-apollo";
+
 
 // random avatars
 import crypto from 'crypto'
 import Identicon from 'identicon.js'
 
 let hash = crypto.createHash('md5');
-const useremail = localStorage.getItem('email') || '';
-hash.update(useremail); // 传入用户名
+const username = localStorage.getItem('username') || '';
+hash.update(username); // 传入用户名
 let imgData = new Identicon(hash.digest('hex')).toString()
 let imgUrl = 'data:image/png;base64,'+imgData // 这就是头像的base64码;
 
@@ -26,14 +27,6 @@ const defaultProps = {
   mssgs: false,
 };
 
-const LAUNCHES_QUERY = gql`
-  query LaunchesQuery {
-    user {
-      userName,
-    }
-  }
-`;
-
 class DefaultHeaderDropdown extends Component {
 
   constructor(props) {
@@ -49,6 +42,12 @@ class DefaultHeaderDropdown extends Component {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen,
     });
+  }
+
+  Logout = ()=>{
+    localStorage.removeItem("auth-token");
+
+    this.props.client.resetStore();
   }
 
   dropNotif() {
@@ -101,7 +100,7 @@ class DefaultHeaderDropdown extends Component {
         </DropdownToggle>
         {/* rihgt */}
         <DropdownMenu>
-          <DropdownItem header tag="div" className="text-center"><strong>hello world</strong></DropdownItem>
+          <DropdownItem header tag="div" className="text-center"><strong>{username}</strong></DropdownItem>
           <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
@@ -115,9 +114,7 @@ class DefaultHeaderDropdown extends Component {
           <DropdownItem onClick={this.props.upgrade}><i className="fa fa-plus-square"></i> Upgrade<Badge color="primary">42</Badge></DropdownItem>
           <DropdownItem divider />
           {/* <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem> */}
-          <DropdownItem onClick={()=>{
-            alert('logou')
-          }}><i className="cui-account-logout icons"></i> Logout</DropdownItem>
+          <DropdownItem onClick={this.Logout}><i className="cui-account-logout icons"></i> Logout</DropdownItem>
           {/*<DropdownItem><i className="fa fa-lock"></i> Logout</DropdownItem>*/}
         </DropdownMenu>
       </Dropdown>
@@ -250,22 +247,7 @@ class DefaultHeaderDropdown extends Component {
     const { notif, accnt, tasks, mssgs } = this.props;
     return (
         notif ? this.dropNotif() :
-          accnt ? 
-          // <Fragment>
-          //  <Query query={LAUNCHES_QUERY}>
-          //           {
-          //             ({ loading, error, data }) => {
-          //                 let userName = ''
-          //                 if(data.user !== undefined ){
-          //                     userName = data.user.userName;
-          //                 }
-          //                 return this.dropAccnt(userName)
-          //             }
-          //           }
-          //       </Query>
-          // </Fragment> 
-          this.dropAccnt()
-          :
+          accnt ? this.dropAccnt():
             tasks ? this.dropTasks() :
               mssgs ? this.dropMssgs() : null
     );
@@ -275,4 +257,4 @@ class DefaultHeaderDropdown extends Component {
 DefaultHeaderDropdown.propTypes = propTypes;
 DefaultHeaderDropdown.defaultProps = defaultProps;
 
-export default DefaultHeaderDropdown;
+export default withApollo(DefaultHeaderDropdown);

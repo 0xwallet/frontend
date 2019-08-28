@@ -1,13 +1,7 @@
 import React,{ PureComponent } from 'react';
-// import { Input } from 'reactstrap';
+import { Input } from 'reactstrap';
 import nkn from 'nkn-client';
-
-// const testclient = nkn({
-//     identifier: "testclient"
-// })
-
-// console.log(testclient.addr,'addr')
-
+import './index.scss';
 export default class ChatBrower extends PureComponent{
     sendMsg = (e)=>{
         const client = nkn({
@@ -53,9 +47,11 @@ export default class ChatBrower extends PureComponent{
     render(){
         const { id } = this.props;
         return(
-            <div>
+            <div className="chatclient">
                 <h1>Chat Client___{id}</h1>
-                {/* <Input onKeyDown={this.sendMsg}/> */}
+                <div className="chatSection">
+                </div>
+                <Input onKeyDown={this.sendMsg}/>
             </div>
         )
     }

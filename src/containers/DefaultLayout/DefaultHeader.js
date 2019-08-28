@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Nav, NavItem } from 'reactstrap';
 import PropTypes from 'prop-types';
-
 import { AppAsideToggler, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
-import DefaultHeaderDropdown  from './DefaultHeaderDropdown'
-// import logo from '../../assets/img/brand/logo.svg'
+import DefaultHeaderDropdown  from './DefaultHeaderDropdown';
+import Modal from '../../components/Modal';
 import logo from '../../assets/logo.png'
 import sygnet from '../../assets/img/brand/logo.jpg'
 
@@ -15,10 +14,48 @@ const propTypes = {
 const defaultProps = {};
 
 class DefaultHeader extends Component {
+  state = {
+    isOpen: false,
+    tabs: []
+  }
+
+  toggle = ()=>{
+    this.setState({isOpen: !this.state.isOpen})
+  }
+
+  sendInput = ()=>{
+    
+  }
+
+  // modal method
+  addTabs = ()=> {
+    this.setState({
+      tabs: [...this.state.tabs,{ user: 'New Tab',id: Date.now() }]
+    })
+  }
+
+  connectChannel = (channelName,id)=>{
+     const cloneTabs = [...this.state.tabs]
+     cloneTabs[id].user = channelName;
+     this.setState({
+       tabs: cloneTabs
+     })
+  }
+
+  closeTab = (i)=>{
+    const cloneTabs = [...this.state.tabs];
+    cloneTabs.splice(i,1);
+    this.setState({
+      tabs: cloneTabs
+    })
+  }
+
+
   render() {
 
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
+    const { isOpen, tabs } = this.state;
 
     return (
       <React.Fragment>
@@ -40,7 +77,8 @@ class DefaultHeader extends Component {
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
-          <i className="fa fa-compass" style={{fontSize:'1.5rem'}}></i>
+          <i className="fa fa-compass" style={{fontSize:'1.5rem'}}
+          onClick={this.toggle}></i>
           <DefaultHeaderDropdown notif/>
           {/* <DefaultHeaderDropdown tasks/>
           <DefaultHeaderDropdown mssgs/>
@@ -51,6 +89,11 @@ class DefaultHeader extends Component {
         </Nav>
         <AppAsideToggler className="d-md-down-none" />
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
+
+        {/* channel modal */}
+        <Modal toggle={this.toggle} isOpen={isOpen} tabs={tabs} sendInput={this.sendInput}
+        addTabs={this.addTabs} connectChannel={this.connectChannel}
+        closeTab={this.closeTab}></Modal>
       </React.Fragment>
     );
   }

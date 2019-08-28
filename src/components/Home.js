@@ -8,7 +8,7 @@ export default ()=>{
     return(
         <CurrentUser>
             {currentUser=>{
-                return currentUser? <DefaultLayout/> : <Login/>
+                return currentUser? <DefaultLayout /> : <Login/>
             }}
         </CurrentUser>
     )

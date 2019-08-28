@@ -1,0 +1,7 @@
+.chatclient{
+    display: flex;
+    flex-direction: column;
+    .chatSection{
+        flex-grow: 1;
+    }
+}

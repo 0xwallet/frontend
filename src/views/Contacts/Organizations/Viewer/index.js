@@ -1,12 +1,8 @@
 import React,{PureComponent}from 'react';
 import { Card, CardBody, CardHeader ,Row,Col,ButtonGroup,Dropdown,DropdownToggle,DropdownMenu,DropdownItem, Button } from 'reactstrap';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import Widget04 from './Widget04';
 import CreateOrgModal from './CreateOrgModal';
-import nkn from 'nkn-client';
-const seed = '2bc5501d131696429264eb7286c44a29dd44dd66834d9471bd8b0eb875a1edb0';
-const seed2 = '9bc5501d131696429264eb7286c44a29dd44dd66834d9471bd8b0eb875a1edb0';
+// import {generateMessage} from './nkn';
 
 class Viewer extends PureComponent{
     constructor(){
@@ -31,7 +27,7 @@ class Viewer extends PureComponent{
         this.orgref.current.toggle();
     }
     render(){
-        const { places } = this.props.data;
+        // const { places } = this.props.data;
         return(
             <Card>
                 <CardHeader style={{display: 'flex',alignItems: 'center'}}>    
@@ -42,7 +38,7 @@ class Viewer extends PureComponent{
                      {this.state.orgname}{' '} 
                     </DropdownToggle>
                     <DropdownMenu left="true">
-                      {
+                      {/* {
                           places.map((v,i)=>{
                               return(
                                 <DropdownItem onClick={(e)=>{
@@ -50,7 +46,7 @@ class Viewer extends PureComponent{
                                 }} key={i}>{v.name}</DropdownItem> 
                               )
                           })
-                      }
+                      } */}
                     </DropdownMenu>
                   </Dropdown>
                 </ButtonGroup>
@@ -78,135 +74,49 @@ class Viewer extends PureComponent{
     }
 }
 
+// const fromClient = nkn({
+//     identifier: "fromClient",
+//     // seedRpcServerAddr: 'http://mainnet-seed-0001.nkn.org:30003/',
+//     seedRpcServerAddr: 'http://localhost:8080/nkn',
+// })
 
+// let toClient = nkn({
+//     identifier: 'toclient',
+//     seedRpcServerAddr: 'http://localhost:8080/nkn',
+// });
 
-function testnkn(){
-    let fromClient = nkn({
-        // neither of these are required, as shown in toClient below
-        identifier: 'fromClient',
-        seed,
-        seedRpcServerAddr: 'http://localhost:8888/nkn',
-        // seedRpcServerAddr: 'http://mainnet-seed-0001.nkn.org:30003',
-    });
+// function testnkn(){
+//     fromClient.on('connect', () => {
+//         try {
+//           fromClient.send(toClient.addr,'nihaoshijie');
+//           console.log('3');
+//         } catch (e) {
+//           console.error(e);
+//         }
+//     });
+//     testnkn1()
+// }
 
-    let toClient = nkn({
-        // neither of these are required, as shown in toClient below
-        identifier: 'toClient',
-        seed: seed2,
-        seedRpcServerAddr: 'http://localhost:8888/nkn',
-    });
-    console.log('client init',toClient.addr)
-    
-    fromClient.on('connect', () => {
-        try {
-          fromClient.send(
-              'toClient.97b93f48148cbe3af620ef79d3e67e95e1bbd53b965ecd0a596a89ceccf5094e',
-              'nihao i am fromsfsdfclient');
-          console.log('3');
-        } catch (e) {
-          console.error(e);
-        }
-    });
-    
-    toClient.on('connect', () => {
-        console.log('hello world toclient');
-        try {
-            toClient.on('message',(src,payload,payloadType)=>{
-            console.log(src,payload,payloadType,'hello world hello world')
-          }) 
-        } catch (e) {
-          console.error( e);
-        }
-    });
-}
-
+// function testnkn1(){
+//     toClient.on('connect', () => {
+//         console.log('4');
+//         try {
+//             toClient.on('message',(src,payload,payloadType)=>{
+//             console.log(src,payload,payloadType,'hello world hello world')
+//           })
+//         } catch (e) {
+//           console.error( e);
+//         }
+//     });
+// }
 
 function ViewerMutation(){
     return(
         <div>
             hello nkn-client;
-            <Button onClick={generateMessage}>send msg</Button>
+            <Button onClick={null}>send msg</Button>
         </div>
     )
-}
-
-// Never put private key in version control system like here!
-// const seed = '2bc5501d131696429264eb7286c44a29dd44dd66834d9471bd8b0eb875a1edb0';
-const seedRpcServerAddr = process.argv[2];
-const timeout = parseInt(process.argv[3]) || 5000;
-const logPrefix = process.argv[4] ? ('[' + process.argv[4] + '] ') : '';
-var timeSent, timeReceived;
-
-function generateMessage() {
-  let fromClient = nkn({
-    // neither of these are required, as shown in toClient below
-    identifier: 'fromclient',
-    seed: seed,
-    // seedRpcServerAddr: seedRpcServerAddr,
-    seedRpcServerAddr: 'http://localhost:8888/nkn',
-  });
-  console.log('start')
-  fromClient.on('connect', () => {
-    try {
-      let toClient = nkn({
-        identifier: 'toclient',
-        seedRpcServerAddr: 'http://localhost:8888/nkn',
-      });
-      toClient.on('connect', () => {
-        try {
-          fromClient.send(
-            toClient.addr,
-            'Hello world! new test',
-            // For byte array:
-            // Uint8Array.from([1,2,3,4,5]),
-          ).then((data) => {
-            timeReceived = new Date();
-            console.log(logPrefix + 'Receive', '"' + data + '"', 'from', toClient.addr, 'after', timeReceived - timeSent, 'ms');
-          }).catch((e) => {
-            console.log(logPrefix + 'Catch: ', e);
-          });
-          timeSent = new Date();
-          console.log(logPrefix + 'Send message from', fromClient.addr, 'to', toClient.addr);
-          setTimeout(function () {
-            try {
-              toClient.close();
-              if (timeReceived === undefined) {
-                console.log(logPrefix + 'Message from', fromClient.nodeAddr, 'to', toClient.nodeAddr, 'timeout');
-              }
-            } catch (e) {
-              console.error(logPrefix + e);
-            }
-          }, timeout);
-        } catch (e) {
-          console.error(logPrefix + e);
-        }
-      });
-      // can also be async (src, payload, payloadType) => {}
-      toClient.on('message', (src, payload, payloadType, encrypt) => {
-        timeReceived = new Date();
-        var type;
-        if (payloadType === nkn.PayloadType.TEXT) {
-          type = 'text';
-        } else if (payloadType === nkn.PayloadType.BINARY) {
-          type = 'binary';
-        }
-        console.log(logPrefix + 'Receive', encrypt ? 'encrypted' : 'unencrypted', type, 'message', '"' + payload + '"','from', src, 'after', timeReceived - timeSent, 'ms');
-        // Send a text response
-        return 'Well received!';
-        // For byte array response:
-        // return Uint8Array.from([1,2,3,4,5])
-      });
-      setTimeout(function () {
-        try {
-          fromClient.close();
-        } catch (e) {
-          console.error(logPrefix + e);
-        }
-      }, timeout);
-    } catch (e) {
-      console.error(logPrefix + e);
-    }
-  });
 }
 
 
