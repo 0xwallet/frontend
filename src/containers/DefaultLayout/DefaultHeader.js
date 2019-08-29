@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { AppAsideToggler, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import DefaultHeaderDropdown  from './DefaultHeaderDropdown';
 import Modal from '../../components/Modal';
-import logo from '../../assets/logo.png'
-import sygnet from '../../assets/img/brand/logo.jpg'
+import logo from '../../assets/logo.png';
+import sygnet from '../../assets/img/brand/logo.jpg';
 
 const propTypes = {
   children: PropTypes.node,
@@ -22,34 +22,6 @@ class DefaultHeader extends Component {
   toggle = ()=>{
     this.setState({isOpen: !this.state.isOpen})
   }
-
-  sendInput = ()=>{
-    
-  }
-
-  // modal method
-  addTabs = ()=> {
-    this.setState({
-      tabs: [...this.state.tabs,{ user: 'New Tab',id: Date.now() }]
-    })
-  }
-
-  connectChannel = (channelName,id)=>{
-     const cloneTabs = [...this.state.tabs]
-     cloneTabs[id].user = channelName;
-     this.setState({
-       tabs: cloneTabs
-     })
-  }
-
-  closeTab = (i)=>{
-    const cloneTabs = [...this.state.tabs];
-    cloneTabs.splice(i,1);
-    this.setState({
-      tabs: cloneTabs
-    })
-  }
-
 
   render() {
 
@@ -91,9 +63,7 @@ class DefaultHeader extends Component {
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
 
         {/* channel modal */}
-        <Modal toggle={this.toggle} isOpen={isOpen} tabs={tabs} sendInput={this.sendInput}
-        addTabs={this.addTabs} connectChannel={this.connectChannel}
-        closeTab={this.closeTab}></Modal>
+        <Modal toggle={this.toggle} isOpen={isOpen} ></Modal>
       </React.Fragment>
     );
   }

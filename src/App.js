@@ -5,13 +5,8 @@ import './App.scss';
 
 const loading = () => <div className="animated fadeIn pt-3 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
 
-// const Home = Loadable({
-//   loader: () => import('./components/Home'),
-//   loading
-// });
-
-const DefaultLayout = Loadable({
-  loader: () => import('./containers/DefaultLayout'),
+const Home = Loadable({
+  loader: () => import('./components/Home'),
   loading
 });
 
@@ -40,8 +35,8 @@ class App extends Component {
                       <Route exact path="/sign-in" name="Login Page" component={SignIn} />
                       <Route exact path="/sign-up" name="Login Page" component={Signup} />
                       <Route exact path="/404" name="Page 404" component={Page404} />
-                      {/* <Route path="/" name="Home" component={Home} /> */}
-                      <Route path="/" name="Home" component={DefaultLayout} />
+                      <Route path="/" name="Home" component={Home} />
+                      {/* <Route path="/" name="Home" component={DefaultLayout} /> */}
                   </Switch>
                </div>
           </div>

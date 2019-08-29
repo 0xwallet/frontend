@@ -2,6 +2,14 @@ import React, { PureComponent } from 'react';
 import { Button } from 'reactstrap';
 import { getNKNAddr, newNKNClient } from '../../../util/nkn3';
 
+const HelloContext = React.createContext({
+    theme: "DEFAULE",
+})
+
+const HelloContext2 = React.createContext({
+    theme: "DEFAULEe",
+})
+
 export default class Client extends PureComponent{
     render() {
         return(
@@ -14,17 +22,22 @@ export default class Client extends PureComponent{
 
 class NknChat extends PureComponent{
     state = {
-        username: "lcj"
+        username: "lcj",
+        theme: "pink",
+        font: "yuan"
     }
 
     tochatroom = () => {
-        console.log('start');
         const { username } = this.state; 
         let nknClient = newNKNClient(username);
 
         nknClient.on("connect",()=>{
             this.nknClient = nknClient;
-            this.nknClient.send(getNKNAddr("opop"), "hello opop");
+            this.nknClient.send(getNKNAddr("opop"), "hello opop").then(res=>{
+                console.log(res)
+            }).catch(e=>{
+                console.log(e)
+            });
         })
 
         nknClient.on('message', (src, payload, payloadType) => {
@@ -33,11 +46,54 @@ class NknChat extends PureComponent{
         });
         
     }
+
+    toggleTheme = ()=>{
+        this.setState({
+            theme: "red"
+        })
+    }
+
     render(){
+        let name = this.state.theme;
+        let font = this.state.font;
         return(
             <div>
-                <Button onClick={this.tochatroom}>ontest</Button>
+                <Button onClick={this.testarr}>ontest</Button>
+                <HelloContext.Provider value={{
+                    name,
+                    changeTheme: this.toggleTheme
+                }}>
+                    <HelloContext2.Provider value={font}>
+                        <Fa/>
+                    </HelloContext2.Provider>
+                </HelloContext.Provider>
             </div>
         )
     }
 }
+
+function Fa(){
+    return(
+        <div>
+            <ToggleBtn />
+        </div>
+    )
+}
+
+class ToggleBtn extends React.Component {
+    render() {
+      return (
+         <HelloContext.Consumer>
+             {({name,changeTheme})=>(
+                <HelloContext2.Consumer>
+                    {
+                        (font)=>(
+                             <button onClick={changeTheme}>{name}{font}</button>
+                        )
+                    }
+                </HelloContext2.Consumer>
+             )}
+         </HelloContext.Consumer>
+      );
+    }
+  }

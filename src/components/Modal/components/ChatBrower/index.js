@@ -9,6 +9,7 @@ export default class ChatBrower extends PureComponent{
             connectChannel(e.target.value,id)
         }
     }
+    
     render() {
         return(
             <div className="chatBrower">

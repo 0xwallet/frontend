@@ -16,11 +16,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ApolloProvider } from 'react-apollo';
 
-// const client = new ApolloClient({
-//     uri: 'http://192.168.31.9:4000/graphiql'
-// });
 import client from './client';
-// let store = createStore(rootReducer,applyMiddleware(thunk,promise));
 
 ReactDOM.render(
 
