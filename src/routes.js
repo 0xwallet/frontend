@@ -24,7 +24,10 @@ const Security = React.lazy(()=>import('./views/Settings/Security'));
 const Blockchain = React.lazy(()=>import('./views/Settings/Blockchain'));
 
 // pay
-const Upgrade = React.lazy(()=>import('./views/Upgrade'))
+const Upgrade = React.lazy(()=>import('./views/Upgrade'));
+
+// task
+const Task = React.lazy(()=>import('./components/Task'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -55,7 +58,10 @@ const routes = [
   { path: '/settings/blockchain', name: 'Blockchain', component: Blockchain},
 
   // pay
-  { path: '/upgrade', name: 'Upgrade', component: Upgrade, exact: true}
+  { path: '/upgrade', name: 'Upgrade', component: Upgrade, exact: true},
+
+  // task 
+  { path: '/task', name: 'Task', component: Task, exact: true},
 ];
 
 export default routes;

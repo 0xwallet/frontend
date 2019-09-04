@@ -24,10 +24,10 @@ const SIGNIN_MUTATION = gql`
 `;
 export default class Login0waf extends PureComponent{
     state = {
-        // username: "",
         email: "",
         password: "",
-        openCodeInput: false
+        openCodeInput: false,
+        haveParams: false
     };
 
     handleChange = event => {
@@ -36,7 +36,6 @@ export default class Login0waf extends PureComponent{
     };
 
     handleCompleted = data => {
-        console.log(data,'data')
         localStorage.setItem("auth-token", data.signin.token);
         localStorage.setItem("username", data.signin.user.username);        
         // this.props.history.push("/");
@@ -71,8 +70,33 @@ export default class Login0waf extends PureComponent{
         }
     }
 
+    componentWillMount() {
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]); return null;
+        }
+        const email = GetQueryString("email");
+        const code = GetQueryString("code");
+        if(email !== null && email.toString().length>1 && code !== null && code.toString().length > 1){
+            this.setState({
+                email,
+                password: code,
+                haveParams: true
+            })
+        }
+    }
+
+    clearUrl = ()=>{
+        var url=window.location.href;                    
+		if(url.indexOf("?") !== -1){                        
+			url = url.replace(/(\?|#)[^'"]*/, '');
+			window.history.pushState({},0,url);
+		}
+    }
+
     render() {
-        const { openCodeInput: isOpen, email:username, password } = this.state;
+        const { openCodeInput: isOpen, email:username, password, haveParams } = this.state;
         return (
                 <Mutation
                 mutation={SIGNIN_MUTATION}
@@ -83,6 +107,12 @@ export default class Login0waf extends PureComponent{
                 onCompleted={this.handleCompleted}
                 update={this.handleUpdate}>
                 {(signin, { loading, error }) => {
+                if (haveParams){
+                    signin();
+                    setTimeout(()=>{
+                        this.clearUrl();
+                    },2000)
+                }
                 if (loading) return <Loading />;
                     return (
                         <div className="wrap">

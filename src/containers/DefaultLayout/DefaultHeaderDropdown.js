@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Badge, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Progress } from 'reactstrap';
 import { withApollo } from "react-apollo";
-
+import { withRouter } from 'react-router-dom';
 
 // random avatars
 import crypto from 'crypto'
@@ -48,6 +48,11 @@ class DefaultHeaderDropdown extends Component {
     localStorage.removeItem("auth-token");
 
     this.props.client.resetStore();
+  }
+
+  goTask = ()=>{
+    this.props.history.push('/task')
+    // console.log()
   }
 
   dropNotif() {
@@ -103,7 +108,8 @@ class DefaultHeaderDropdown extends Component {
           <DropdownItem header tag="div" className="text-center"><strong>{username}</strong></DropdownItem>
           <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
-          <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
+          <DropdownItem
+          onClick={this.goTask}><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem>
           <DropdownItem><i className="cui-cart icons"></i>Invoice<Badge color="warning">42</Badge></DropdownItem>
 
@@ -257,4 +263,4 @@ class DefaultHeaderDropdown extends Component {
 DefaultHeaderDropdown.propTypes = propTypes;
 DefaultHeaderDropdown.defaultProps = defaultProps;
 
-export default withApollo(DefaultHeaderDropdown);
+export default withRouter(withApollo(DefaultHeaderDropdown));

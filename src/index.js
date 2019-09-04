@@ -19,7 +19,6 @@ import { ApolloProvider } from 'react-apollo';
 import client from './client';
 
 ReactDOM.render(
-
       <ApolloProvider client={client}>
           <App/>
       </ApolloProvider>
