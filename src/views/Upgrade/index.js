@@ -1,7 +1,5 @@
 import React,{ PureComponent } from 'react';
 import { Button } from 'reactstrap';
-// import axios from 'axios';
-import { connect } from 'react-redux';
 
 class Upgrade extends PureComponent{
     constructor(){
@@ -25,20 +23,5 @@ class Upgrade extends PureComponent{
         )
     }
 }
-
-
-// function mapStateToProps(state){
-//     return{
-//       auth : state.upgrade.auth
-//     }
-//   }
-  
-//   function mapDispatchToProps(Dispatch){
-//     return{
-//       upGrade : (auth)=> Dispatch({type: 'upgrade', payload:{auth}})
-//     }
-// }
-
-// export default connect(mapStateToProps,mapDispatchToProps)(Upgrade)
 
 export default Upgrade;

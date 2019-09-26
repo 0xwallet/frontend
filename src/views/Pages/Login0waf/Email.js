@@ -10,7 +10,7 @@ export default (props)=>{
                 </InputGroupText>
             </InputGroupAddon>
             <Input type="email" id="email" name="email" placeholder="Email" required onChange={onChangeEmailValue}
-            autoFocus/>        
+            autoFocus spellCheck={false}/>        
         </InputGroup> 
     )
 }

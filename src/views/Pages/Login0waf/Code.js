@@ -8,7 +8,7 @@ export default (props)=>{
             <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
         </InputGroupAddon>
         <Input type="password" id="sig" name="password" placeholder="password" autoComplete="current-password"
-        onChange={onChangeCodeValue}/>
+        onChange={onChangeCodeValue} spellCheck={false}/>
     </InputGroup> : (null)
 }
 

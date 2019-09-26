@@ -46,7 +46,8 @@ class DefaultHeaderDropdown extends Component {
 
   Logout = ()=>{
     localStorage.removeItem("auth-token");
-
+    localStorage.removeItem("username");
+    
     this.props.client.resetStore();
   }
 

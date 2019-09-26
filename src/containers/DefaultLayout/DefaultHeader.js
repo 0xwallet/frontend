@@ -16,7 +16,6 @@ const defaultProps = {};
 class DefaultHeader extends Component {
   state = {
     isOpen: false,
-    tabs: []
   }
 
   toggle = ()=>{
@@ -27,7 +26,7 @@ class DefaultHeader extends Component {
 
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-    const { isOpen, tabs } = this.state;
+    const { isOpen } = this.state;
 
     return (
       <React.Fragment>

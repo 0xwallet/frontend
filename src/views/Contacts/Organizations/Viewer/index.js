@@ -1,5 +1,5 @@
 import React,{PureComponent}from 'react';
-import { Card, CardBody, CardHeader ,Row,Col,ButtonGroup,Dropdown,DropdownToggle,DropdownMenu,DropdownItem, Button } from 'reactstrap';
+import { Card, CardBody, CardHeader ,Row,Col,ButtonGroup,Dropdown,DropdownToggle } from 'reactstrap';
 import OrgCard from './OrgCard';
 import CreateOrgModal from './CreateOrgModal';
 // import {generateMessage} from './nkn';
@@ -9,6 +9,7 @@ class Viewer extends PureComponent{
         super();
         this.orgref = React.createRef();
     }
+
     state = {
         card4 : true,
         card3 : true,
@@ -18,14 +19,17 @@ class Viewer extends PureComponent{
         orgname: 'My organizations',
         orglist : ['0waf','github','bsvorg']
     }
+
     selorg=(_e,v)=>{
        this.setState({
            orgname: v
        })
     }
+
     openisOrg=()=>{
         this.orgref.current.toggle();
     }
+
     render(){
         // const { places } = this.props.data;
         return(
@@ -73,6 +77,5 @@ class Viewer extends PureComponent{
         )
     }
 }
-
 
 export default Viewer;

@@ -3,7 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import { Card, CardBody, ButtonGroup, ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 
 export default (props)=> {
-    const { chartData, chartOpts, id, isOpen, cardNumber, balance } = props;
+    const { chartData, chartOpts, id, isOpen, balance } = props;
 
     const [open,setOpen] = useState(isOpen);
 

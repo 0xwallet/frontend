@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React,{ Component } from 'react';
 import { Button } from 'reactstrap'
 
 export let WrapAuth = PayPage => class WrapComponent extends Component{

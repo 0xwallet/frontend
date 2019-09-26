@@ -1,9 +1,9 @@
 import React,{PureComponent} from 'react';
 import { Modal ,ModalHeader,ModalBody,Input,Progress, FormGroup} from 'reactstrap';
-import {connect} from 'react-redux';
+// import {connect} from 'react-redux';
 import { AppSwitch } from '@coreui/react'
-import lockaction from '../../../../../store/actions/locking';
-import { bindActionCreators } from 'redux';
+// import lockaction from '../../../../../store/actions/locking';
+// import { bindActionCreators } from 'redux';
 
 import './index.scss';
 

@@ -8,7 +8,7 @@ import * as AbsintheSocket from "@absinthe/socket";
 import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
 import { Socket as PhoenixSocket } from "phoenix";
 
-const HTTP_ENDPOINT = "http://owaf-io.yicp.top/api";
+const HTTP_ENDPOINT = "https://owaf-io.yicp.top/api";
 
 const WS_ENDPOINT = "ws://owaf-io.yicp.top/socket";
 

@@ -1,5 +1,5 @@
 import React,{ PureComponent } from 'react';
-import { Modal, ModalBody, ModalHeader, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { Modal, ModalBody, ModalHeader, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 // import Status from './components/Status/index';
 import ChatClient from './components/ChatClient';
 import ChatBrower from './components/ChatBrower';
@@ -15,13 +15,13 @@ export default class Modals extends PureComponent{
         };
     }
 
-    lorem(id,user,connectChannel) {
+    lorem(id,user,connectChannel, currentChannel) {
         if(user === 'New Tab'){
             return (
                    <ChatBrower connectChannel={connectChannel} id={id}/>
             )
         }else{
-            return <ChatClient id={id}/>
+            return <ChatClient id={id} currentChannel={currentChannel}/>
         }     
     }
 
@@ -33,14 +33,14 @@ export default class Modals extends PureComponent{
         });
       }
     
-      tabPane(channels,connectChannel) {
+      tabPane(channels,connectChannel, currentChannel) {
         return (
           <>
             {
                 channels.map((v,i)=>{
                     return(
                         <TabPane tabId={i} key={i} style={{padding:"0 1rem"}}>
-                            {this.lorem(i,v.user,connectChannel)}
+                            {this.lorem(i,v.user,connectChannel, currentChannel)}
                         </TabPane>
                     )
                 })
@@ -78,7 +78,7 @@ export default class Modals extends PureComponent{
         return(
             <Consumer>
                 {
-                    ({ channels , addChannels, closeChannels, connectChannel})=>(
+                    ({ channels , addChannels, closeChannels, connectChannel, currentChannel})=>(
                         <Modal isOpen={isOpen} className="modalbody">
                             <ModalHeader toggle={toggle}>
                             </ModalHeader>
@@ -102,7 +102,7 @@ export default class Modals extends PureComponent{
                                             <i className="fa fa-plus" onClick={()=>this.newTab(channels,addChannels)} style={{marginLeft: '1rem'}}></i>
                                         </Nav>
                                         <TabContent activeTab={this.state.activeTab[0]} style={{height:'80vh'}}>
-                                            {this.tabPane(channels,connectChannel)}
+                                            {this.tabPane(channels, connectChannel, currentChannel)}
                                         </TabContent>
                                 </div>
                             </ModalBody>

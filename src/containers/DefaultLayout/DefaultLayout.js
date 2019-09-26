@@ -60,10 +60,12 @@ class DefaultLayout extends Component {
 
       
   connectChannel = (channelName,id)=>{
+    console.log(channelName,'chanelename')
     const cloneChannels = [...this.state.channels];
     cloneChannels[id].user = channelName;
     this.setState({
-      channels: cloneChannels
+      channels: cloneChannels,
+      currentChannel: channelName
     });
   }
 
@@ -83,14 +85,15 @@ class DefaultLayout extends Component {
 
 
   render() {
-    const { channels } = this.state;
+    const { channels, currentChannel } = this.state;
     return (
       <Provider value={{ 
         channels,
         addChannels: this.addChannels,
         closeChannels: this.closeChannels,
         connectChannel: this.connectChannel,
-        connectHaveChannel: this.connectHaveChannel
+        connectHaveChannel: this.connectHaveChannel,
+        currentChannel
         }}>
             <div className="app">
               <AppHeader fixed>

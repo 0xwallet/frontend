@@ -2,7 +2,7 @@ const nkn = require('nkn-client');
 
 // Never put private key in version control system like here!
 const seed = '2bc5501d131696429264eb7286c44a29dd44dd66834d9471bd8b0eb875a1edb0';
-const seed2 = '2bc5801d131696429264eb7286c44a29dd44dd66834d9471bd8b0eb875a1edb0';
+const seed2 = '2bc5801d131696429264eb7286c44a29dd44dd66834d9471bd8b0eb875a1edb3';
 const seedRpcServerAddr = process.argv[2];
 
 function generateMessage(msg) {
