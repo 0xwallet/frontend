@@ -6,11 +6,11 @@ import Login from '../views/Pages/Login0waf';
 
 export default ()=>{
     return(
-        // <CurrentUser>
-        //     {currentUser=>{
-        //         return currentUser? <DefaultLayout /> : <Login/>
-        //     }}
-        // </CurrentUser>
-        <DefaultLayout/>
+        <CurrentUser>
+            {currentUser=>{
+                return currentUser? <DefaultLayout /> : <Login/>
+            }}
+        </CurrentUser>
+        // <DefaultLayout/>
     )
 }

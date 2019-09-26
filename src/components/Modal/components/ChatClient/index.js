@@ -86,7 +86,7 @@ if(!localStorage.getItem('count')){
 }
 
 function subscribe(){
-    wallet.subscribe('topic', 10, localStorage.getItem('username'))
+    wallet.subscribe('topic', 1000, localStorage.getItem('username'))
     .then(function(data) {
         console.log('Subscribe success:', data);
         localStorage.setItem('count', "lcj")
