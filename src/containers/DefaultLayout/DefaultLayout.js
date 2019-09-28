@@ -13,26 +13,30 @@ import {
   AppSidebarMinimizer,
   AppSidebarNav,
 } from '@coreui/react';
+import gql from 'graphql-tag';
 // sidebar nav config
 import navigation from '../../_nav';
 // routes config
 import routes from '../../routes';
-
+import client from '../../client';
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
-export const { Provider, Consumer } = React.createContext()
+export const { Provider, Consumer } = React.createContext();
+const getBooks = gql`
+query place{
+  places(limit:5){
+    name
+  }
+}`
+
 
 class DefaultLayout extends Component {
   state = {
     currentChannel: "",
-    channels: [
-      {
-        id: 123,
-        user: "New Tab"
-      },
-    ]
+    // channels: [{id: 123,user: "New Tab"}],
+    channels: [{id: 123,user: "New Tab"}]
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
@@ -83,6 +87,23 @@ class DefaultLayout extends Component {
     }
   }
 
+  componentDidMount() {
+    client.query({  
+      query: getBooks
+    }).then(({data: { places }})=>{
+      let arr = [];
+      places.forEach((v,i)=>{
+        arr.push({
+          id: i,
+          user: v.name
+        })
+      });
+
+       this.setState({
+          channels: arr
+       })
+    })
+  }
 
   render() {
     const { channels, currentChannel } = this.state;

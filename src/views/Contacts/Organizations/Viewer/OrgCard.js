@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Card, CardBody, Progress ,Dropdown,DropdownToggle,DropdownMenu,DropdownItem} from 'reactstrap';
 import classNames from 'classnames';
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
 import client from '../../../../client';
 import { mapToCssModules } from 'reactstrap/lib/utils';
 import Modal from '../../../../components/Modal';
@@ -55,7 +54,7 @@ class OrgCard extends Component {
       channels: {
         open: false,
         name: 'channels',
-        list: [{name: '89547784@qq.com',isOpen: false},{name: 'laolia',isOpen: false},{name: 'laolitou',isOpen: false}],
+        list: [],
         icon: 'fa fa-hashtag',
       },
       org: {

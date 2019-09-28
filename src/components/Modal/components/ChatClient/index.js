@@ -1,7 +1,7 @@
 import React,{ PureComponent } from 'react';
-import { Input } from 'reactstrap';
+import { Input, Button } from 'reactstrap';
 import nkn from 'nkn-multiclient';
-// import rpcCall from 'nkn-client/lib/rpc';
+import rpcCall from 'nkn-client/lib/rpc';
 import nknWallet from 'nkn-wallet';
 import { createStore } from 'redux';
 import './index.scss';
@@ -26,11 +26,6 @@ nknWallet.configure({
     rpcAddr: 'https://owaf.io',
 });
 
-// const latestBlockHeight = rpcCall(
-//     getRandomSeed(),
-//     'getlatestblockheight',
-// );
-
 const client = nkn({
     originalClient: true,
     identifier: localStorage.getItem('username'),
@@ -39,20 +34,12 @@ const client = nkn({
     msgHoldingSeconds: 3999999999,
 });
 
-// sub();
-if(!localStorage.getItem('count')){
-    subscribe();
-}
+const latestBlockHeight = rpcCall(
+    'https://owaf.io',
+    'getlatestblockheight',
+);
 
-function subscribe(){
-    wallet.subscribe('topic', 50000, localStorage.getItem('username'))
-    .then(function(data) {
-        console.log('Subscribe success:', data);
-        localStorage.setItem('count', "lcj");
-    }).catch(function(error) {
-        console.log('Subscribe fail:', error);
-    });
-}
+
 
 function getUsername(str){
     return str.split('.')[0]
@@ -78,11 +65,12 @@ export default class ChatBrower extends PureComponent{
     }
 
     sendMsg = (e)=>{
+        console.log(this.props)
         if(e.keyCode === 13){
             this.setState({
                 inputValue: ""
             })
-            client.publish('topic', e.target.value, { txPool: true });
+            client.publish("lcj", e.target.value, { txPool: true });
         }        
     }
 
@@ -90,6 +78,29 @@ export default class ChatBrower extends PureComponent{
         this.setState({
             inputValue: e.target.value
         })
+    }
+
+    join = () => {
+        const subinfo = client.defaultClient.getSubscription('lcj', client.addr)
+
+        Promise.all([subinfo,latestBlockHeight]).then(([info, blockheight])=>{
+            console.log(info.expiresAt, blockheight);
+        if(info.expiresAt - blockheight > 5000){
+            return Promise.reject('Too soon.');
+        }else{
+            subscribe()
+        }
+        })
+
+        function subscribe(topic){
+            wallet.subscribe('lcj', 5000, localStorage.getItem('username'))
+            .then(function(data) {
+                console.log('Subscribe success:', data, '');
+                localStorage.setItem('count', "lcj");
+            }).catch(function(error) {
+                console.log('Subscribe fail:', error);
+        });
+        }
     }
 
     componentDidMount() {
@@ -116,7 +127,8 @@ export default class ChatBrower extends PureComponent{
                     }
                 </div>
                 <div style={{margin:"1rem 0"}}>
-                    <Input onKeyDown={this.sendMsg} onChange={this.onChangeValue} value={inputValue} />
+                    <Button onClick={this.join}>join a channel</Button>
+                    <Input onKeyDown={this.sendMsg} onChange={this.onChangeValue} value={inputValue}/>
                 </div>
             </div>
         )
