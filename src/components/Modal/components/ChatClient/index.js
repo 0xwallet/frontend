@@ -65,7 +65,6 @@ export default class ChatBrower extends PureComponent{
     }
 
     sendMsg = (e)=>{
-        console.log(this.props)
         if(e.keyCode === 13){
             this.setState({
                 inputValue: ""
