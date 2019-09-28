@@ -10,7 +10,7 @@ import { Socket as PhoenixSocket } from "phoenix";
 
 const HTTP_ENDPOINT = "https://owaf-io.yicp.top/api";
 
-const WS_ENDPOINT = "ws://owaf-io.yicp.top/socket";
+const WS_ENDPOINT = "wss://owaf-io.yicp.top/socket";
 
 // Create an HTTP link to the Phoenix app's HTTP endpoint URL.
 const httpLink = createHttpLink({

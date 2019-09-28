@@ -99,7 +99,7 @@ export default class ChatBrower extends PureComponent{
                 localStorage.setItem('count', "lcj");
             }).catch(function(error) {
                 console.log('Subscribe fail:', error);
-        });
+            });
         }
     }
 
