@@ -23,19 +23,21 @@ const seed = seedarr[0].substr(0,6) + seedarr[1];
 const wallet = nknWallet.restoreWalletBySeed(seed, seedarr[2]);
 
 nknWallet.configure({
-    rpcAddr: 'https://owaf.io',
+    // rpcAddr: 'https://owaf.io',
+    rpcAddr: 'https://mainnet-seed-0001.nkn.org:30003',
 });
 
 const client = nkn({
     originalClient: true,
     identifier: localStorage.getItem('username'),
     seed: wallet.getSeed(),
-    seedRpcServerAddr: 'https://owaf.io',
+    seedRpcServerAddr: 'https://mainnet-seed-0001.nkn.org:30003',
     msgHoldingSeconds: 3999999999,
 });
 
 const latestBlockHeight = rpcCall(
-    'https://owaf.io',
+    // 'https://owaf.io',
+    'https://mainnet-seed-0001.nkn.org:30003',
     'getlatestblockheight',
 );
 
