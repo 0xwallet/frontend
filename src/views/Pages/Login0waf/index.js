@@ -13,8 +13,8 @@ import ButtonCom from './Button';
 import './index.scss';
 
 const SIGNIN_MUTATION = gql`
-  mutation SignIn($username: String!, $password: String!) {
-    signin(username: $username, password: $password) {
+  mutation SignIn($email: String!, $password: String!) {
+    signin(email: $email, password: $password) {
       token
       user {
         username
@@ -96,12 +96,12 @@ export default class Login0waf extends PureComponent{
     }
 
     render() {
-        const { openCodeInput: isOpen, email:username, password, haveParams } = this.state;
+        const { openCodeInput: isOpen, email, password, haveParams } = this.state;
         return (
                 <Mutation
                 mutation={SIGNIN_MUTATION}
                 variables={{
-                    username,
+                    email,
                     password
                 }}
                 onCompleted={this.handleCompleted}
