@@ -24,20 +24,20 @@ const wallet = nknWallet.restoreWalletBySeed(seed, seedarr[2]);
 
 nknWallet.configure({
     // rpcAddr: 'https://owaf.io',
-    rpcAddr: 'https://mainnet-seed-0001.nkn.org:30004',
+    rpcAddr: 'http://mainnet-seed-0001.nkn.org:30001',
 });
 
 const client = nkn({
     originalClient: true,
     identifier: localStorage.getItem('username'),
     seed: wallet.getSeed(),
-    seedRpcServerAddr: 'https://mainnet-seed-0001.nkn.org:30004',
+    seedRpcServerAddr: 'http://mainnet-seed-0001.nkn.org:30001',
     msgHoldingSeconds: 3999999999,
 });
 
 const latestBlockHeight = rpcCall(
     // 'https://owaf.io',
-    'https://mainnet-seed-0001.nkn.org:30004',
+    'http://mainnet-seed-0001.nkn.org:30001',
     'getlatestblockheight',
 );
 

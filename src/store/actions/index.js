@@ -74,7 +74,7 @@ const exampleAction = {
               navigator.credentials.create(createCredentialDefaultArgs)
               .then((cred) => {
                   const transports = cred.response.getTransports()[0];
-                  axios.get('https://owaf.io/v2api/webauthn_register2',{
+                  axios.get('v2api/webauthn_register2',{
                     params : {
                       type: cred.type,
                       rawID: _arrayBufferToBase64(cred.rawId),

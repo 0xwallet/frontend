@@ -19,7 +19,7 @@ const SIGNIN_MUTATION = gql`
 
 class SigninForm extends Component {
   state = {
-    username: "",
+    email: "",
     password: ""
   };
 
@@ -29,7 +29,7 @@ class SigninForm extends Component {
   };
 
   isFormValid = event => {
-    return this.state.username.length > 0 && this.state.password.length > 0;
+    return this.state.email.length > 0 && this.state.password.length > 0;
   };
 
   handleCompleted = data => {
@@ -70,11 +70,11 @@ class SigninForm extends Component {
                 <label htmlFor="username">Username</label>
                 <input
                   type="text"
-                  name="username"
-                  id="username"
+                  name="email"
+                  id="email"
                   required
                   autoFocus
-                  value={this.state.username}
+                  value={this.state.email}
                   onChange={this.handleChange}
                 />
                 <label htmlFor="password">Password</label>
