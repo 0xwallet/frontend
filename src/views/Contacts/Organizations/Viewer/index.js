@@ -1,8 +1,20 @@
 import React,{PureComponent}from 'react';
-import { Card, CardBody, CardHeader ,Row,Col,ButtonGroup,Dropdown,DropdownToggle } from 'reactstrap';
+import { Card, CardBody, CardHeader ,Row,Col,ButtonGroup,Dropdown,DropdownToggle, DropdownItem, DropdownMenu } from 'reactstrap';
+import gql from 'graphql-tag';
+import { Query } from 'react-apollo';
 import OrgCard from './OrgCard';
 import CreateOrgModal from './CreateOrgModal';
 // import {generateMessage} from './nkn';
+
+const getMeOrg = gql`
+    query GetOrganizations {
+        me {
+            organizations{
+                name,
+            }
+        }
+    }
+`;
 
 class Viewer extends PureComponent{
     constructor(){
@@ -36,11 +48,35 @@ class Viewer extends PureComponent{
             <Card>
                 <CardHeader style={{display: 'flex',alignItems: 'center'}}>    
                 <ButtonGroup >
-                  <Dropdown id='org' isOpen={this.state.orgisopen} toggle={() => { this.setState({ orgisopen: !this.state.orgisopen }); }}>
-                    <DropdownToggle caret className="p-0" color="#000">
-                    <i className="icon-equalizer"></i>{'  '}
-                     {this.state.orgname}{' '} 
-                    </DropdownToggle>
+                <Query
+                    query={getMeOrg}
+                >
+                    {
+                        ({ data, loading, error}) => {
+                            if (loading) return 'loading';
+                            if (error) return 'error';
+                            const { me: { organizations } } = data;
+                            return (
+                            <Dropdown id='org' isOpen={this.state.orgisopen} toggle={() => { this.setState({ orgisopen: !this.state.orgisopen }); }}>
+                                <DropdownToggle caret className="p-0" color="#000">
+                                    <i className="icon-equalizer"></i>{'  '}
+                                    {this.state.orgname}{' '} 
+                                </DropdownToggle>
+                                <DropdownMenu left="true">
+                                {
+                                    organizations.map((v,i)=>{
+                                        return(
+                                        <DropdownItem onClick={(e)=>{
+                                            this.selorg(e,v.name)
+                                        }} key={i}>{v.name}</DropdownItem> 
+                                        )
+                                    })
+                                }
+                                </DropdownMenu>
+                            </Dropdown>);
+                        }
+                    }
+                </Query>
                     {/* <DropdownMenu left="true">
                       {
                           places.map((v,i)=>{
@@ -52,7 +88,6 @@ class Viewer extends PureComponent{
                           })
                       }
                     </DropdownMenu> */}
-                  </Dropdown>
                 </ButtonGroup>
                 <span style={{color:'#20a8d8',marginLeft:'1rem',cursor:'pointer'}} onClick={this.openisOrg}>create</span>
                 </CardHeader>

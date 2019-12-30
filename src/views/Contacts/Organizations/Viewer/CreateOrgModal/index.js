@@ -35,6 +35,7 @@ export default class OrgModal extends React.Component{
 
     handleCompleted = data => {
       console.log(data, 'data');
+      this.toggle();
     };
 
     handleCreateOrg = (createOrg) => {
