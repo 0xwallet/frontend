@@ -15,6 +15,16 @@ const CREATEORG_MUTATION = gql`
   }
 `;
 
+const getMeOrg = gql`
+    query GetOrganizations {
+        me {
+            organizations{
+                name,
+            }
+        }
+    }
+`;
+
 export default class OrgModal extends React.Component{
     state={
         isOpen: false,
@@ -33,9 +43,18 @@ export default class OrgModal extends React.Component{
       })
     }
 
-    handleCompleted = data => {
-      console.log(data, 'data');
+    handleCompleted = (data) => {
+      console.log(data);
       this.toggle();
+    };
+
+    handleUpdate = (cache, { data }) => {
+      const { me: { organizations } } = cache.readQuery({ query: getMeOrg });
+      Reflect.deleteProperty(data.createOrganization, 'users',);
+      cache.writeQuery({
+        query: getMeOrg,
+        data: { me: { organizations: organizations.concat([data.createOrganization]) }}
+      });
     };
 
     handleCreateOrg = (createOrg) => {
@@ -98,6 +117,7 @@ export default class OrgModal extends React.Component{
                       name,
                     }}
                     onCompleted={this.handleCompleted}
+                    update={this.handleUpdate}
                   >
                     {(createOrg, { loading, error}) => {
                       if (loading) return 'loading';

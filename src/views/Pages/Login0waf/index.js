@@ -42,6 +42,7 @@ export default class Login0waf extends PureComponent{
     };
     
     handleUpdate = (cache, { data }) => {
+        console.log(data, 'data is in sign');
         cache.writeQuery({
             query: GET_CURRENT_USER_QUERY,
             data: { me: data.signin.user }
@@ -87,13 +88,13 @@ export default class Login0waf extends PureComponent{
         }
     }
 
-    clearUrl = ()=>{
-        var url=window.location.href;                    
-		if(url.indexOf("?") !== -1){                        
-			url = url.replace(/(\?|#)[^'"]*/, '');
-			window.history.pushState({},0,url);
-		}
-    }
+    // clearUrl = ()=>{
+    //     var url=window.location.href;                    
+	// 	if(url.indexOf("?") !== -1){                        
+	// 		url = url.replace(/(\?|#)[^'"]*/, '');
+	// 		window.history.pushState({},0,url);
+	// 	}
+    // }
 
     render() {
         const { openCodeInput: isOpen, email, password, haveParams } = this.state;
@@ -109,9 +110,9 @@ export default class Login0waf extends PureComponent{
                 {(signin, { loading, error }) => {
                 if (haveParams){
                     signin();
-                    setTimeout(()=>{
-                        this.clearUrl();
-                    },2000)
+                    // setTimeout(()=>{
+                    //     this.clearUrl();
+                    // },2000)
                 }
                 if (loading) return <Loading />;
                     return (

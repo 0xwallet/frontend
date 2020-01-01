@@ -64,7 +64,7 @@ class Viewer extends PureComponent{
                                 </DropdownToggle>
                                 <DropdownMenu left="true">
                                 {
-                                    organizations.map((v,i)=>{
+                                    organizations && organizations.map((v,i)=>{
                                         return(
                                         <DropdownItem onClick={(e)=>{
                                             this.selorg(e,v.name)

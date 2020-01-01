@@ -20,7 +20,7 @@ export default ()=>{
     }
 
     return(
-        <div className="avatar">
+        <div className="setting_avatar">
             <div className="avatarimg">
                 <img src={img} alt="avatar" id="avatar"></img>
             </div>

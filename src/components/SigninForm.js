@@ -34,11 +34,11 @@ class SigninForm extends Component {
 
   handleCompleted = data => {
     localStorage.setItem("auth-token", data.signin.token);
-
     this.props.history.goBack();
   };
 
   handleUpdate = (cache, { data }) => {
+    console.log(data, 'data in sign in');
     cache.writeQuery({
       query: GET_CURRENT_USER_QUERY,
       data: { me: data.signin.user }

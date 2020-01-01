@@ -45,11 +45,11 @@ class OrgCard extends Component {
     user: '',
     channels : ['channels1','chane2','chane3'],
     control : {
-      income: {
+      org: {
         open: false,
-        name: 'income',
+        name:"organizations",
         list: ['# list1','# list2','# list3'],
-        icon: 'fa fa-bitcoin',
+        icon: 'fa fa-gg-circle',
       },
       channels: {
         open: false,
@@ -57,18 +57,18 @@ class OrgCard extends Component {
         list: [],
         icon: 'fa fa-hashtag',
       },
-      org: {
+      all: {
         open: false,
-        name:"org",
+        name: 'tasks',
         list: ['# list1','# list2','# list3'],
         icon: 'fa fa-gg-circle',
       },
-      all: {
+      income: {
         open: false,
-        name: 'all',
+        name: 'income',
         list: ['# list1','# list2','# list3'],
-        icon: 'fa fa-gg-circle',
-      }
+        icon: 'fa fa-bitcoin',
+      },
     }
   }
 

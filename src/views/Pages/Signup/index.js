@@ -55,7 +55,7 @@ class Signup extends Component {
       <Mutation
         mutation={SIGNUP_MUTATION}
         variables={this.state}
-        onCompleted={this.handleCompleted}
+        onCompleted={this.pleted}
         update={this.handleUpdate}>
         {(signup, { loading, error }) => {
           if (loading) return <Loading />;
