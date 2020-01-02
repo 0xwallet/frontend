@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Card, CardBody, CardHeader } from 'reactstrap';
 import BigCalendar from 'react-big-calendar';
+import { AppSwitch } from '@coreui/react'
 import moment from 'moment';
+import KanBan from '../KanBan';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { act } from 'react-test-renderer';
 // import './index.scss';
 
 // Setup the localizer by providing the moment (or globalize) Object
@@ -109,40 +112,58 @@ const events = [
 // todo: reactive custom calendar toolbar component
 
 class Calendar extends Component {
-
+  state = {
+    active: "false",
+  }
   render() {
-
+    const { active } = this.state;
+    console.log(active, 'active');
     return (
       <div className="animated">
         <Card>
-          <CardHeader>
-            <i className="icon-calendar"></i>Calendar{' '}
-            {/* <a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a> */}
-            <div className="card-header-actions">
-              <a href="https://github.com/intljusticemission/react-big-calendar" rel="noopener noreferrer" target="_blank" className="card-header-action">
-                <small className="text-muted">docs</small>
-              </a>
+          <CardHeader style={{ display: "flex", alignItems: "center"}}>
+            {/* <i className="icon-calendar"></i> */}
+            <span>看板</span>
+            <div style={{ margin: "0 10px"}}>
+              <AppSwitch 
+                // className={'float-right'} 
+                variant={'pill'} label 
+                color={'success'} 
+                defaultChecked size={'sm'} 
+                onClick={(e)=>{
+                  console.log(e.target.getAttribute('aria-checked'),);
+                  this.setState({
+                    active: e.target.getAttribute('aria-checked'),
+                  });
+                }}/>
             </div>
+            <span>日历</span>
           </CardHeader>
-          <CardBody style={{height:'40em'}}>
-            <BigCalendar className="d-sm-down-none"
-                         {...this.props}
-                         events={events}
-                         views={['month', 'week', 'day']}
-                         step={30}
-                         defaultDate={new Date(currYear, currMonth, 1)}
-                         defaultView='month'
-                         toolbar={true}
-            />
-            <BigCalendar className="d-md-none"
-                         {...this.props}
-                         events={events}
-                         views={['day']}
-                         step={30}
-                         defaultDate={new Date(currYear, currMonth, 1)}
-                         defaultView='day'
-                         toolbar={true}
-            />
+          <CardBody style={{height:'50em'}}>
+            {
+              active === "true" ? (
+                <>
+                  <BigCalendar className="d-sm-down-none"
+                    {...this.props}
+                    events={events}
+                    views={['month', 'week', 'day']}
+                    step={30}
+                    defaultDate={new Date(currYear, currMonth, 1)}
+                    defaultView='month'
+                    toolbar={true}
+                />
+                  <BigCalendar className="d-md-none"
+                    {...this.props}
+                    events={events}
+                    views={['day']}
+                    step={30}
+                    defaultDate={new Date(currYear, currMonth, 1)}
+                    defaultView='day'
+                    toolbar={true}
+                  />
+                </>
+              ) : <KanBan />
+            }
           </CardBody>
         </Card>
       </div>

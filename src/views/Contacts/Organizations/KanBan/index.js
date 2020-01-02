@@ -1,9 +1,12 @@
 import React from 'react';
+import Drag from './components/Draggable';
 
 class KanBan extends React.PureComponent{
     render() {
         return(
-            <div>hello kanban</div>
+            <div>
+                <Drag />
+            </div>
         );
     };
 }
