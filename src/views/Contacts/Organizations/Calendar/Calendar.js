@@ -113,12 +113,13 @@ const events = [
 
 class Calendar extends Component {
   state = {
-    active: "true",
+    active: true,
   }
   handleSwitch = (e) => {
-    const flag = e.target.getAttribute('aria-checked');
+    // console.log(e.target.value, 'value');
+    // const flag = e.target.getAttribute('aria-checked');
     this.setState({
-      active: flag,
+      active: !this.state.active,
     });
   }
   render() {
@@ -140,7 +141,7 @@ class Calendar extends Component {
           </CardHeader>
           <CardBody style={{height:'50em', overflow: "auto"}}>
             {
-              active === "true" ? (
+              active ? (
                 <>
                   <BigCalendar className="d-sm-down-none"
                     {...this.props}
