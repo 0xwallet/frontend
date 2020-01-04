@@ -46,7 +46,8 @@ class Draggable extends Component {
                                 this.onLayoutChange(layout, layouts)
                               }
                               breakpoints={breakPoints}
-                              cols={{xl: 3, lg: 3, md: 3, sm: 2, xs: 1}}
+                              // cols={{xl: 3, lg: 3, md: 3, sm: 2, xs: 1}}
+                              cols={{xl: 4, lg: 4, md: 3, sm: 2, xs: 1}}
                               isResizable={false}
                               measureBeforeMount={false}
                               draggableHandle={".card-header"}>

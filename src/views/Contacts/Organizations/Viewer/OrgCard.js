@@ -2,18 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Progress ,Dropdown,DropdownToggle,DropdownMenu,DropdownItem} from 'reactstrap';
 import classNames from 'classnames';
-import gql from 'graphql-tag';
-import client from '../../../../client';
+// import client from '../../../../client';
 import { mapToCssModules } from 'reactstrap/lib/utils';
 import Modal from '../../../../components/Modal';
 import { Consumer } from '../../../../containers/DefaultLayout';
 
-const getBooks = gql`
-query place{
-  places(limit:5){
-    name
-  }
-}`
+// const getBooks = gql`
+// query place{
+//   places(limit:5){
+//     name
+//   }
+// }`
 
 const propTypes = {
   header: PropTypes.string,
@@ -39,39 +38,38 @@ class OrgCard extends Component {
   constructor(props){
     super(props);
     this.myRef = React.createRef();
+    this.state = {
+      isOpen: false,
+      user: '',
+      channels : ['channels1','chane2','chane3'],
+      control : {
+        org: {
+          open: false,
+          name:"organizations",
+          list: props.id === 'org' && props.list,
+          icon: 'fa fa-gg-circle',
+        },
+        channels: {
+          open: false,
+          name: 'channels',
+          list: props.id === 'channels' && props.list,
+          icon: 'fa fa-hashtag',
+        },
+        all: {
+          open: false,
+          name: 'tasks',
+          list: [],
+          icon: 'fa fa-gg-circle',
+        },
+        income: {
+          open: false,
+          name: 'income',
+          list: [],
+          icon: 'fa fa-bitcoin',
+        },
+      }
+    };
   }
-  state = {
-    isOpen: false,
-    user: '',
-    channels : ['channels1','chane2','chane3'],
-    control : {
-      org: {
-        open: false,
-        name:"organizations",
-        list: ['# list1','# list2','# list3'],
-        icon: 'fa fa-gg-circle',
-      },
-      channels: {
-        open: false,
-        name: 'channels',
-        list: [],
-        icon: 'fa fa-hashtag',
-      },
-      all: {
-        open: false,
-        name: 'tasks',
-        list: ['# list1','# list2','# list3'],
-        icon: 'fa fa-gg-circle',
-      },
-      income: {
-        open: false,
-        name: 'income',
-        list: ['# list1','# list2','# list3'],
-        icon: 'fa fa-bitcoin',
-      },
-    }
-  }
-
   controlopen = (id)=>{
     const newobj = {...this.state.control};
     newobj[id].open = !newobj[id].open
@@ -80,34 +78,43 @@ class OrgCard extends Component {
     })
   }
 
-  selorg = (_e,v,id,connectHaveChannel)=>{
-    const newobj = {...this.state.control};
-    if(typeof(v) !== 'object'){
-      newobj[id].name = v;
-      this.setState({
-        control: newobj
-      })
-    }else{
-      newobj[id].name = v.name;
-      this.setState({
-        control: newobj,
-        isOpen: true,
-        user: v.name,
-      },()=>{
-        connectHaveChannel(this.state.user)  
-      });
-    }
+  handleChangeName = (_, id, name) => {
+    const { control } = this.state;
+    const cloneControl = {...control};
+    cloneControl[id].name = name;
+    this.setState({
+      control: cloneControl
+    })
   }
 
+  // selorg = (_e,v,id,connectHaveChannel)=>{
+  //   const newobj = {...this.state.control};
+  //   if(typeof(v) !== 'object'){
+  //     newobj[id].name = v;
+  //     this.setState({
+  //       control: newobj
+  //     })
+  //   }else{
+  //     newobj[id].name = v.name;
+  //     this.setState({
+  //       control: newobj,
+  //       isOpen: true,
+  //       user: v.name,
+  //     },()=>{
+  //       connectHaveChannel(this.state.user)  
+  //     });
+  //   }
+  // }
+
   componentDidMount() {
-    const { control: { channels  } } = this.state;
-    client.query({  
-      query: getBooks
-    }).then(({data: { places }})=>{
-      this.setState({
-        control: {...this.state.control, channels: {...channels, list: places}}
-      })
-    })
+    // const { control: { channels  } } = this.state;
+    // client.query({  
+    //   query: getBooks
+    // }).then(({data: { places }})=>{
+    //   this.setState({
+    //     control: {...this.state.control, channels: {...channels, list: places}}
+    //   })
+    // })
   }
 
   render() {
@@ -138,13 +145,13 @@ class OrgCard extends Component {
                               <DropdownToggle caret className="p-0" color="#000" style={{fontSize: '1.2rem'}}>
                                 <i className={this.state.control[this.props.id].icon}>{'   '}{this.state.control[this.props.id].name}</i>
                               </DropdownToggle>
-                              <DropdownMenu left="true">
+                              <DropdownMenu left="true" style={{maxHeight: "300px", overflow: 'auto'}}>
                                 {
-                                    this.state.control[this.props.id].list.map((v,i)=>{
+                                    this.state.control[this.props.id].list.map(({name = ""}, i)=>{
                                         return(
                                           <DropdownItem onClick={(e)=>{
-                                              this.selorg(e,v,this.props.id,connectHaveChannel)
-                                          }} key={i}>{this.props.id === 'channels'?v.name:v}</DropdownItem> 
+                                              this.handleChangeName(e,this.props.id, name)
+                                          }} key={i}>{name}</DropdownItem> 
                                         )
                                     })
                                 }

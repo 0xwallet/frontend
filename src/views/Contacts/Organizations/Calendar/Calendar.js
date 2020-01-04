@@ -113,33 +113,32 @@ const events = [
 
 class Calendar extends Component {
   state = {
-    active: "false",
+    active: "true",
+  }
+  handleSwitch = (e) => {
+    const flag = e.target.getAttribute('aria-checked');
+    this.setState({
+      active: flag,
+    });
   }
   render() {
     const { active } = this.state;
-    console.log(active, 'active');
     return (
       <div className="animated">
         <Card>
           <CardHeader style={{ display: "flex", alignItems: "center"}}>
-            {/* <i className="icon-calendar"></i> */}
             <span>看板</span>
             <div style={{ margin: "0 10px"}}>
               <AppSwitch 
-                // className={'float-right'} 
-                variant={'pill'} label 
+                variant={'pill'} 
+                label 
                 color={'success'} 
-                defaultChecked size={'sm'} 
-                onClick={(e)=>{
-                  console.log(e.target.getAttribute('aria-checked'),);
-                  this.setState({
-                    active: e.target.getAttribute('aria-checked'),
-                  });
-                }}/>
+                size={'sm'} 
+                onClick={this.handleSwitch}/>
             </div>
             <span>日历</span>
           </CardHeader>
-          <CardBody style={{height:'50em'}}>
+          <CardBody style={{height:'50em', overflow: "auto"}}>
             {
               active === "true" ? (
                 <>
@@ -172,79 +171,3 @@ class Calendar extends Component {
 }
 
 export default Calendar;
-// import React from 'react';
-// import { Calendar, Badge } from 'antd';
-// import "antd/dist/antd.css";
-// import './index.scss'
-// function getListData(value) {
-//   let listData;
-//   switch (value.date()) {
-//     case 8:
-//       listData = [
-//         { type: 'warning', content: 'This is warning event.' },
-//         { type: 'success', content: 'This is usual event.' },
-//       ];
-//       break;
-//     case 10:
-//       listData = [
-//         { type: 'warning', content: 'This is warning event.' },
-//         { type: 'success', content: 'This is usual event.' },
-//         { type: 'error', content: 'This is error event.' },
-//       ];
-//       break;
-//     case 15:
-//       listData = [
-//         { type: 'warning', content: 'This is warning event' },
-//         { type: 'success', content: 'This is very long usual event。。....' },
-//         { type: 'error', content: 'This is error event 1.' },
-//         { type: 'error', content: 'This is error event 2.' },
-//         { type: 'error', content: 'This is error event 3.' },
-//         { type: 'error', content: 'This is error event 4.' },
-//       ];
-//       break;
-//     default:
-//   }
-//   return listData || [];
-// }
-
-// function dateCellRender(value) {
-//   const listData = getListData(value);
-//   return (
-//     <ul className="events">
-//       {listData.map(item => (
-//         <li key={item.content}>
-//           <Badge status={item.type} text={item.content} />
-//         </li>
-//       ))}
-//     </ul>
-//   );
-// }
-
-// function getMonthData(value) {
-//   if (value.month() === 8) {
-//     return 1394;
-//   }
-// }
-
-// function monthCellRender(value) {
-//   const num = getMonthData(value);
-//   return num ? (
-//     <div className="notes-month">
-//       <section>{num}</section>
-//       <span>Backlog number</span>
-//     </div>
-//   ) : null;
-// }
-
-// class CalendarWrap extends React.PureComponent{
-//   render(){
-//     return(
-//         <div>
-//             <Calendar dateCellRender={dateCellRender} monthCellRender={monthCellRender} fullscreen={true}/>
-//         </div>
-//     )
-//   }
-// }
-
-// export default CalendarWrap;
-
