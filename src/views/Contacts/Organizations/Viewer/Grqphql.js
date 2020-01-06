@@ -14,6 +14,7 @@ const getMeOrg = gql`
         me {
             organizations{
                 name,
+                id,
             }
         }
     }

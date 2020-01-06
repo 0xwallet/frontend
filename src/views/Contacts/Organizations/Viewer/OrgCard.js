@@ -43,10 +43,10 @@ class OrgCard extends Component {
       user: '',
       channels : ['channels1','chane2','chane3'],
       control : {
-        org: {
+        organizations: {
           open: false,
           name:"organizations",
-          list: props.id === 'org' && props.list,
+          list: props.id === 'organizations' && props.list,
           icon: 'fa fa-gg-circle',
         },
         channels: {
@@ -55,7 +55,7 @@ class OrgCard extends Component {
           list: props.id === 'channels' && props.list,
           icon: 'fa fa-hashtag',
         },
-        all: {
+        tasks: {
           open: false,
           name: 'tasks',
           list: [],
@@ -78,10 +78,13 @@ class OrgCard extends Component {
     })
   }
 
-  handleChangeName = (_, id, name) => {
+  handleChangeName = (_, id, name, queryId) => {
     const { control } = this.state;
     const cloneControl = {...control};
     cloneControl[id].name = name;
+    
+    const { onChangeId } = this.props;
+    onChangeId(queryId);
     this.setState({
       control: cloneControl
     })
@@ -147,10 +150,10 @@ class OrgCard extends Component {
                               </DropdownToggle>
                               <DropdownMenu left="true" style={{maxHeight: "300px", overflow: 'auto'}}>
                                 {
-                                    this.state.control[this.props.id].list.map(({name = ""}, i)=>{
+                                    this.state.control[this.props.id].list.map(({name = "", id}, i)=>{
                                         return(
                                           <DropdownItem onClick={(e)=>{
-                                              this.handleChangeName(e,this.props.id, name)
+                                              this.handleChangeName(e, this.props.id, name, id)
                                           }} key={i}>{name}</DropdownItem> 
                                         )
                                     })

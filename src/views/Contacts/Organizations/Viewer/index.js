@@ -6,9 +6,40 @@ import CreateOrgModal from './CreateOrgModal';
 import { getMeOrg, queryChannels } from './Grqphql';
 // import {generateMessage} from './nkn';
 
+const cardConfig = {
+    income: {
+        description: "Members",
+        query: getMeOrg,
+        icon: "fa fa-laptop", color: "info", header: "99999.99", value: "50", id: "income"
+    },
+    channels: {
+        icon: "fa fa-podcast",
+        color: "info",
+        header: "33333",
+        value: "25",
+        description: "Members",
+        query: queryChannels,
+        id: "channels"
+    },
+    organizations: {
+        icon: "icon-people",
+        color:"info",
+        header: "55555",
+        value: "25",
+        id: "organizations",
+        description: "Members",
+        query: getMeOrg,
+    },
+    tasks: {
+        description: "Members",
+        query: getMeOrg,
+        icon:"icon-pie-chart", color: "info", header: "87.500", value: "25", id: "tasks"
+    }
+};
+
 class Viewer extends PureComponent{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.orgref = React.createRef();
     }
 
@@ -32,28 +63,48 @@ class Viewer extends PureComponent{
         this.orgref.current.toggle();
     }
 
-    // render_card(query, listName) {
-    //     return (
-    //         <Query query={query}>
-    //             {
-    //                 ({ data, loading, error}) => {
-    //                 if (loading) return 'loading';
-    //                 if (error) return 'error';
-    //                 const { me } = data;
-    //                 return (
-    //                     <OrgCard icon="fa fa-podcast" color="info" header="33333" value="25" id="channels" list={me[listName]}>Users</OrgCard>                           
-    //                 );
-    //                 }
-    //             }
-    //         </Query>
-    //     );
-    // }
+    handleChangeId = () => {
+        this.props.onChangeId();
+    }
+
     handleChangeName = (_, memberListName) => {
         const { onChangeName } = this.props;
         onChangeName(memberListName);
     }
 
+    render_card = () => {
+        const { onChangeId } = this.props;
+        return (
+           Object.values(cardConfig).map((v, i) => (
+            <Col xs={12} sm={6} md={3} key={i}>
+                <Query query={v.query}>
+                    {
+                        ({ data, loading, error}) => {
+                        if (loading) return 'loading';
+                        if (error) return 'error';
+                        const { me } = data;
+                        return (
+                            <OrgCard 
+                                {...v}
+                                list={me[v.id]}
+                                id={v.id} 
+                                onChangeId={onChangeId} 
+                                onClick={(e) => this.handleChangeName(e, v.id)}
+                            >
+                                {v.description}
+                            </OrgCard>                           
+                        );
+                        }
+                    }
+                </Query>
+            </Col>
+           ))
+        );
+    }
+
     render(){
+        const { onChangeId } = this.props;
+
         return(
             <>
                 {/* <CardHeader style={{display: 'flex',alignItems: 'center'}}>    
@@ -95,7 +146,8 @@ class Viewer extends PureComponent{
                 <span style={{color:'#20a8d8',marginLeft:'1rem',cursor:'pointer'}} onClick={this.openisOrg}>create</span>
                 </CardHeader> */}
                     <Row>
-                        <Col xs="12" sm="6" lg="3">  
+                        {this.render_card()} 
+                        {/* <Col xs="12" sm="6" lg="3">  
                             <OrgCard icon="fa fa-laptop" color="info" header="99999.99" value="50" id="income" onClick={(e) => this.handleChangeName(e, "income")}>Income</OrgCard>
                         </Col>
                         <Col xs={12} sm={6} md={3} >
@@ -112,7 +164,8 @@ class Viewer extends PureComponent{
                                                 header="33333"
                                                 value="25" 
                                                 id="channels" 
-                                                list={channels} 
+                                                list={channels}
+                                                onChangeId={onChangeId} 
                                                 onClick={(e) => this.handleChangeName(e, "channels")}
                                             >
                                                 Users
@@ -130,8 +183,15 @@ class Viewer extends PureComponent{
                                         if (error) return 'error';
                                         const { me: { organizations } } = data;
                                         return(
-                                            <OrgCard icon="icon-people" color="info" header="55555" value="25" id="org" list={organizations} 
-                                                onClick={(e) => this.handleChangeName(e, "organization")}
+                                            <OrgCard 
+                                                icon="icon-people" 
+                                                color="info" 
+                                                header="55555" 
+                                                value="25" 
+                                                id="organizations" 
+                                                list={organizations} 
+                                                onChangeId={onChangeId} 
+                                                onClick={(e) => this.handleChangeName(e, "organizations")}
                                             >
                                                 Members
                                             </OrgCard>
@@ -141,8 +201,8 @@ class Viewer extends PureComponent{
                             </Query>
                         </Col>
                         <Col xs={12} sm={6} md={3}>
-                            <OrgCard icon="icon-pie-chart" color="info" header="87.500" value="25" id="all" onClick={(e) => this.handleChangeName(e, "task")}>Statistics</OrgCard>
-                        </Col>
+                            <OrgCard icon="icon-pie-chart" color="info" header="87.500" value="25" id="tasks" onClick={(e) => this.handleChangeName(e, "task")}>Statistics</OrgCard>
+                        </Col> */}
                     </Row>
                 {/* <CreateOrgModal ref={this.orgref}/> */}
             </>

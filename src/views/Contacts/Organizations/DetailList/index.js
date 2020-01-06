@@ -1,10 +1,11 @@
 import React from 'react';
 import {Card, CardHeader, CardBody, Button } from 'reactstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+// import { Query } from "react-apollo";
+import { useQuery  } from "@apollo/react-hooks";
 import 'react-bootstrap-table/dist//react-bootstrap-table-all.min.css';
-import table from './_data';
+import { GetOrgMemberList, GetChannelsMemberList, getChannlesIds, getOrgIds } from '../Graphql';
 
-const { rows, channelMemberList } = table;
 const options = {
   sortIndicator: true,
   hideSizePerPage: true,
@@ -15,9 +16,20 @@ const options = {
   withFirstAndLast: false,
 }
 
-const dataObject = {
-  channels: channelMemberList,
-  organization: rows,
+const queryObject = {
+  organizations: GetOrgMemberList,
+  channels: GetChannelsMemberList,
+  // delay
+  tasks: getOrgIds,
+  income: getChannlesIds,
+}
+
+const defaultIdObj = {
+  organizations: getOrgIds,
+  channels: getChannlesIds,
+  // delay
+  tasks: getOrgIds,
+  income: getChannlesIds,
 }
 
 function Action() {
@@ -26,23 +38,46 @@ function Action() {
   );
 }
 
-function RenderTable({ name }) {
+function RenderTable({ name, id }) {
+  let defaultId = "1";
+  // delay
+  if (name === 'tasks') return "";
+  if (name === 'income') return "";
+
+  const { data: idData } = useQuery(defaultIdObj[name]);
+  if (idData) defaultId = idData.me[name][0].id;
+
+  const { loading, error, data } = useQuery(queryObject[name], {
+    variables: {
+      ID: id || defaultId,
+    }
+  });
+
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
   if (name === "channels") {
+    const users = data.channel.users;
+    // console.log(data, 'data');
+    const organizationName = data.channel.organization.name;
+    users.forEach((v) => {
+      v.organization = organizationName;
+    });
     return (
-      <BootstrapTable data={dataObject[name]} version="4" striped hover pagination search options={options}>
+      <BootstrapTable data={users} version="4" striped hover pagination search options={options}>
         <TableHeaderColumn dataField="avatar" dataFormat={(formatExtraData) => <img src={formatExtraData} alt="avatar" width="10%" />}>Avatar</TableHeaderColumn>
-        <TableHeaderColumn isKey dataField="user" dataSort>User</TableHeaderColumn>
+        <TableHeaderColumn isKey dataField="username" dataSort>User</TableHeaderColumn>
         <TableHeaderColumn dataField="organization">Organization</TableHeaderColumn>
         <TableHeaderColumn dataField="activity">Activity</TableHeaderColumn>
         <TableHeaderColumn dataField="income">Income</TableHeaderColumn>
       </BootstrapTable>
     );
   }
-  if (name === "organization") {
+  if (name === "organizations") {
+    const users = data.organization.users;
     return (
-      <BootstrapTable data={dataObject[name]} version="4" striped hover pagination search options={options}>
+      <BootstrapTable data={users} version="4" striped hover pagination search options={options}>
         <TableHeaderColumn dataField="avatar" dataFormat={(formatExtraData) => <img src={formatExtraData} alt="avatar" width="10%" />}>Avatar</TableHeaderColumn>
-        <TableHeaderColumn isKey dataField="user" dataSort>User</TableHeaderColumn>
+        <TableHeaderColumn isKey dataField="username" dataSort>User</TableHeaderColumn>
         <TableHeaderColumn dataField="role">Role</TableHeaderColumn>
         <TableHeaderColumn dataFormat={() => <Action />} width="15%">Action</TableHeaderColumn>
       </BootstrapTable>
@@ -51,7 +86,7 @@ function RenderTable({ name }) {
   
   return <div>delay</div>
 }
-function DetailList({ memberFromName = "channels" }) {
+function DetailList({ memberFromName = "channels", id }) {
     return (
       <Card>
         <CardHeader>
@@ -61,7 +96,7 @@ function DetailList({ memberFromName = "channels" }) {
           </div>
         </CardHeader>
         <CardBody>
-          <RenderTable name={memberFromName}/>
+          <RenderTable name={memberFromName} id={id} />
         </CardBody>
       </Card>
     );
