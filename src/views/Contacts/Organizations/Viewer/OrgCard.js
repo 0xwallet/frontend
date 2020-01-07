@@ -4,15 +4,9 @@ import { Card, CardBody, Progress ,Dropdown,DropdownToggle,DropdownMenu,Dropdown
 import classNames from 'classnames';
 // import client from '../../../../client';
 import { mapToCssModules } from 'reactstrap/lib/utils';
-import Modal from '../../../../components/Modal';
+// import Modal from '../../../../components/Modal';
+import Modal from './CreateOrgModal';
 import { Consumer } from '../../../../containers/DefaultLayout';
-
-// const getBooks = gql`
-// query place{
-//   places(limit:5){
-//     name
-//   }
-// }`
 
 const propTypes = {
   header: PropTypes.string,
@@ -37,11 +31,9 @@ const defaultProps = {
 class OrgCard extends Component {
   constructor(props){
     super(props);
-    this.myRef = React.createRef();
     this.state = {
       isOpen: false,
-      user: '',
-      channels : ['channels1','chane2','chane3'],
+      title: "",
       control : {
         organizations: {
           open: false,
@@ -109,6 +101,18 @@ class OrgCard extends Component {
   //   }
   // }
 
+  handleCompleted = (data) => {
+    console.log(data);
+    this.handleToggle();
+  };
+
+  handleToggle = (_ ,titleName = 'channels') => {
+    this.setState(preState => ({
+      isOpen: !preState.isOpen,
+      title: titleName,
+    }));
+  }
+
   componentDidMount() {
     // const { control: { channels  } } = this.state;
     // client.query({  
@@ -136,40 +140,45 @@ class OrgCard extends Component {
 
     const classes = mapToCssModules(classNames(className, card.style, card.bgColor), cssModule);
     progress.style = classNames('progress-xs mt-3 mb-0', progress.style);
-
+    const { isOpen, title } = this.state;
     return (
-              <Consumer>
-              {
-                ({ connectHaveChannel,channels })=>(
-                  <Card className={classes} {...attributes}>
-                  <CardBody>
-                    <div className="" style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',fontSize: '2rem'}}>
-                            <Dropdown id={this.props.id} isOpen={this.state.control[this.props.id].open} toggle={()=>this.controlopen(this.props.id)}>
-                              <DropdownToggle caret className="p-0" color="#000" style={{fontSize: '1.2rem'}}>
-                                <i className={this.state.control[this.props.id].icon}>{'   '}{this.state.control[this.props.id].name}</i>
-                              </DropdownToggle>
-                              <DropdownMenu left="true" style={{maxHeight: "300px", overflow: 'auto'}}>
-                                {
-                                    this.state.control[this.props.id].list.map(({name = "", id}, i)=>{
-                                        return(
-                                          <DropdownItem onClick={(e)=>{
-                                              this.handleChangeName(e, this.props.id, name, id)
-                                          }} key={i}>{name}</DropdownItem> 
-                                        )
-                                    })
-                                }
-                              </DropdownMenu>
-                            </Dropdown>
-                      <i className={card.icon} ></i>
-                    </div>
-                    <div className="h4 mb-0" style={{marginTop: '.5rem'}}>{header}</div>
-                    <small className="text-muted text-uppercase font-weight-bold">{children}</small>
-                    <Progress className={progress.style} color={progress.color} value={progress.value} />
-                  </CardBody>
-                  <Modal toggle={()=>this.setState({isOpen: !this.state.isOpen})} isOpen={this.state.isOpen}/>
-                  </Card>
-                )
-              }
+        <Consumer>
+            {
+              (/* { connectHaveChannel,channels }*/)=>(
+                <Card className={classes} {...attributes}>
+                <CardBody>
+                  <div className="" style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',fontSize: '2rem'}}>
+                    <Dropdown id={this.props.id} isOpen={this.state.control[this.props.id].open} toggle={()=>this.controlopen(this.props.id)}>
+                      <DropdownToggle caret className="p-0" color="#000" style={{fontSize: '1.2rem'}}>
+                        <i className={this.state.control[this.props.id].icon}>{'   '}{this.state.control[this.props.id].name}</i>
+                      </DropdownToggle>
+                      <DropdownMenu left="true" style={{maxHeight: "300px", overflow: 'auto'}}>
+                        {
+                            this.state.control[this.props.id].list.map(({name = "", id}, i)=>{
+                                return(
+                                  <DropdownItem onClick={(e)=>{
+                                      this.handleChangeName(e, this.props.id, name, id)
+                                  }} key={i}>{name}</DropdownItem> 
+                                )
+                            })
+                        }
+                      </DropdownMenu>
+                    </Dropdown>
+                    <i className={card.icon} ></i>
+                  </div>
+                  <div className="h4 mb-0" style={{marginTop: '.5rem'}}>{header}</div>
+                  <small className="text-muted text-uppercase font-weight-bold" style={{ display: 'flex', justifyContent: 'space-between'}}>
+                    {children}
+                    {this.props.id === 'channels' && <span style={{ color: 'blue', cursor:'pointer'}} onClick={(e) => this.handleToggle(e, 'channels')}>create channels</span>}
+                    {this.props.id === 'organizations' && <span style={{ color: "blue", cursor:'pointer' }} onClick={(e) => this.handleToggle(e, 'organizations')}>create organizations</span>}
+                  </small>
+                  <Progress className={progress.style} color={progress.color} value={progress.value} />
+                </CardBody>
+                <Modal isOpen={isOpen} toggle={this.handleToggle} title={title} onCompleted={this.handleCompleted} />
+                {/* <Modal toggle={()=>this.setState({isOpen: !this.state.isOpen})} isOpen={this.state.isOpen}/> */}
+                </Card>
+              )
+            }
           </Consumer>
   
     );

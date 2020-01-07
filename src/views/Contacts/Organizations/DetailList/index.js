@@ -57,7 +57,6 @@ function RenderTable({ name, id }) {
   if (error) return `Error! ${error.message}`;
   if (name === "channels") {
     const users = data.channel.users;
-    // console.log(data, 'data');
     const organizationName = data.channel.organization.name;
     users.forEach((v) => {
       v.organization = organizationName;

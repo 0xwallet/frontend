@@ -1,8 +1,8 @@
-import React,{PureComponent}from 'react';
-import { Card, CardBody, CardHeader ,Row,Col,ButtonGroup,Dropdown,DropdownToggle, DropdownItem, DropdownMenu } from 'reactstrap';
+import React from 'react';
+import { /* Card, CardBody, CardHeader ,*/Row,Col, /* ButtonGroup,Dropdown,DropdownToggle, DropdownItem, DropdownMenu */ } from 'reactstrap';
 import { Query } from 'react-apollo';
 import OrgCard from './OrgCard';
-import CreateOrgModal from './CreateOrgModal';
+// import CreateOrgModal from './CreateOrgModal';
 import { getMeOrg, queryChannels } from './Grqphql';
 // import {generateMessage} from './nkn';
 
@@ -37,7 +37,7 @@ const cardConfig = {
     }
 };
 
-class Viewer extends PureComponent{
+/* class Viewer extends PureComponent{
     constructor(props){
         super(props);
         this.orgref = React.createRef();
@@ -107,7 +107,7 @@ class Viewer extends PureComponent{
 
         return(
             <>
-                {/* <CardHeader style={{display: 'flex',alignItems: 'center'}}>    
+                <CardHeader style={{display: 'flex',alignItems: 'center'}}>    
                 <ButtonGroup >
                 <Query
                     query={getMeOrg}
@@ -144,10 +144,10 @@ class Viewer extends PureComponent{
                 </Query>
                 </ButtonGroup>
                 <span style={{color:'#20a8d8',marginLeft:'1rem',cursor:'pointer'}} onClick={this.openisOrg}>create</span>
-                </CardHeader> */}
+                </CardHeader>
                     <Row>
                         {this.render_card()} 
-                        {/* <Col xs="12" sm="6" lg="3">  
+                        <Col xs="12" sm="6" lg="3">  
                             <OrgCard icon="fa fa-laptop" color="info" header="99999.99" value="50" id="income" onClick={(e) => this.handleChangeName(e, "income")}>Income</OrgCard>
                         </Col>
                         <Col xs={12} sm={6} md={3} >
@@ -202,12 +202,53 @@ class Viewer extends PureComponent{
                         </Col>
                         <Col xs={12} sm={6} md={3}>
                             <OrgCard icon="icon-pie-chart" color="info" header="87.500" value="25" id="tasks" onClick={(e) => this.handleChangeName(e, "task")}>Statistics</OrgCard>
-                        </Col> */}
+                        </Col>
                     </Row>
-                {/* <CreateOrgModal ref={this.orgref}/> */}
+                <CreateOrgModal ref={this.orgref}/>
             </>
         )
     }
+}*/
+
+function Render_Card(onChangeId, handleChangeName) {
+    return (
+       Object.values(cardConfig).map((v, i) => (
+        <Col xs={12} sm={6} md={3} key={i}>
+            <Query query={v.query}>
+                {
+                    ({ data, loading, error}) => {
+                    if (loading) return 'loading';
+                    if (error) return 'error';
+                    const { me } = data;
+                    return (
+                        <OrgCard 
+                            {...v}
+                            list={me[v.id]}
+                            id={v.id} 
+                            onChangeId={onChangeId} 
+                            onClick={(e) => handleChangeName(e, v.id)}
+                        >
+                            {v.description}
+                        </OrgCard>                           
+                    );
+                    }
+                }
+            </Query>
+        </Col>
+       ))
+    );
+}
+
+function Viewer(props) {
+    const {onChangeId, onChangeName } = props;
+    const handleChangeName = (_, memberListName) => {
+        onChangeName(memberListName);
+    }
+    return (
+        <Row>
+             {Render_Card(onChangeId, handleChangeName)}
+        </Row>
+    );
 }
 
 export default Viewer;
