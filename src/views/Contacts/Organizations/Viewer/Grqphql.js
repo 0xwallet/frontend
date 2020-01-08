@@ -25,6 +25,7 @@ const CREATEORG_MUTATION = gql`
   mutation createOrg($name: String!) {
     createOrganization(name: $name) {
       name,
+      id,
     }
   }
 `;
