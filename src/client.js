@@ -51,11 +51,3 @@ const client = new ApolloClient({
 });
 
 export default client;
-
-// import ApolloClient from "apollo-boost"
-
-// const client = new ApolloClient({  
-//     uri: "https://owaf-io.yicp.top/api"
-// })
-
-// export default client

@@ -3,7 +3,6 @@ import { Card, CardBody, CardHeader, Dropdown, DropdownMenu, DropdownToggle, Dro
 import { AppSwitch } from '@coreui/react'
 import { Query } from 'react-apollo';
 import KanBan from '../KanBan';
-// import { useQuery, Query } from 'react-apollo';
 import { getMeOrg } from '../Viewer/Grqphql';
 import CalendarDetail from './CalenDarDetail';
 // import './index.scss';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Input,Label } from 'reactstrap';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag'; 
+// import gql from 'graphql-tag'; 
 import crypto from 'crypto';
 import Identicon from 'identicon.js';
 import './index.scss';
@@ -12,44 +11,42 @@ hash.update(useremail); // 传入用户名
 let imgData = new Identicon(hash.digest('hex')).toString()
 let imgUrl = 'data:image/png;base64,'+imgData // 这就是头像的base64码;
 
-const LAUNCHES_QUERY = gql`
-query me{
-    me{
-        avatar,
-        email,
-        username
-    }
-}
-`;
+// const LAUNCHES_QUERY = gql`
+// query me{
+//     me{
+//         avatar,
+//         email,
+//         username
+//     }
+// }
+// `;
 
 export default () => {
-    // const [img,setImg] = useState(imgUrl);
-    // get avatar
+    const [img,setImg] = useState(imgUrl);
+    /* get avatar
     const { loading, error, data } = useQuery(LAUNCHES_QUERY);
     if (loading) return 'Loading...';
     if (error) return `Error! ${error.message}`;
     const { avatar } = data.me;
-    const renderAvatar = avatar || imgUrl;
+    const renderAvatar = avatar || imgUrl; */
 
     function changepic(e) {
-        // document.querySelector('.avatarimg').style.backgroundImage = `url(${getObjectURL(e.target.files[0])})`;
-        // setImg(getObjectURL(e.target.files[0]));
-        console.log(getObjectURL(e.target.files[0]), 'getObjectURL(e.target.files[0])');
+        setImg(getObjectURL(e.target.files[0]));
+        /* 图片转base64传给服务器
         var file = e.target.files[0];
         var reader = new  FileReader();
         reader.readAsDataURL(file);
         // $("img").attr("data-file",file[i])改为$("img").data("data-file",file[i])
         reader.onload = function (ev) {
             console.log( ev.target.result, ' ev.target.result');
-            // $("#backimg").attr("src", ev.target.result);
             document.querySelector("#avatar").setAttribute("src", ev.target.result);
-        }
+        } */
     }
 
     return(
         <div className="setting_avatar">
             <div className="avatarimg">
-                <img src={renderAvatar} alt="avatar" id="avatar"></img>
+                <img src={img} alt="avatar" id="avatar"></img>
             </div>
             <div>
                 <form id="advForm">

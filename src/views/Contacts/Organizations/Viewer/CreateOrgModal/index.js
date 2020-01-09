@@ -3,7 +3,6 @@ import {
   Modal,ModalHeader,ModalBody,ModalFooter,Button,FormGroup,Label,Input,Col
 } from 'reactstrap';
 import { Mutation, Query } from "react-apollo";
-// import { useQuery } from '@apollo/react-hooks';
 import { queryChannels, getMeOrg, CREATEORG_MUTATION, CreateChannel } from '../Grqphql';
 
 export default class OrgModal extends React.Component{
