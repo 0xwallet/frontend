@@ -43,9 +43,9 @@ const latestBlockHeight = rpcCall(
 
 
 
-function getUsername(str){
-    return str.split('.')[0]
-}
+// function getUsername(str){
+//     return str.split('.')[0]
+// }
 // 先delay
 /* client.on('connect', ()=>{
     client.on('message', (src, payload, payloadType, encrypt) => {

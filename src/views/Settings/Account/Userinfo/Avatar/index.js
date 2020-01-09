@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input,Label } from 'reactstrap';
 // import gql from 'graphql-tag'; 
 import crypto from 'crypto';

@@ -23,13 +23,13 @@ const queryObject = {
   income: getChannlesIds,
 }
 
-const defaultIdObj = {
-  organizations: getOrgIds,
-  channels: getChannlesIds,
-  // delay
-  tasks: getOrgIds,
-  income: getChannlesIds,
-}
+// const defaultIdObj = {
+//   organizations: getOrgIds,
+//   channels: getChannlesIds,
+//   // delay
+//   tasks: getOrgIds,
+//   income: getChannlesIds,
+// }
 
 function Action() {
   return (
