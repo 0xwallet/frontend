@@ -39,4 +39,20 @@ const CreateChannel = gql`
   }
 `;
 
-export { queryChannels, getMeOrg, CREATEORG_MUTATION, CreateChannel };
+const deleteOrgItem = gql`
+  mutation delete($organizationId: ID!){
+    deleteOrganization(organizationId: $organizationId){
+      name
+    }
+  }
+`;
+
+const deleteChannelItem = gql`
+  mutation delete($channelId: ID!){
+    deleteChannel(channelId: $channelId){
+      name
+    }
+  }
+`;
+
+export { queryChannels, getMeOrg, CREATEORG_MUTATION, CreateChannel, deleteOrgItem, deleteChannelItem };

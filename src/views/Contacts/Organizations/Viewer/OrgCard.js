@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Mutation } from 'react-apollo';
 import { Card, CardBody, Progress ,Dropdown,DropdownToggle,DropdownMenu,DropdownItem} from 'reactstrap';
 import classNames from 'classnames';
 // import client from '../../../../client';
@@ -7,6 +8,22 @@ import { mapToCssModules } from 'reactstrap/lib/utils';
 // import Modal from '../../../../components/Modal';
 import Modal from './CreateOrgModal';
 import { Consumer } from '../../../../containers/DefaultLayout';
+import { deleteOrgItem, deleteChannelItem, queryChannels, getMeOrg } from './Grqphql';
+
+const checkMutation = {
+  channels: deleteChannelItem,
+  organizations: deleteOrgItem,
+};
+
+const checkQuery = {
+  channels: queryChannels,
+  organizations: getMeOrg,
+};
+
+const checkParams = {
+  channels: 'channelId',
+  organizations: 'organizationId',
+}
 
 const propTypes = {
   header: PropTypes.string,
@@ -158,7 +175,29 @@ class OrgCard extends Component {
                                 return(
                                   <DropdownItem onClick={(e)=>{
                                       this.handleChangeName(e, this.props.id, name, id)
-                                  }} key={i}>{name}</DropdownItem> 
+                                  }} key={i}>{name}
+                                    <Mutation mutation={checkMutation[this.props.id]} variables={{
+                                      [checkParams[this.props.id]]: id,
+                                    }} refetchQueries={[{ query: checkQuery[this.props.id] }]}>
+                                      {
+                                        (event, { loading, error }) => {
+                                          if (loading) return 'loading';
+                                          if (error) return 'error';
+                                          return (
+                                            <span 
+                                              style={{ color: 'red', float: 'right', fontSize: '12px' }}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                event();
+                                              }}
+                                            >
+                                              删除
+                                            </span>
+                                          );
+                                        }
+                                      }
+                                    </Mutation>
+                                  </DropdownItem> 
                                 )
                             })
                         }

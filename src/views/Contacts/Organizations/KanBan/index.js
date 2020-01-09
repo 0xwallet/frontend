@@ -3,9 +3,10 @@ import Drag from './components/Draggable';
 
 class KanBan extends React.PureComponent{
     render() {
+        const { currentOrgId } = this.props;
         return(
             <div>
-                <Drag />
+                <Drag currentOrgId={currentOrgId} />
             </div>
         );
     };

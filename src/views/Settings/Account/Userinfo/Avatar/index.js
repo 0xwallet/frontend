@@ -1,8 +1,7 @@
-import React,{ useState } from 'react';
+import React from 'react';
 import { Input,Label } from 'reactstrap';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag'; 
-import { useMutation } from '@apollo/react-hooks';
 import crypto from 'crypto';
 import Identicon from 'identicon.js';
 import './index.scss';
@@ -39,6 +38,7 @@ export default () => {
         var file = e.target.files[0];
         var reader = new  FileReader();
         reader.readAsDataURL(file);
+        // $("img").attr("data-file",file[i])改为$("img").data("data-file",file[i])
         reader.onload = function (ev) {
             console.log( ev.target.result, ' ev.target.result');
             // $("#backimg").attr("src", ev.target.result);

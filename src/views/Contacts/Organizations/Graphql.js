@@ -41,4 +41,12 @@ query orgs{
   }
 }`;
 
-export { GetOrgMemberList, GetChannelsMemberList, getChannlesIds, getOrgIds };
+const queryKanban = gql`
+query kanban($organizationId: ID!){
+  kanbanColumns(organizationId: $organizationId){
+    id,
+    position,
+  }
+}`;
+
+export { GetOrgMemberList, GetChannelsMemberList, getChannlesIds, getOrgIds, queryKanban };

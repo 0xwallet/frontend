@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardHeader } from 'reactstrap';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import { Query } from 'react-apollo';
+import { queryKanban } from '../../../Graphql';
 import { getStyle } from '@coreui/coreui-pro/dist/js/coreui-utilities.js'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
@@ -36,21 +38,46 @@ class Draggable extends Component {
   }
 
   render() {
-
     const loremIpsum = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.'
-
+    const { currentOrgId } = this.props;
     return (
       <div className="animated fadeIn">
-        <ResponsiveGridLayout className="layout" layouts={this.state.layouts}
-                              onLayoutChange={(layout, layouts) =>
-                                this.onLayoutChange(layout, layouts)
-                              }
-                              breakpoints={breakPoints}
-                              // cols={{xl: 3, lg: 3, md: 3, sm: 2, xs: 1}}
-                              cols={{xl: 4, lg: 4, md: 3, sm: 2, xs: 1}}
-                              isResizable={false}
-                              measureBeforeMount={false}
-                              draggableHandle={".card-header"}>
+        <ResponsiveGridLayout 
+          className="layout" 
+          layouts={this.state.layouts}
+          onLayoutChange={(layout, layouts) =>
+            this.onLayoutChange(layout, layouts)
+          }
+          breakpoints={breakPoints}
+          // cols={{xl: 3, lg: 3, md: 3, sm: 2, xs: 1}}
+          cols={{xl: 4, lg: 4, md: 3, sm: 2, xs: 1}}
+          isResizable={false}
+          measureBeforeMount={false}
+          draggableHandle={".card-header"}
+        > 
+          <Card key="lcj" className="card-accent-primary">
+            <CardHeader>
+              <i className="cui-cursor-move"></i>
+              lcj_test
+            </CardHeader>
+            <CardBody>
+              <Query query={queryKanban} variables={{
+                organizationId: currentOrgId,
+              }}> 
+                {
+                  ({ loading, error, data }) => {
+                    if (loading) return 'loading';
+                    if (error) return 'loading';
+                    return (
+                      data.kanbanColumns.map((v, i) => (
+                        <div key={i}>{v.name}{v.id}</div>
+                      ))
+                    );
+                  }
+                }
+              </Query>
+            </CardBody>
+          </Card>
           <Card key="a" className="card-accent-primary">
             <CardHeader>
               <i className="cui-layers"></i>

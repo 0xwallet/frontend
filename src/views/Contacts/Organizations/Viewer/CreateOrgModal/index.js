@@ -11,11 +11,18 @@ export default class OrgModal extends React.Component{
         name: "",
         orgnameInChannels: "3",
         type: "",
+        orgname: '',
     }
 
     handleChangeName = (e) => {
       this.setState({
         name: e.target.value
+      })
+    }
+
+    handleChangeOrgName = (e) => {
+      this.setState({
+        orgname: e.target.value
       })
     }
 
@@ -51,7 +58,7 @@ export default class OrgModal extends React.Component{
     }
 
     render_orgs() {
-      const { name } = this.state;
+      const { orgname } = this.state;
       return(
         <>
           <FormGroup>
@@ -60,7 +67,7 @@ export default class OrgModal extends React.Component{
               type="text" 
               id="company" 
               placeholder="Enter your organization name" 
-              value={name} 
+              value={orgname} 
               onChange={this.handleChangeOrgName}
             />
           </FormGroup>
@@ -112,7 +119,7 @@ export default class OrgModal extends React.Component{
           </FormGroup>
           <FormGroup>
             <Label htmlFor="vat">organization</Label>
-            <Input defaultValue="3" type="select" onChange={(e) => this.changeTheme(e)} value={this.state.orgnameInChannels} required >
+            <Input type="select" onChange={(e) => this.changeTheme(e)} value={this.state.orgnameInChannels} required >
               <Query query={getMeOrg}>
                 {
                   ({ loading, error, data }) => {
@@ -151,9 +158,10 @@ export default class OrgModal extends React.Component{
 
     render(){
       const { isOpen, toggle, title, onCompleted } = this.props; 
-      const { name, orgnameInChannels, type } = this.state;
+      const { name, orgnameInChannels, type, orgname } = this.state;
       const mutation = title === 'organizations' ? CREATEORG_MUTATION : CreateChannel;
-      const variables = title === 'organizations' ? { name } : { name, organizationId: orgnameInChannels, type };
+      const variables = title === 'organizations' ? { name: orgname } : { name, organizationId: orgnameInChannels, type };
+      const refetchQueries = title === 'organizations' ? getMeOrg : queryChannels;
       return (
         <Modal isOpen={isOpen} toggle={toggle}>
           <ModalHeader toggle={toggle}>
@@ -167,7 +175,8 @@ export default class OrgModal extends React.Component{
             mutation={mutation}
             variables={variables}
             onCompleted={onCompleted}
-            update={this.handleUpdate}
+            // update={this.handleUpdate}
+            refetchQueries={[{ query: refetchQueries }]}
           >
             {(createOrg, { loading, error}) => {
               if (loading) return 'loading';

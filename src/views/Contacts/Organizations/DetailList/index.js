@@ -45,7 +45,7 @@ function RenderTable({ name, id }) {
   if (name === 'income') return "";
 
   const { data: idData } = useQuery(defaultIdObj[name]);
-  if (idData) defaultId = idData.me[name][0].id;
+  if (idData && idData.me[name].length !== 0) defaultId = idData.me[name][0].id;
 
   const { loading, error, data } = useQuery(queryObject[name], {
     variables: {
