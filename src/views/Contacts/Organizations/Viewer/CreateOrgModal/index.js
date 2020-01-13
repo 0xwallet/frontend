@@ -2,16 +2,60 @@ import React from 'react';
 import {
   Modal,ModalHeader,ModalBody,ModalFooter,Button,FormGroup,Label,Input,Col
 } from 'reactstrap';
-import { Mutation, Query } from "react-apollo";
+import { Mutation, Query, graphql } from "react-apollo";
 import { queryChannels, getMeOrg, CREATEORG_MUTATION, CreateChannel } from '../Grqphql';
 
-export default class OrgModal extends React.Component{
+const MapCard = {
+  organizations: {
+    query: getMeOrg,
+    mutation: {
+      name: "createOrganization",
+      case: CREATEORG_MUTATION
+    }
+  },
+  channels: {
+    query: queryChannels,
+    mutation: {
+      name: "createChannel",
+      case: CreateChannel
+    }
+  },
+  tasks: {
+    query: getMeOrg,
+    mutation: {
+      name: "createOrganization",
+      case: CREATEORG_MUTATION
+    }
+  },
+  income: {
+    query: queryChannels,
+    mutation: {
+      name: "createChannel",
+      case: CreateChannel
+    }
+  },
+}
+
+class OrgModal extends React.Component{
+    constructor(props) {
+      super(props);
+    }
     state={
         name: "",
         orgnameInChannels: "3",
         type: "",
         orgname: '',
     }
+
+    _createBoard = async() => {
+      const { orgname } = this.state;
+      await this.props.CREATEORG_MUTATION({
+        variables: {
+          name: orgname,
+        }
+      });
+      this.props.toggle();
+    };
 
     handleChangeName = (e) => {
       this.setState({
@@ -33,21 +77,22 @@ export default class OrgModal extends React.Component{
     }
 
     handleUpdate = (cache, { data }) => {
-      console.log(cache, data, 'update')
-      // const { title } = this.props;
-      // if (title === 'organizations') {
-      //   const { me: { organizations } } = cache.readQuery({ query: getMeOrg });
-      //   cache.writeQuery({
-      //     query: getMeOrg,
-      //     data: { organizations: organizations.concat([data.createOrganization]) }
-      //   });
-      // }else {
-      //   const { me: { channels } } = cache.readQuery({ query: queryChannels });
-      //   cache.writeQuery({
-      //     query: queryChannels,
-      //     data: { me: { channels: channels.concat([data.createChannel]) }}
-      //   });
-      // }
+      const { title } = this.props;
+      // 获取当前query 
+      const query = MapCard[title].query;
+      // 当前mutation的函数名
+      const item = MapCard[title].mutation.name;
+
+      // 当前的list名称 title
+      const xx = cache.readQuery({ query });
+      xx.me[title].push(data[item]);
+
+      cache.writeQuery({
+        query: query,
+        data: xx,
+      });
+
+      this.props.onUpdate(xx.me[title]);
     };
 
     handleChangeType = (e) => {
@@ -156,11 +201,20 @@ export default class OrgModal extends React.Component{
     }
 
     render(){
-      const { isOpen, toggle, title, onCompleted } = this.props; 
+      const { isOpen, toggle, onCompleted, title } = this.props; 
       const { name, orgnameInChannels, type, orgname } = this.state;
-      const mutation = title === 'organizations' ? CREATEORG_MUTATION : CreateChannel;
-      const variables = title === 'organizations' ? { name: orgname } : { name, organizationId: orgnameInChannels, type };
-      const refetchQueries = title === 'organizations' ? getMeOrg : queryChannels;
+      // const mutation = title === 'organizations' ? CREATEORG_MUTATION : CreateChannel;
+      // const variables = title === 'organizations' ? { name: orgname } : { name, organizationId: orgnameInChannels, type };
+      // const refetchQueries = title === 'organizations' ? getMeOrg : queryChannels;
+      // console.log(MapCard[title], title, this.title);
+      const paramsMap = {
+        channels: {
+          name, organizationId: orgnameInChannels, type
+        },
+        organizations: {
+          name: orgname
+        },
+      };
       return (
         <Modal isOpen={isOpen} toggle={toggle}>
           <ModalHeader toggle={toggle}>
@@ -171,11 +225,10 @@ export default class OrgModal extends React.Component{
           </ModalBody>
           <ModalFooter>
           <Mutation
-            mutation={mutation}
-            variables={variables}
+            mutation={MapCard[title].mutation.case}
+            variables={paramsMap[title]}
             onCompleted={onCompleted}
-            // update={this.handleUpdate}
-            refetchQueries={[{ query: refetchQueries }]}
+            update={this.handleUpdate}
           >
             {(createOrg, { loading, error}) => {
               if (loading) return 'loading';
@@ -185,9 +238,12 @@ export default class OrgModal extends React.Component{
               );
             }}
           </Mutation>
+          {/* <Button color="success" onClick={() => this._createBoard()}>Ok</Button> */}
           <Button color="secondary" onClick={toggle}>Cancel</Button>
         </ModalFooter>
         </Modal>
       );
     }
 }
+
+export default graphql(CREATEORG_MUTATION, { name: "CREATEORG_MUTATION" })(OrgModal);

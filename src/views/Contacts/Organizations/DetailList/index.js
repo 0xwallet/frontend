@@ -58,11 +58,13 @@ function RenderTable({ name, id }) {
     return (
       <Query query={queryObject[name]} variables={{
         ID: id,
-      }}>
+      }} skip={!id}>
         {
           ({ loading, error, data }) => {
             if (loading) return 'Loading...';
             if (error) return `Error! ${error.message}`;
+            console.log(data);
+            if (!data) return 'no data';
             const users = data.channel.users;
             const organizationName = data.channel.organization.name;
             users.forEach((v) => {
@@ -86,11 +88,13 @@ function RenderTable({ name, id }) {
     return (
       <Query query={queryObject[name]} variables={{
         ID: id,
-      }}>
+      }} skip={!id}>
         {
           ({ loading, error, data }) => {
             if (loading) return 'Loading...';
             if (error) return `Error! ${error.message}`;
+            if (!data) return 'no data';
+
             const users = data.organization.users;
             return (
               <BootstrapTable data={users} version="4" striped hover pagination search options={options}>

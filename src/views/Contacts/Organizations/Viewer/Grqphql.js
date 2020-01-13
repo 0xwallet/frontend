@@ -22,7 +22,7 @@ const getMeOrg = gql`
 `;
 
 const CREATEORG_MUTATION = gql`
-  mutation createOrg($name: String!) {
+  mutation createOrganization($name: String!) {
     createOrganization(name: $name) {
       name,
       id,
@@ -42,7 +42,8 @@ const CreateChannel = gql`
 const deleteOrgItem = gql`
   mutation delete($organizationId: ID!){
     deleteOrganization(organizationId: $organizationId){
-      name
+      name,
+      id,
     }
   }
 `;
@@ -50,7 +51,8 @@ const deleteOrgItem = gql`
 const deleteChannelItem = gql`
   mutation delete($channelId: ID!){
     deleteChannel(channelId: $channelId){
-      name
+      name,
+      id
     }
   }
 `;

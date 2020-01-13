@@ -37,7 +37,7 @@ const cardConfig = {
     }
 };
 
-function Render_Card(onChangeId, handleChangeName) {
+function RenderCard({ handleChangeId, handleChangeName }) {
     return (
        Object.values(cardConfig).map((v, i) => (
         <Col xs={12} sm={6} md={3} key={i}>
@@ -52,7 +52,7 @@ function Render_Card(onChangeId, handleChangeName) {
                             {...v}
                             list={me[v.id]}
                             id={v.id} 
-                            onChangeId={onChangeId} 
+                            onChangeId={handleChangeId} 
                             onClick={(e) => handleChangeName(e, v.id)}
                         >
                             {v.description}
@@ -71,9 +71,10 @@ function Viewer(props) {
     const handleChangeName = (_, memberListName) => {
         onChangeName(memberListName);
     }
+    
     return (
         <Row>
-             {Render_Card(onChangeId, handleChangeName)}
+            <RenderCard handleChangeId={onChangeId} handleChangeName={handleChangeName} />
         </Row>
     );
 }

@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { Mutation } from 'react-apollo';
 import { Card, CardBody, Progress ,Dropdown,DropdownToggle,DropdownMenu,DropdownItem} from 'reactstrap';
 import classNames from 'classnames';
-// import client from '../../../../client';
 import { mapToCssModules } from 'reactstrap/lib/utils';
-// import Modal from '../../../../components/Modal';
 import Modal from './CreateOrgModal';
 import { Consumer } from '../../../../containers/DefaultLayout';
 import { deleteOrgItem, deleteChannelItem, queryChannels, getMeOrg } from './Grqphql';
@@ -23,6 +21,11 @@ const checkQuery = {
 const checkParams = {
   channels: 'channelId',
   organizations: 'organizationId',
+}
+
+const checkDelete = {
+  channels: 'deleteChannel',
+  organizations: 'deleteOrganization',
 }
 
 const propTypes = {
@@ -50,7 +53,7 @@ class OrgCard extends Component {
     super(props);
     this.state = {
       isOpen: false,
-      title: "",
+      title: "channels",
       control : {
         organizations: {
           open: false,
@@ -99,46 +102,35 @@ class OrgCard extends Component {
     })
   }
 
-  // selorg = (_e,v,id,connectHaveChannel)=>{
-  //   const newobj = {...this.state.control};
-  //   if(typeof(v) !== 'object'){
-  //     newobj[id].name = v;
-  //     this.setState({
-  //       control: newobj
-  //     })
-  //   }else{
-  //     newobj[id].name = v.name;
-  //     this.setState({
-  //       control: newobj,
-  //       isOpen: true,
-  //       user: v.name,
-  //     },()=>{
-  //       connectHaveChannel(this.state.user)  
-  //     });
-  //   }
-  // }
-
   handleCompleted = (data) => {
     console.log(data);
     this.handleToggle();
   };
+
+  handleUpdate = (newList) => {
+    const { title } = this.state;
+    const cloneControl = {...this.state.control};
+    cloneControl[title].list = newList;
+    this.setState({
+      control: cloneControl
+    });
+  }
+
+  handleDeleteUpdate = (cache, { data }) => {
+    const title = this.props.id;
+    const cloneControl = {...this.state.control};
+    const index = cloneControl[title].list.findIndex(v => v.id === data[checkDelete[title]].id);
+    cloneControl[title].list.splice(index, 1);
+    this.setState({
+      control: cloneControl,
+    });
+  }
 
   handleToggle = (_ ,titleName = 'channels') => {
     this.setState(preState => ({
       isOpen: !preState.isOpen,
       title: titleName,
     }));
-  }
-
-  componentDidMount() {
-    // const { control: { channels  } } = this.state;
-    // client.query({  
-    //   query: getBooks
-    // }).then(({data: { places }})=>{
-    //   this.setState({
-    //     control: {...this.state.control, channels: {...channels, list: places}}
-    //   })
-    // })
   }
 
   render() {
@@ -178,7 +170,9 @@ class OrgCard extends Component {
                                   }} key={i}>{name}
                                     <Mutation mutation={checkMutation[this.props.id]} variables={{
                                       [checkParams[this.props.id]]: id,
-                                    }} refetchQueries={[{ query: checkQuery[this.props.id] }]}>
+                                    }} refetchQueries={[{ query: checkQuery[this.props.id] }]}
+                                      update={this.handleDeleteUpdate}
+                                    >
                                       {
                                         (event, { loading, error }) => {
                                           if (loading) return 'loading';
@@ -213,8 +207,7 @@ class OrgCard extends Component {
                   </small>
                   <Progress className={progress.style} color={progress.color} value={progress.value} />
                 </CardBody>
-                <Modal isOpen={isOpen} toggle={this.handleToggle} title={title} onCompleted={this.handleCompleted} />
-                {/* <Modal toggle={()=>this.setState({isOpen: !this.state.isOpen})} isOpen={this.state.isOpen}/> */}
+                <Modal isOpen={isOpen} toggle={this.handleToggle} title={title} onCompleted={this.handleCompleted} onUpdate={this.handleUpdate}/>
                 </Card>
               )
             }
