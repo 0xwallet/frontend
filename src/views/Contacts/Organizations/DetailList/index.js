@@ -63,7 +63,6 @@ function RenderTable({ name, id }) {
           ({ loading, error, data }) => {
             if (loading) return 'Loading...';
             if (error) return `Error! ${error.message}`;
-            console.log(data);
             if (!data) return 'no data';
             const users = data.channel.users;
             const organizationName = data.channel.organization.name;

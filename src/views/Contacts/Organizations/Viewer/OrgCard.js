@@ -103,7 +103,6 @@ class OrgCard extends Component {
   }
 
   handleCompleted = (data) => {
-    console.log(data);
     this.handleToggle();
   };
 
@@ -134,7 +133,7 @@ class OrgCard extends Component {
   }
 
   render() {
-    const { className, cssModule, header, icon, color, value, children, invert, ...attributes } = this.props;
+    const { className, cssModule, header, icon, color, value, children, invert  } = this.props;
 
     // demo purposes only
     const progress = { style: '', color: color, value: value };
@@ -154,7 +153,7 @@ class OrgCard extends Component {
         <Consumer>
             {
               (/* { connectHaveChannel,channels }*/)=>(
-                <Card className={classes} {...attributes}>
+                <Card className={classes}>
                 <CardBody>
                   <div className="" style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',fontSize: '2rem'}}>
                     <Dropdown id={this.props.id} isOpen={this.state.control[this.props.id].open} toggle={()=>this.controlopen(this.props.id)}>
