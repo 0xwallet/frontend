@@ -88,21 +88,27 @@ class DefaultLayout extends Component {
   }
 
   componentDidMount() {
-    client.query({  
-      query: getBooks
-    }).then(({data: { places }})=>{
-      let arr = [];
-      places.forEach((v,i)=>{
-        arr.push({
-          id: i,
-          user: v.name
-        })
-      });
+    // client.query({  
+    //   query: getBooks
+    // }).then(({data: { places }})=>{
+    //   let arr = [];
+    //   places.forEach((v,i)=>{
+    //     arr.push({
+    //       id: i,
+    //       user: v.name
+    //     })
+    //   });
 
-       this.setState({
-          channels: arr
-       })
-    })
+    //    this.setState({
+    //       channels: arr
+    //    })
+    // });
+    this.setState({
+      channels: [{
+        id: 1,
+        user: 'OWAF'
+      }]
+   })
   }
 
   render() {
