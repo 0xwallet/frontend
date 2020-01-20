@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Modal, ModalHeader, 
   ModalBody,ModalFooter,Button,FormGroup,Label,Input,Col, Dropdown, DropdownToggle, DropdownItem, DropdownMenu,
-  FormText, InputGroup, InputGroupAddon, InputGroupText
+  FormText, InputGroup, InputGroupAddon, InputGroupText, Progress, Form
 } from 'reactstrap';
 import { TextMask, InputAdapter } from 'react-text-mask-hoc';
 import { Mutation, Query, graphql } from "react-apollo";
@@ -49,7 +49,7 @@ class OrgModal extends React.Component{
         type: "",
         orgname: '',
         income: {
-          actionName: 'income',
+          actionName: 'withdrawal',
           isOpen: false,
         }
     }
@@ -222,36 +222,106 @@ class OrgModal extends React.Component{
       );
     }
 
-    render_income() {
-      const imgURl = './code.png'
+    render_withdrawal_input() {
       return (
-        <div style={{ minHeight: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
-          <h2>your address</h2>
-          <img src={imgURl} alt="qr code" style={{ height: '150px', width: '150px'}}/>
-          <h5>sssssssssssssssssssssssssssssssssssssss</h5>
+        <>
           <FormGroup>
-            <Label>Taxpayer Identification Numbers</Label>
+            {/* <Label>Withdrawal Numbers</Label> */}
             <InputGroup>
               <InputGroupAddon addonType="prepend">
                 <InputGroupText><i className="fa fa-usd"></i></InputGroupText>
               </InputGroupAddon>
               <TextMask
-                mask={[/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
                 Component={InputAdapter}
                 className="form-control"
               />
             </InputGroup>
             <FormText color="muted">
-              ex. 99-9999999
+              max. 999999999
             </FormText>
           </FormGroup>
+          <Button color="info">confirm</Button>
+        </>
+      );
+    }
+
+    render_deposit() {
+      const imgURl = './code.png';
+      return (
+        <>
+          <h2>your deposit address</h2>
+          <img src={imgURl} alt="qr code" style={{ height: '150px', width: '150px'}}/>
+          <h5>sssssssssssssssssssssssssssssssssssssss</h5>
+          <Button color="info">copy address</Button>
+        </>
+      );
+    }
+
+    render_deposit() {
+      const imgURl = './code.png';
+      return (
+        <>
+          <h2>your deposit address</h2>
+          <img src={imgURl} alt="qr code" style={{ height: '150px', width: '150px'}}/>
+          <h5>sssssssssssssssssssssssssssssssssssssss</h5>
+          <Button color="info">copy address</Button>
+        </>
+      );
+    }
+
+    render_withdrawal() {
+      return (
+        <Form action="" method="post" encType="multipart/form-data" style={{ padding: '20px'}}>
+          <FormGroup row>
+            <Label htmlFor="email-input">Withdrawal Address</Label>
+            <Input type="email" id="email-input" name="email-input" placeholder="Withdrawal Address" autoComplete="email"/>
+            <FormText className="help-block">Please enter your withdrawal address</FormText>
+          </FormGroup>
+          <FormGroup row>
+            <Label htmlFor="password-input">Withdrawal Amount</Label>
+            <Input type="password" id="password-input" name="password-input" placeholder="Withdrawal Amount" autoComplete="new-password" />
+            <FormText className="help-block">Please enter a withdrawal amount</FormText>
+          </FormGroup>
+          <Button color="info" style={{ width: '100%' }}>confirm Withdrawal</Button>
+        </Form>
+      );
+    }
+
+    render_transfer() {
+      return (
+        <Form action="" method="post" encType="multipart/form-data">
+          <FormGroup row>
+            <Label htmlFor="email-input">Coin Token</Label>
+            <Input type="email" id="email-input" name="email-input" placeholder="Withdrawal Address" autoComplete="email"/>
+            <FormText className="help-block">Please enter your withdrawal address</FormText>
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="password-input">Amount</Label>
+            <Input type="password" id="password-input" name="password-input" placeholder="Withdrawal Amount" autoComplete="new-password" />
+            <FormText className="help-block">Please enter a withdrawal amount</FormText>
+          </FormGroup>
+          <Button color="info">confirm Withdrawal</Button>
+        </Form>
+      );
+    }
+
+    render_income() {
+      const { income: { actionName } } = this.state;
+      return (
+        <div style={{ minHeight: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
+
+          {/* <Progress className="progress-xs" color="info" value="25" style={{width: '100%'}} /> */}
+          {actionName === 'deposit' && this.render_deposit()}
+          {actionName === 'withdrawal' && this.render_withdrawal()}
+          {actionName === 'transfer' && this.render_transfer()}
         </div>
       );
     }
 
     render_income_header() {
       const { income: { isOpen, actionName } } = this.state;
-      const actions = ['deposit', 'Withdrawal ', 'Transfer'];
+      const actions = ['deposit', 'Withdrawal ', 'transfer'];
       return (
         <Dropdown isOpen={isOpen} toggle={() => {
           this.toggle();
