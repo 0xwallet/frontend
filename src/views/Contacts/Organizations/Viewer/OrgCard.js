@@ -11,6 +11,7 @@ import { deleteOrgItem, deleteChannelItem, queryChannels, getMeOrg } from './Grq
 const checkMutation = {
   channels: deleteChannelItem,
   organizations: deleteOrgItem,
+  income: deleteChannelItem
 };
 
 const checkQuery = {
@@ -76,7 +77,7 @@ class OrgCard extends Component {
         income: {
           open: false,
           name: 'income',
-          list: [],
+          list: props.id === 'income' && [{ id: 1, name: "BSV" }, { id: 2, name: "BTC"}],
           icon: 'fa fa-bitcoin',
         },
       }
@@ -149,11 +150,12 @@ class OrgCard extends Component {
     const classes = mapToCssModules(classNames(className, card.style, card.bgColor), cssModule);
     progress.style = classNames('progress-xs mt-3 mb-0', progress.style);
     const { isOpen, title } = this.state;
+    const { id, onChangeName } = this.props;
     return (
         <Consumer>
             {
               (/* { connectHaveChannel,channels }*/)=>(
-                <Card className={classes}>
+                <Card className={classes} onClick={() => onChangeName(id)}>
                 <CardBody>
                   <div className="" style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',fontSize: '2rem'}}>
                     <Dropdown id={this.props.id} isOpen={this.state.control[this.props.id].open} toggle={()=>this.controlopen(this.props.id)}>
@@ -178,7 +180,7 @@ class OrgCard extends Component {
                                           if (error) return 'error';
                                           return (
                                             <span 
-                                              style={{ color: 'red', float: 'right', fontSize: '12px' }}
+                                              style={{ color: 'red', float: 'right', fontSize: '12px', display: this.props.id === 'income' ? 'none' : 'inline-block' }}
                                               onClick={(e) => {
                                                 e.stopPropagation();
                                                 event();
@@ -201,6 +203,7 @@ class OrgCard extends Component {
                   <div className="h4 mb-0" style={{marginTop: '.5rem'}}>{header}</div>
                   <small className="text-muted text-uppercase font-weight-bold" style={{ display: 'flex', justifyContent: 'space-between'}}>
                     {children}
+                    {id === 'income' && <span style={{ color: 'blue', cursor:'pointer'}} onClick={(e) => this.handleToggle(e, 'income')}>QR code</span>}
                     {this.props.id === 'channels' && <span style={{ color: 'blue', cursor:'pointer'}} onClick={(e) => this.handleToggle(e, 'channels')}>create channels</span>}
                     {this.props.id === 'organizations' && <span style={{ color: "blue", cursor:'pointer' }} onClick={(e) => this.handleToggle(e, 'organizations')}>create organizations</span>}
                   </small>

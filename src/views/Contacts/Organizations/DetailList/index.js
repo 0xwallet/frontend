@@ -1,9 +1,52 @@
 import React from 'react';
 import {Card, CardHeader, CardBody, Button } from 'reactstrap';
+import { Bar } from 'react-chartjs-2';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { Query } from "react-apollo";
 import 'react-bootstrap-table/dist//react-bootstrap-table-all.min.css';
 import { GetOrgMemberList, GetChannelsMemberList, getChannlesIds, getOrgIds } from '../Graphql';
+
+const bar = {
+  labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16],
+  datasets: [
+    {
+      label: 'Recharge',
+      backgroundColor: '#2db7f5',
+      borderColor: 'rgba(255,99,132,1)',
+      borderWidth: 1,
+      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+      hoverBorderColor: 'rgba(255,99,132,1)',
+      data: [12, 23, 33, 42, 15, 36, 7, 18, 19, 10, 11, 12, 13, 15, 16],
+    },
+    {
+      label: 'Reflect',
+      backgroundColor: '#87d068',
+      borderColor: 'rgba(255,99,132,1)',
+      borderWidth: 1,
+      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+      hoverBorderColor: 'rgba(255,99,132,1)',
+      data: [11, 42, 3, 14, 15, 16, 7, 28, 9, 10, 11, 12, 23, 15, 16],
+    },
+    {
+      label: 'Transfer',
+      backgroundColor: '#108ee9',
+      borderColor: 'rgba(255,99,132,1)',
+      borderWidth: 1,
+      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+      hoverBorderColor: 'rgba(255,99,132,1)',
+      data: [11, 22, 13, 42, 15, 61, 17, 18, 19, 10, 11, 12, 13, 35, 46],
+    },
+  ],
+};
+
+const chartOptions = {
+  tooltips: {
+    enabled: false,
+    custom: CustomTooltips
+  },
+  maintainAspectRatio: false
+}
 
 const options = {
   sortIndicator: true,
@@ -38,22 +81,25 @@ function Action() {
 }
 
 function RenderTable({ name, id }) {
-  // let defaultId = "1";
-  // // delay
-  // if (name === 'tasks') return "";
-  // if (name === 'income') return "";
-
-  // const { data: idData } = useQuery(defaultIdObj[name]);
-  // if (idData && idData.me[name].length !== 0) defaultId = idData.me[name][0].id;
-
-  // const { loading, error, data } = useQuery(queryObject[name], {
-  //   variables: {
-  //     ID: id || defaultId,
-  //   }
-  // });
-
-  // if (loading) return 'Loading...';
-  // if (error) return `Error! ${error.message}`;
+  if (name === 'income') {
+    return (
+      <Card>
+        <CardHeader>
+          BALANCE LOGS
+          <div className="card-header-actions">
+            <a href="http://www.chartjs.org" className="card-header-action">
+              <small className="text-muted">docs</small>
+            </a>
+          </div>
+        </CardHeader>
+        <CardBody>
+          <div className="chart-wrapper">
+            <Bar data={bar} options={chartOptions} />
+          </div>
+        </CardBody>
+      </Card>
+    );
+  }
   if (name === "channels") {
     return (
       <Query query={queryObject[name]} variables={{
@@ -63,7 +109,7 @@ function RenderTable({ name, id }) {
           ({ loading, error, data }) => {
             if (loading) return 'Loading...';
             if (error) return `Error! ${error.message}`;
-            if (!data) return 'no data';
+            if (!data) return 'DATA NOT FOUND';
             const users = data.channel.users;
             const organizationName = data.channel.organization.name;
             users.forEach((v) => {

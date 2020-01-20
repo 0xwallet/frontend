@@ -51,6 +51,7 @@ client.on('connect', ()=>{
     client.on('message', (src, payload, payloadType, encrypt) => {
         console.log( payloadType + 'Receive', encrypt ? 'encrypted' : 'unencrypted',  'message', '"' + payload + '"','from', src, 'afterms');
         // Send a text response
+        console.log(src);
         store.dispatch({ type: 'INCREMENT' , payload: { id: Date.now(), content: payload, username: getUsername(src)}});
         return 'Well received!';
     });
@@ -125,7 +126,6 @@ export default class ChatBrower extends PureComponent{
                     }
                 </div>
                 <div style={{margin:"1rem 0"}}>
-                    {/* <Button onClick={this.join}>join a channel</Button> */}
                     <Input onKeyDown={this.sendMsg} onChange={this.onChangeValue} value={inputValue}/>
                 </div>
             </div>

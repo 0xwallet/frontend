@@ -8,9 +8,10 @@ import { getMeOrg, queryChannels } from './Grqphql';
 
 const cardConfig = {
     income: {
-        description: "Members",
+        description: "balance",
         query: getMeOrg,
-        icon: "fa fa-laptop", color: "info", header: "99999.99", value: "50", id: "income"
+        icon: "fa fa-laptop", color: "info", 
+        header: "99999.99", value: "50", id: "income"
     },
     channels: {
         icon: "fa fa-podcast",
@@ -53,7 +54,7 @@ function RenderCard({ handleChangeId, handleChangeName }) {
                             list={me[v.id]}
                             id={v.id} 
                             onChangeId={handleChangeId} 
-                            onClick={(e) => handleChangeName(e, v.id)}
+                            onChangeName={handleChangeName}
                         >
                             {v.description}
                         </OrgCard>                           
@@ -68,7 +69,7 @@ function RenderCard({ handleChangeId, handleChangeName }) {
 
 function Viewer(props) {
     const {onChangeId, onChangeName } = props;
-    const handleChangeName = (_, memberListName) => {
+    const handleChangeName = (memberListName) => {
         onChangeName(memberListName);
     }
     

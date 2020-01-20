@@ -17,6 +17,7 @@ export default () => {
     const cloneIds = {...ids, [memberFromName]: memberFromId};
     setIds(cloneIds);
    }, [memberFromId]);
+
    return( 
         <div>
             <Calendar />

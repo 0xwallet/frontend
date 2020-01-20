@@ -1,7 +1,10 @@
 import React from 'react';
 import {
-  Modal,ModalHeader,ModalBody,ModalFooter,Button,FormGroup,Label,Input,Col
+  Modal, ModalHeader, 
+  ModalBody,ModalFooter,Button,FormGroup,Label,Input,Col, Dropdown, DropdownToggle, DropdownItem, DropdownMenu,
+  FormText, InputGroup, InputGroupAddon, InputGroupText
 } from 'reactstrap';
+import { TextMask, InputAdapter } from 'react-text-mask-hoc';
 import { Mutation, Query, graphql } from "react-apollo";
 import { queryChannels, getMeOrg, CREATEORG_MUTATION, CreateChannel } from '../Grqphql';
 
@@ -45,6 +48,10 @@ class OrgModal extends React.Component{
         orgnameInChannels: "3",
         type: "",
         orgname: '',
+        income: {
+          actionName: 'income',
+          isOpen: false,
+        }
     }
 
     _createBoard = async() => {
@@ -56,6 +63,21 @@ class OrgModal extends React.Component{
       });
       this.props.toggle();
     };
+
+    toggle = () => {
+      this.setState((preState) => ({
+        income: {...preState.income, isOpen: !preState.income.isOpen}
+      }))
+    }
+
+    handleChangeAction = (e, name) => {
+      const cloneState = {...this.state.income};
+      cloneState.actionName = name;
+      this.toggle();
+      this.setState({
+        income: cloneState
+      });
+    }
 
     handleChangeName = (e) => {
       this.setState({
@@ -200,6 +222,52 @@ class OrgModal extends React.Component{
       );
     }
 
+    render_income() {
+      const imgURl = './code.png'
+      return (
+        <div style={{ minHeight: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
+          <h2>your address</h2>
+          <img src={imgURl} alt="qr code" style={{ height: '150px', width: '150px'}}/>
+          <h5>sssssssssssssssssssssssssssssssssssssss</h5>
+          <FormGroup>
+            <Label>Taxpayer Identification Numbers</Label>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText><i className="fa fa-usd"></i></InputGroupText>
+              </InputGroupAddon>
+              <TextMask
+                mask={[/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                Component={InputAdapter}
+                className="form-control"
+              />
+            </InputGroup>
+            <FormText color="muted">
+              ex. 99-9999999
+            </FormText>
+          </FormGroup>
+        </div>
+      );
+    }
+
+    render_income_header() {
+      const { income: { isOpen, actionName } } = this.state;
+      const actions = ['deposit', 'Withdrawal ', 'Transfer'];
+      return (
+        <Dropdown isOpen={isOpen} toggle={() => {
+          this.toggle();
+        }}>
+          <DropdownToggle caret>
+            {actionName}
+          </DropdownToggle>
+          <DropdownMenu>
+            {
+              actions.map(v => <DropdownItem key={v} onClick={(e) => this.handleChangeAction(e, v)}>{v}</DropdownItem>)
+            }
+          </DropdownMenu>
+        </Dropdown>
+      );
+    }
+
     render(){
       const { isOpen, toggle, onCompleted, title } = this.props; 
       const { name, orgnameInChannels, type, orgname } = this.state;
@@ -218,29 +286,31 @@ class OrgModal extends React.Component{
       return (
         <Modal isOpen={isOpen} toggle={toggle}>
           <ModalHeader toggle={toggle}>
-            <strong>{title}</strong>
+            {title === 'income' ? this.render_income_header() : <strong>{title}</strong>}
           </ModalHeader>
           <ModalBody>
-            {title === 'organizations'? this.render_orgs() :this.render_channels()}
+            {title === 'organizations' && this.render_orgs()}
+            {title === 'channels' && this.render_channels()}
+            {title === 'income' && this.render_income()}
           </ModalBody>
-          <ModalFooter>
-          <Mutation
-            mutation={MapCard[title].mutation.case}
-            variables={paramsMap[title]}
-            onCompleted={onCompleted}
-            update={this.handleUpdate}
-          >
-            {(createOrg, { loading, error}) => {
-              if (loading) return 'loading';
-              if (error) return 'error';
-              return (
-                <Button color="primary" onClick={() => createOrg()}>Ok</Button>
-              );
-            }}
-          </Mutation>
-          {/* <Button color="success" onClick={() => this._createBoard()}>Ok</Button> */}
-          <Button color="secondary" onClick={toggle}>Cancel</Button>
-        </ModalFooter>
+          <ModalFooter style={{ display: title === 'income' ? 'none' : 'block' }}>
+            <Mutation
+              mutation={MapCard[title].mutation.case}
+              variables={paramsMap[title]}
+              onCompleted={onCompleted}
+              update={this.handleUpdate}
+            >
+              {(createOrg, { loading, error}) => {
+                if (loading) return 'loading';
+                if (error) return 'error';
+                return (
+                  <Button color="primary" onClick={() => createOrg()}>Ok</Button>
+                );
+              }}
+            </Mutation>
+            {/* <Button color="success" onClick={() => this._createBoard()}>Ok</Button> */}
+            <Button color="secondary" onClick={toggle}>Cancel</Button>
+          </ModalFooter>
         </Modal>
       );
     }
