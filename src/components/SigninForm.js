@@ -76,6 +76,7 @@ class SigninForm extends Component {
                   autoFocus
                   value={this.state.email}
                   onChange={this.handleChange}
+                  onKeyDown={(e) => console.log('sdfsf')}
                 />
                 <label htmlFor="password">Password</label>
                 <input

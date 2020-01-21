@@ -346,15 +346,24 @@ class Dashboard extends Component {
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   render() {
-
+    const ids = [0, 1, 2, 3];
     return (
       <div className="animated fadeIn">
         <Row>
-              <Col xs="12" sm="6" lg="3" key={0}>
-                    <MoneyCard chartData={cardChartData4} chartOpts={cardChartOpts4} id={0} isOpen={false}
-                    cardNumber={1231231231}
-                    balance={9090909909099}/>            
-               </Col>
+          {
+            ids.map((v) => (
+              <Col xs="12" sm="6" lg="3" key={v}>
+                <MoneyCard 
+                  chartData={cardChartData4} 
+                  chartOpts={cardChartOpts4} 
+                  id={v} 
+                  isOpen={false}
+                  cardNumber={1231231231}
+                  balance={9090909909099}
+                />            
+              </Col>
+            ))
+          }
         </Row>
       
         <Row>

@@ -27,12 +27,20 @@ export default class Login0waf extends PureComponent{
         email: "",
         password: "",
         openCodeInput: false,
-        haveParams: false
+        haveParams: false,
+        isCorrect: true,
     };
 
     handleChange = event => {
         const { name, value } = event.target;
         this.setState({ [name]: value });
+    };
+
+    handleKeyDown = event => {
+        if (event.keyCode === 13) {
+            // console.log(this.state.email);
+            this.sendCode();
+        }
     };
 
     handleCompleted = data => {
@@ -60,18 +68,27 @@ export default class Login0waf extends PureComponent{
         const { email } = this.state;
         const reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/; 
         if(email === ""){
-            console.log("null")
+            console.log("null");
+            this.setState({
+                isCorrect: false,
+            });
         }
         if(email !== "" && !reg.test(email)){
-            console.log('format')
+            console.log('format');
+            this.setState({
+                isCorrect: false,
+            });
         }
         if(email !== "" && reg.test(email)){
             console.log('correct');
+            this.setState({
+                isCorrect: true,
+            });
             this.openCodeInput()
         }
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         function GetQueryString(name) {
             var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
             var r = window.location.search.substr(1).match(reg);
@@ -97,7 +114,7 @@ export default class Login0waf extends PureComponent{
     // }
 
     render() {
-        const { openCodeInput: isOpen, email, password, haveParams } = this.state;
+        const { openCodeInput: isOpen, email, password, haveParams, isCorrect } = this.state;
         return (
                 <Mutation
                 mutation={SIGNIN_MUTATION}
@@ -121,8 +138,14 @@ export default class Login0waf extends PureComponent{
                                  e.preventDefault();
                              }} id="login">
                                 <Logo />
-                                <Email onChangeEmailValue={this.handleChange}/>
-                                <Code isOpen={isOpen} onChangeCodeValue={this.handleChange}/>
+                                <Email onChangeEmailValue={this.handleChange} onKeyDown={this.handleKeyDown} isCorrect={isCorrect} />
+                                <Code isOpen={isOpen} onChangeCodeValue={this.handleChange} 
+                                    onKeyDownCode={(e) => {
+                                        if (e.keyCode === 13) {
+                                            signin();
+                                        }
+                                    }} 
+                                />
                                 <Error error={error} />
                                 <ButtonCom sendCode={this.sendCode} isOpen={isOpen} signin={signin}/>
                                 <div className="loginItem wenauthn">
