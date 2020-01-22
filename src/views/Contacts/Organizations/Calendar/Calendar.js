@@ -33,16 +33,20 @@ class Calendar extends Component {
       <div className="animated">
         <Card>
           <CardHeader style={{ display: "flex", alignItems: "center", position: 'relative' }}>
-            <span>看板</span>
+            {
+              !active 
+              ? <span style={{ fontSize: '18px' }}><i class="icon-list" style={{ marginRight: '5px', fontSize: '18px' }}></i>KanBan</span>
+              : <span style={{ fontSize: '18px' }}><i class="icon-calendar" style={{ marginRight: '5px', fontSize: '18px' }}></i>calendar</span>
+            }
             <div style={{ margin: "0 10px"}}>
-              <AppSwitch 
+              <AppSwitch className={'mx-1'} variant={'3d'} color={'primary'} defaultChecked onClick={this.handleSwitch} />
+              {/* <AppSwitch 
                 variant={'pill'} 
                 label 
                 color={'success'} 
                 size={'sm'} 
-                onClick={this.handleSwitch}/>
+                onClick={this.handleSwitch}/> */}
             </div>
-            <span>日历</span>
             <Query query={getMeOrg}>
               {
                 ({ loading, error, data }) => {
@@ -55,7 +59,7 @@ class Calendar extends Component {
                     </DropdownToggle>
                     <DropdownMenu left="true" style={{maxHeight: "300px", overflow: 'auto'}}>
                       {
-                          data.me.organizations.map(({name = "", id}, i)=>{
+                          data.me && data.me.organizations.map(({name = "", id}, i)=>{
                               return(
                                 <DropdownItem onClick={(e)=>{
                                     this.handleChangeName(e, name, id)

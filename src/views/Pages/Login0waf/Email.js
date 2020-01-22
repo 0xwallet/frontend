@@ -18,11 +18,7 @@ export default (props)=>{
             style={{ 
                 position: 'absolute', left: 0, fontSize: '12px', color: 'red', bottom: -18,
                 display: isCorrect ? 'none' : 'inline-block'
-            }}>请输入正确邮箱格式</span>
+            }}>Please enter the correct email format</span>
         </InputGroup> 
     )
 }
-
-
-         
-

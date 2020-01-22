@@ -28,7 +28,6 @@ const defaultProps = {
 };
 
 class DefaultHeaderDropdown extends Component {
-
   constructor(props) {
     super(props);
 
@@ -47,6 +46,7 @@ class DefaultHeaderDropdown extends Component {
   Logout = ()=>{
     localStorage.removeItem("auth-token");
     localStorage.removeItem("username");
+    this.props.history.push('/sign-in');
     
     this.props.client.resetStore();
   }

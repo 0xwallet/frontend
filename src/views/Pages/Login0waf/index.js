@@ -131,6 +131,7 @@ export default class Login0waf extends PureComponent{
                     //     this.clearUrl();
                     // },2000)
                 }
+                console.log(loading, error, 'rere');
                 if (loading) return <Loading />;
                     return (
                         <div className="wrap">
@@ -145,13 +146,18 @@ export default class Login0waf extends PureComponent{
                                             signin();
                                         }
                                     }} 
-                                />
+                                /> 
                                 <Error error={error} />
                                 <ButtonCom sendCode={this.sendCode} isOpen={isOpen} signin={signin}/>
-                                <div className="loginItem wenauthn">
-                                    <span className="webauthn">WebAuthn</span>
-                                    {/* <span className="webauthn">Need an account?</span> */}
-                                </div>
+                                {
+                                    isOpen && (
+                                        <div className="loginItem wenauthn">
+                                            <span className="webauthn">WebAuthn</span>
+                                            <span className="webauthn">Sign up</span>
+                                            <span className="webauthn">Nkn</span>
+                                        </div>
+                                    )
+                                }
                             </Form>
                         </div>
                        

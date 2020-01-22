@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import {
   AppAside,
@@ -33,6 +33,10 @@ query place{
 
 
 class DefaultLayout extends Component {
+  constructor(props) {
+    super(props);
+    // this.props.history.push('/dashboard');
+  }
   state = {
     currentChannel: "",
     // channels: [{id: 123,user: "New Tab"}],
@@ -103,6 +107,8 @@ class DefaultLayout extends Component {
     //       channels: arr
     //    })
     // });
+    console.log(this.props.history, 'sdfsdfds');
+    // this.props.history.push('/dashboard');
     this.setState({
       channels: [{
         id: 1,
@@ -191,4 +197,4 @@ class DefaultLayout extends Component {
   }
 }
 
-export default DefaultLayout;
+export default withRouter(DefaultLayout);

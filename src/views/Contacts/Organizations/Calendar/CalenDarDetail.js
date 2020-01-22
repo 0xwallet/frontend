@@ -109,7 +109,7 @@ function CalendarDetail(props) {
     const { currentOrgId } = props;
     return (
         <>
-            <>{currentOrgId}relase...不同组织下的日历</>
+            {/* <>{currentOrgId}relase...不同组织下的日历</> */}
             <BigCalendar className="d-sm-down-none"
                 // {...props}
                 events={events}
