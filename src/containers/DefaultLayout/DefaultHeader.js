@@ -50,7 +50,7 @@ class DefaultHeader extends Component {
         <Nav className="ml-auto" navbar>
           {/* <i className="fa fa-compass" style={{fontSize:'1.5rem'}}
           onClick={this.toggle}></i> */}
-          <i className="icon-speech"></i>
+          <i className="icon-speech" onClick={this.toggle}></i>
           <DefaultHeaderDropdown notif/>
           {/* <DefaultHeaderDropdown tasks/>
           <DefaultHeaderDropdown mssgs/>

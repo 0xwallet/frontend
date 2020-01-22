@@ -2,15 +2,34 @@ import React from 'react';
 import {
   Modal, 
   ModalBody,ModalFooter,Button,FormGroup,Label,Input,Col, Row, ModalHeader,
-  FormText, InputGroup, InputGroupAddon, InputGroupText , Form
+  FormText, InputGroup, InputGroupAddon, InputGroupText , Form,
+  DropdownItem, DropdownMenu, DropdownToggle, Dropdown
 } from 'reactstrap';
 import { TextMask, InputAdapter } from 'react-text-mask-hoc';
+import './index.scss';
 
 class WalletModal extends React.Component{
     constructor(props) {
       super(props);
+      this.state = {
+        dropdownOpen: false,
+        actionName: 'deposit',
+      }
     }
-   
+
+    toggle = () => {
+      this.setState((preState) => ({
+        dropdownOpen: !preState.dropdownOpen
+      }))
+    }
+
+    handleAction = (actionName, walletType) => {
+      console.log(actionName, walletType);
+      this.setState({
+        actionName,
+      })
+    }
+
     render_withdrawal_input() {
       return (
         <>
@@ -93,7 +112,7 @@ class WalletModal extends React.Component{
     }
 
     render_income() {
-      const { actionName } = this.props;
+      const { actionName = 'deposit' } = this.state;
       return (
         <div style={{ minHeight: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
 
@@ -106,10 +125,26 @@ class WalletModal extends React.Component{
     }
 
     render(){
-      const { open, toggle, actionName } = this.props; 
+      const { open, toggle, id } = this.props; 
+      const { dropdownOpen, actionName } = this.state;
+      const actions = ['deposit', 'withdrawal', 'transfer'];
       return (
-        <Modal isOpen={open} toggle={toggle}>
-          <ModalHeader toggle={toggle}>{actionName}</ModalHeader>
+        <Modal isOpen={open} toggle={toggle} className="modal-body-wallet">
+          <ModalHeader toggle={toggle}>
+            {/* <DropdownToggle caret className="p-0" color="transparent">
+              <i className="fa fa-qrcode"></i>
+            </DropdownToggle> */}
+            <Dropdown isOpen={dropdownOpen} toggle={this.toggle}>
+              <DropdownToggle caret color="info">
+                {actionName}
+              </DropdownToggle>
+              <DropdownMenu right>
+                {
+                  actions.map(v => <DropdownItem key={v} onClick={(e) => this.handleAction(v, id)}>{v}</DropdownItem>)
+                }
+              </DropdownMenu>
+            </Dropdown>
+          </ModalHeader>
           <ModalBody>
             <Form action="" method="post" encType="multipart/form-data" style={{ width: '100%' }}>
                 {this.render_income()}

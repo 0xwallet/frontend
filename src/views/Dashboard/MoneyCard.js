@@ -35,8 +35,9 @@ export default (props)=> {
     const Props = {
       open: modalVisible,
       toggle: () => setVisible(false),
-      actionName,
-      walletType,
+      // actionName,
+      // walletType,
+      id,
     }
 
     console.log(Props, 'ss');
@@ -44,7 +45,8 @@ export default (props)=> {
     return(
       <Card className={names[id]} >
         <CardBody className="pb-0">
-          <ButtonGroup className="float-right">
+          <i className="fa fa-qrcode" style={{ float: 'right' }} onClick={() => setVisible(true)}></i>
+          {/* <ButtonGroup className="float-right">
             <ButtonDropdown id={id} isOpen={open} toggle={toggle}>
               <DropdownToggle caret className="p-0" color="transparent">
                 <i className="fa fa-qrcode"></i>
@@ -55,7 +57,7 @@ export default (props)=> {
                 }
               </DropdownMenu>
             </ButtonDropdown>
-          </ButtonGroup>
+          </ButtonGroup> */}
           {/* fa fa-bitcoin */}
           <div className="text-value"><i className={icons[id]}></i>{ balance }</div>
           
