@@ -13,24 +13,17 @@ import {
   AppSidebarMinimizer,
   AppSidebarNav,
 } from '@coreui/react';
-import gql from 'graphql-tag';
+// import gql from 'graphql-tag';
 // sidebar nav config
 import navigation from '../../_nav';
 // routes config
 import routes from '../../routes';
-import client from '../../client';
+// import client from '../../client';
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
 export const { Provider, Consumer } = React.createContext();
-const getBooks = gql`
-query place{
-  places(limit:5){
-    name
-  }
-}`
-
 
 class DefaultLayout extends Component {
   constructor(props) {
@@ -107,7 +100,6 @@ class DefaultLayout extends Component {
     //       channels: arr
     //    })
     // });
-    console.log(this.props.history, 'sdfsdfds');
     // this.props.history.push('/dashboard');
     this.setState({
       channels: [{
@@ -175,7 +167,7 @@ class DefaultLayout extends Component {
                               )} />
                           ) : (null);
                         })}
-                         <Redirect from="/" to="/dashboard" />
+                         {/* <Redirect from="/" to="/dashboard" /> */}
                       </Switch>
                     </Suspense>
                   </Container>

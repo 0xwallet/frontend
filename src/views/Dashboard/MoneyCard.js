@@ -1,13 +1,11 @@
 import React, {useState} from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Card, CardBody, ButtonGroup, ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 import WalletModal from './WalletModal';
 
 export default (props)=> {
     const { chartData, chartOpts, id, isOpen, balance } = props;
     const [open, setOpen] = useState(isOpen);
-    const [actionName, setActionName] = useState('');
-    const [walletType, setWalletType] = useState(0);
     const [modalVisible, setVisible] = useState(false);
 
     const icons = {
@@ -23,20 +21,10 @@ export default (props)=> {
       2 : 'text-white bg-danger',
       3 : 'text-white bg-success'
     }
-    const toggle = () => setOpen(!open);
-    const actions = ['deposit', 'withdrawal', 'transfer'];
-    const handleAction = (actionName, walletType) => {
-      setActionName(actionName);
-      setWalletType(walletType);
-      // openModal
-      setVisible(true)
-    }
 
     const Props = {
       open: modalVisible,
       toggle: () => setVisible(false),
-      // actionName,
-      // walletType,
       id,
     }
 

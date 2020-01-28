@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { withRouter } from 'react-router-dom';
 import gql from "graphql-tag";
 import { Form } from 'reactstrap';
 import { Mutation } from "react-apollo";
@@ -22,13 +23,27 @@ const SIGNIN_MUTATION = gql`
     }
   }
 `;
-export default class Login0waf extends PureComponent{
+
+const SIGNUP_MUTATION = gql`
+    mutation signup($email: String!, $password: String!, $username: String!) {
+        signup(email: $email, password: $password, username: $username){
+            token
+            user {
+                username
+            }
+        }
+    }
+`;
+
+class Login0waf extends PureComponent{
     state = {
         email: "",
         password: "",
         openCodeInput: false,
-        haveParams: false,
         isCorrect: true,
+        isSignUp: false,
+        validatePassword: "",
+        passwordError: false,
     };
 
     handleChange = event => {
@@ -36,26 +51,51 @@ export default class Login0waf extends PureComponent{
         this.setState({ [name]: value });
     };
 
+    signUp = () => {
+        this.setState(preState => ({
+            isSignUp: !preState.isSignUp,
+        }))
+    }
+
     handleKeyDown = event => {
         if (event.keyCode === 13) {
-            // console.log(this.state.email);
             this.sendCode();
         }
     };
 
     handleCompleted = data => {
-        localStorage.setItem("auth-token", data.signin.token);
-        localStorage.setItem("username", data.signin.user.username);        
-        // this.props.history.push("/");
+        const { isSignUp } = this.state;  
+        if (!isSignUp) {
+            localStorage.setItem("auth-token", data.signin.token);
+            localStorage.setItem("username", data.signin.user.username);
+        }
+        if (isSignUp) {
+            localStorage.setItem("auth-token", data.signup.token);
+            localStorage.setItem("username", data.signup.user.username);
+        }  
     };
     
     handleUpdate = (cache, { data }) => {
-        console.log(data, 'data is in sign');
-        cache.writeQuery({
-            query: GET_CURRENT_USER_QUERY,
-            data: { me: data.signin.user }
-        });
+        const { isSignUp } = this.state;  
+        if (!isSignUp) {
+            cache.writeQuery({
+                query: GET_CURRENT_USER_QUERY,
+                data: { me: data.signin.user }
+            });
+        }
+        if (isSignUp) {
+            cache.writeQuery({
+                query: GET_CURRENT_USER_QUERY,
+                data: { me: data.signup.user }
+            });
+        } 
     };
+
+    handlePasswordError = () => {
+        this.setState(preState => ({
+            passwordError: !preState.passwordError,
+        }));
+    }
 
     openCodeInput = ()=>{
         this.setState({
@@ -68,7 +108,6 @@ export default class Login0waf extends PureComponent{
         const { email } = this.state;
         const reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/; 
         if(email === ""){
-            console.log("null");
             this.setState({
                 isCorrect: false,
             });
@@ -88,50 +127,17 @@ export default class Login0waf extends PureComponent{
         }
     }
 
-    UNSAFE_componentWillMount() {
-        function GetQueryString(name) {
-            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if(r!=null)return  unescape(r[2]); return null;
-        }
-        const email = GetQueryString("email");
-        const code = GetQueryString("code");
-        if(email !== null && email.toString().length>1 && code !== null && code.toString().length > 1){
-            this.setState({
-                email,
-                password: code,
-                haveParams: true
-            })
-        }
-    }
-
-    // clearUrl = ()=>{
-    //     var url=window.location.href;                    
-	// 	if(url.indexOf("?") !== -1){                        
-	// 		url = url.replace(/(\?|#)[^'"]*/, '');
-	// 		window.history.pushState({},0,url);
-	// 	}
-    // }
-
     render() {
-        const { openCodeInput: isOpen, email, password, haveParams, isCorrect } = this.state;
+        const { openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
+        const mutation = !isSignUp ? SIGNIN_MUTATION : SIGNUP_MUTATION;
+        const variables = !isSignUp ? { email, password } : { email, password, username: email };
         return (
                 <Mutation
-                mutation={SIGNIN_MUTATION}
-                variables={{
-                    email,
-                    password
-                }}
+                mutation={mutation}
+                variables={variables}
                 onCompleted={this.handleCompleted}
                 update={this.handleUpdate}>
                 {(signin, { loading, error }) => {
-                if (haveParams){
-                    signin();
-                    // setTimeout(()=>{
-                    //     this.clearUrl();
-                    // },2000)
-                }
-                console.log(loading, error, 'rere');
                 if (loading) return <Loading />;
                     return (
                         <div className="wrap">
@@ -140,21 +146,53 @@ export default class Login0waf extends PureComponent{
                              }} id="login">
                                 <Logo />
                                 <Email onChangeEmailValue={this.handleChange} onKeyDown={this.handleKeyDown} isCorrect={isCorrect} />
-                                <Code isOpen={isOpen} onChangeCodeValue={this.handleChange} 
+                                <Code 
+                                    isOpen={isOpen}
+                                    onChangeCodeValue={this.handleChange}
+                                    isSignUp={isSignUp}
                                     onKeyDownCode={(e) => {
                                         if (e.keyCode === 13) {
+                                            if (isSignUp) {
+                                                if (validatePassword !== password) {
+                                                    this.handlePasswordError();
+                                                    return false;
+                                                }
+                                                this.handlePasswordError();
+                                                signin();
+                                                this.props.history.push('/dashboard')
+                                            }
                                             signin();
+                                            this.props.history.push('/dashboard')
                                         }
                                     }} 
                                 /> 
+                                {
+                                    passwordError && <span style={{ color: 'red' }}>Please enter the same password</span>
+                                }
                                 <Error error={error} />
-                                <ButtonCom sendCode={this.sendCode} isOpen={isOpen} signin={signin}/>
+                                <ButtonCom sendCode={this.sendCode} isOpen={isOpen} signin={() => {
+                                    if (isSignUp) {
+                                        if (validatePassword !== password) {
+                                            this.handlePasswordError();
+                                            return false;
+                                        }
+                                        this.handlePasswordError();
+                                        signin();
+                                        this.props.history.push('/dashboard')
+                                    }
+                                    signin();
+                                    this.props.history.push('/dashboard')
+                                }} isSignUp={isSignUp} />
                                 {
                                     isOpen && (
                                         <div className="loginItem wenauthn">
                                             <span className="webauthn">WebAuthn</span>
-                                            <span className="webauthn">Sign up</span>
-                                            <span className="webauthn">Nkn</span>
+                                            <span className="webauthn">NKN</span>
+                                            <span className="webauthn" onClick={this.signUp}>
+                                                {
+                                                    isSignUp ? 'Sign In' : 'Sign Up'
+                                                }
+                                            </span>
                                         </div>
                                     )
                                 }
@@ -167,3 +205,5 @@ export default class Login0waf extends PureComponent{
         )
     }
 }
+
+export default withRouter(Login0waf);

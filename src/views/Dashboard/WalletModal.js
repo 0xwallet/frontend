@@ -13,7 +13,7 @@ class WalletModal extends React.Component{
       super(props);
       this.state = {
         dropdownOpen: false,
-        actionName: 'deposit',
+        actionName: 'Deposit',
       }
     }
 
@@ -112,14 +112,14 @@ class WalletModal extends React.Component{
     }
 
     render_income() {
-      const { actionName = 'deposit' } = this.state;
+      const { actionName = 'Deposit' } = this.state;
       return (
-        <div style={{ minHeight: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
+        <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
 
           {/* <Progress className="progress-xs" color="info" value="25" style={{width: '100%'}} /> */}
-          {actionName === 'deposit' && this.render_deposit()}
-          {actionName === 'withdrawal' && this.render_withdrawal()}
-          {actionName === 'transfer' && this.render_transfer()}
+          {actionName === 'Deposit' && this.render_deposit()}
+          {actionName === 'Withdrawal' && this.render_withdrawal()}
+          {actionName === 'Transfer' && this.render_transfer()}
         </div>
       );
     }
@@ -127,20 +127,23 @@ class WalletModal extends React.Component{
     render(){
       const { open, toggle, id } = this.props; 
       const { dropdownOpen, actionName } = this.state;
-      const actions = ['deposit', 'withdrawal', 'transfer'];
+      // const actions = ['Deposit', 'Withdrawal', 'Transfer'];
+      const actions = [{ name: 'Deposit', icon: 'fa fa-qrcode' }, { name: 'Withdrawal', icon: 'fa fa-euro' }, { name: 'Transfer', icon: 'fa fa-share' }];
       return (
         <Modal isOpen={open} toggle={toggle} className="modal-body-wallet">
           <ModalHeader toggle={toggle}>
-            {/* <DropdownToggle caret className="p-0" color="transparent">
-              <i className="fa fa-qrcode"></i>
-            </DropdownToggle> */}
             <Dropdown isOpen={dropdownOpen} toggle={this.toggle}>
-              <DropdownToggle caret color="info">
+              <DropdownToggle caret className="p-0" color="#000" style={{fontSize: '1.2rem'}}>
                 {actionName}
               </DropdownToggle>
               <DropdownMenu right>
                 {
-                  actions.map(v => <DropdownItem key={v} onClick={(e) => this.handleAction(v, id)}>{v}</DropdownItem>)
+                  actions.map(({ name, icon }) => <DropdownItem key={name} onClick={(e) => this.handleAction(name, id)}>
+                    <div style={{ height: '100%' }}>
+                        <i className={icon} />
+                        {name}
+                    </div>
+                  </DropdownItem>)
                 }
               </DropdownMenu>
             </Dropdown>
