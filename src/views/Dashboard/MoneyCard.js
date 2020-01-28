@@ -28,8 +28,6 @@ export default (props)=> {
       id,
     }
 
-    console.log(Props, 'ss');
-
     return(
       <Card className={names[id]} >
         <CardBody className="pb-0">

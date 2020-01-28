@@ -91,10 +91,10 @@ class Login0waf extends PureComponent{
         } 
     };
 
-    handlePasswordError = () => {
-        this.setState(preState => ({
-            passwordError: !preState.passwordError,
-        }));
+    handlePasswordError = (flag) => {
+        this.setState({
+            passwordError: flag,
+        });
     }
 
     openCodeInput = ()=>{
@@ -154,10 +154,10 @@ class Login0waf extends PureComponent{
                                         if (e.keyCode === 13) {
                                             if (isSignUp) {
                                                 if (validatePassword !== password) {
-                                                    this.handlePasswordError();
+                                                    this.handlePasswordError(true);
                                                     return false;
                                                 }
-                                                this.handlePasswordError();
+                                                this.handlePasswordError(false);
                                                 signin();
                                                 this.props.history.push('/dashboard')
                                             }
@@ -173,10 +173,11 @@ class Login0waf extends PureComponent{
                                 <ButtonCom sendCode={this.sendCode} isOpen={isOpen} signin={() => {
                                     if (isSignUp) {
                                         if (validatePassword !== password) {
-                                            this.handlePasswordError();
+                                            this.handlePasswordError(true);
                                             return false;
                                         }
-                                        this.handlePasswordError();
+                                        console.log(validatePassword, password);
+                                        this.handlePasswordError(false);
                                         signin();
                                         this.props.history.push('/dashboard')
                                     }
