@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
 import gql from "graphql-tag";
-import { Form } from 'reactstrap';
+import { Form, Modal, ModalBody, ModalHeader, Button, ModalFooter, Input } from 'reactstrap';
 import { Mutation } from "react-apollo";
 import { GET_CURRENT_USER_QUERY } from "../../../components/CurrentUser";
 import Loading from "../../../components/Loading";
@@ -14,8 +14,8 @@ import ButtonCom from './Button';
 import './index.scss';
 
 const SIGNIN_MUTATION = gql`
-  mutation SignIn($email: String!, $password: String!) {
-    signin(email: $email, password: $password) {
+  mutation SignIn($email: String!, $password: String, $loginCode: String) {
+    signin(email: $email, password: $password, loginCode: $loginCode) {
       token
       user {
         username
@@ -35,6 +35,12 @@ const SIGNUP_MUTATION = gql`
     }
 `;
 
+const sendNknCode = gql`
+    mutation sendLoginCode($username: String!) {
+        sendLoginCode(username: $username)
+    }
+`;
+
 class Login0waf extends PureComponent{
     state = {
         email: "",
@@ -44,7 +50,20 @@ class Login0waf extends PureComponent{
         isSignUp: false,
         validatePassword: "",
         passwordError: false,
+        nknModal: false,
+        nknCode: "",
     };
+
+    nknLogin = () => {
+        this.setState({
+            nknModal: !this.state.nknModal,
+        })
+    }
+
+    loginInByNknCode = async (signin) => {
+        await signin();
+        this.nknLogin();
+    }
 
     handleChange = event => {
         const { name, value } = event.target;
@@ -127,12 +146,53 @@ class Login0waf extends PureComponent{
         }
     }
 
+    sendNknCode = async (sendCode) => {
+        await sendCode();
+        this.nknLogin();
+    }
+
+    handleChangeCode = (e) => {
+        this.setState({
+            nknCode: e.target.value,
+        });
+    }
+
+    nknModal() {
+        const { nknModal, nknCode, email } = this.state;
+        return (
+            <Mutation 
+                mutation={SIGNIN_MUTATION} 
+                variables={{
+                    loginCode: nknCode,
+                    email,
+                }}
+            >
+                {(signin, {loading, error}) => {
+                    if (loading) return 'loading';
+                    if (error) return 'error';
+                    return (
+                        <Modal isOpen={nknModal} toggle={this.nknLogin}>
+                            <ModalHeader toggle={this.nknLogin}>Nmobile</ModalHeader>
+                            <ModalBody>
+                                <Input type="text" placeholder="please input your code" onChange={this.handleChangeCode} />
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={() => this.loginInByNknCode(signin)}>login</Button>{' '}
+                                <Button color="secondary" onClick={this.nknLogin}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
+                    );
+                }}
+            </Mutation>
+        );
+    }
+
     render() {
         const { openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
         const mutation = !isSignUp ? SIGNIN_MUTATION : SIGNUP_MUTATION;
         const variables = !isSignUp ? { email, password } : { email, password, username: email };
         return (
-                <Mutation
+            <Mutation
                 mutation={mutation}
                 variables={variables}
                 onCompleted={this.handleCompleted}
@@ -176,7 +236,6 @@ class Login0waf extends PureComponent{
                                             this.handlePasswordError(true);
                                             return false;
                                         }
-                                        console.log(validatePassword, password);
                                         this.handlePasswordError(false);
                                         signin();
                                         this.props.history.push('/dashboard')
@@ -188,7 +247,22 @@ class Login0waf extends PureComponent{
                                     isOpen && (
                                         <div className="loginItem wenauthn">
                                             <span className="webauthn">WebAuthn</span>
-                                            <span className="webauthn">NKN</span>
+                                            <Mutation 
+                                                mutation={sendNknCode}
+                                                variables={{
+                                                    username: 'mike'
+                                                }}
+                                            >
+                                                {
+                                                    (sendCode, { loading, error }) => {
+                                                        if (loading) return 'loading';
+                                                        if (error) return 'error33';
+                                                        return (
+                                                            <span className="webauthn" onClick={() => this.sendNknCode(sendCode)}>NKN</span>
+                                                        );
+                                                    }
+                                                }
+                                            </Mutation>
                                             <span className="webauthn" onClick={this.signUp}>
                                                 {
                                                     isSignUp ? 'Sign In' : 'Sign Up'
@@ -198,8 +272,10 @@ class Login0waf extends PureComponent{
                                     )
                                 }
                             </Form>
+                            {
+                                this.nknModal()
+                            }
                         </div>
-                       
                     );
                 }}
             </Mutation>
