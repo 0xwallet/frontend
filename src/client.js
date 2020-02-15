@@ -8,9 +8,11 @@ import * as AbsintheSocket from "@absinthe/socket";
 import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
 import { Socket as PhoenixSocket } from "phoenix";
 
-const HTTP_ENDPOINT = "https://owaf-io.yicp.top/api";
+// const HTTP_ENDPOINT = "https://owaf-io.yicp.top/api";
+const HTTP_ENDPOINT = "https://owaf.io/graphiql";
 
-const WS_ENDPOINT = "wss://owaf-io.yicp.top/socket";
+// const WS_ENDPOINT = "wss://owaf-io.yicp.top/socket";
+const WS_ENDPOINT = "wss://owaf.io/socket";
 
 // Create an HTTP link to the Phoenix app's HTTP endpoint URL.
 const httpLink = createHttpLink({

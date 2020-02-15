@@ -26,21 +26,21 @@
    }
 
    %message-common {
-    cursor: pointer;
-    position: relative;
-    font-size: .8rem;
-    color: #20a8d8;
-    &::before{
-        content: "";
-        position: absolute;
-        left: 50%;
-        bottom: -2px;
-        width: 0;
-        height: 2px;
-        background: #20a8d8;
-        transition: all .3s;
-    };
-}
+        cursor: pointer;
+        position: relative;
+        font-size: .8rem;
+        color: #20a8d8;
+        &::before{
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -2px;
+            width: 0;
+            height: 2px;
+            background: #20a8d8;
+            transition: all .3s;
+        };
+    }
    .webauthn{
     @extend %message-common;
     &:hover:before{

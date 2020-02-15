@@ -1,8 +1,11 @@
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
+// import nknWallet from 'nkn-wallet';
 import gql from "graphql-tag";
 import { Form, Modal, ModalBody, ModalHeader, Button, ModalFooter, Input } from 'reactstrap';
-import { Mutation } from "react-apollo";
+import { Mutation, graphql } from "react-apollo";
+import { Tooltip } from 'antd';
+import client from '../../../client';
 import { GET_CURRENT_USER_QUERY } from "../../../components/CurrentUser";
 import Loading from "../../../components/Loading";
 import Error from "../../../components/Error";
@@ -10,8 +13,10 @@ import Email from './Email';
 import Code from './Code';
 import Logo from './Logo';
 import ButtonCom from './Button';
-
 import './index.scss';
+import "antd/dist/antd.css";
+
+const nknWallet = require('nkn-wallet');
 
 const SIGNIN_MUTATION = gql`
   mutation SignIn($email: String!, $password: String, $loginCode: String) {
@@ -36,10 +41,39 @@ const SIGNUP_MUTATION = gql`
 `;
 
 const sendNknCode = gql`
-    mutation sendLoginCode($username: String!) {
-        sendLoginCode(username: $username)
+    mutation sendLoginCode($email: String!) {
+        sendLoginCode(email: $email)
     }
 `;
+
+const bindNknAddr = gql`
+mutation bindnkn($nknAddress: String!){
+    bindNknAddress(nknAddress: $nknAddress){
+      id,
+    }
+}
+`;
+
+const setDefaultNknAddr = gql`
+mutation setdefaultaddr($password: String!, $walletId: String!){
+    setDefaultNknAddress(password: $password, walletId: $walletId, tag: MESSAGE){
+      info{
+        address,
+        identifier,
+        publicKey
+      }
+    }
+}
+`;
+
+// 绑定nknaddr
+// const bindAddr = gql`
+// mutation bindNknAddr($nknAddress: String!){
+//     bindNknAddress(nknAddress: $nknAddress){
+//       id,
+//     }
+// }`;
+
 
 class Login0waf extends PureComponent{
     state = {
@@ -52,6 +86,8 @@ class Login0waf extends PureComponent{
         passwordError: false,
         nknModal: false,
         nknCode: "",
+        sendLoginCode: "",
+        publickey: '',
     };
 
     nknLogin = () => {
@@ -61,8 +97,11 @@ class Login0waf extends PureComponent{
     }
 
     loginInByNknCode = async (signin) => {
-        await signin();
-        this.nknLogin();
+        signin().then(() => {
+            this.nknLogin();
+        }).catch((e) => {
+            console.log(e, 'ee')
+        })
     }
 
     handleChange = event => {
@@ -89,8 +128,31 @@ class Login0waf extends PureComponent{
             localStorage.setItem("username", data.signin.user.username);
         }
         if (isSignUp) {
+            const { password, email } = this.state;
+            const wallet = nknWallet.newWallet(password);
             localStorage.setItem("auth-token", data.signup.token);
             localStorage.setItem("username", data.signup.user.username);
+            // 生成的公钥发送给服务器，私钥seed存在本地, 并帮用户创建一个默认的钱包用于记录消息客户端
+            const walletAddr = wallet.address;
+            const seedUseRestore = wallet.getSeed();
+            const walletInfo = {
+                seedUseRestore,
+                walletAddr,
+                publickey: wallet.getPublicKey(),
+            };
+            localStorage.setItem(email, JSON.stringify(walletInfo));
+            client.mutate({
+                mutation: bindNknAddr,
+                variables: { nknAddress: `${data.signup.user.username}.${wallet.getPublicKey()}`}
+            }).then(res => {
+                console.log(res, 'res in sign');
+                client.mutate({
+                    mutation: setDefaultNknAddr,
+                    variables: { password, walletId: res.data.bindNknAddress.id }
+                }).then(res => {
+                    console.log(res, 'set default');
+                })
+            })
         }  
     };
     
@@ -147,7 +209,10 @@ class Login0waf extends PureComponent{
     }
 
     sendNknCode = async (sendCode) => {
-        await sendCode();
+        const { data: { sendLoginCode } } = await sendCode();
+        this.setState({
+            sendLoginCode,
+        });
         this.nknLogin();
     }
 
@@ -158,7 +223,7 @@ class Login0waf extends PureComponent{
     }
 
     nknModal() {
-        const { nknModal, nknCode, email } = this.state;
+        const { nknCode, email, nknModal, sendLoginCode } = this.state;
         return (
             <Mutation 
                 mutation={SIGNIN_MUTATION} 
@@ -166,14 +231,39 @@ class Login0waf extends PureComponent{
                     loginCode: nknCode,
                     email,
                 }}
+                onCompleted={this.handleCompleted}
             >
                 {(signin, {loading, error}) => {
-                    if (loading) return 'loading';
-                    if (error) return 'error';
+                    if (loading) return (
+                        <Modal isOpen={nknModal} toggle={this.nknLogin}>
+                            <ModalHeader>Nmobile</ModalHeader>
+                            <ModalBody>
+                                <Loading />
+                            </ModalBody>
+                        </Modal>
+                    );
+                    if (error) return (
+                        <Modal isOpen={nknModal} toggle={this.nknLogin}>
+                            <ModalHeader toggle={this.nknLogin}>Nmobile</ModalHeader>
+                            <ModalBody>
+                                <Input type="text" placeholder="please input your code" onChange={this.handleChangeCode} />
+                                <Error error={error} />
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={() => this.loginInByNknCode(signin)}>login</Button>{' '}
+                                <Button color="secondary" onClick={this.nknLogin}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
+                    );
                     return (
                         <Modal isOpen={nknModal} toggle={this.nknLogin}>
                             <ModalHeader toggle={this.nknLogin}>Nmobile</ModalHeader>
                             <ModalBody>
+                                { 
+                                    sendLoginCode 
+                                ?   <Tooltip title={sendLoginCode}>{sendLoginCode.slice(0, 16)}...</Tooltip> 
+                                    : ''
+                                }
                                 <Input type="text" placeholder="please input your code" onChange={this.handleChangeCode} />
                             </ModalBody>
                             <ModalFooter>
@@ -190,7 +280,9 @@ class Login0waf extends PureComponent{
     render() {
         const { openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
         const mutation = !isSignUp ? SIGNIN_MUTATION : SIGNUP_MUTATION;
-        const variables = !isSignUp ? { email, password } : { email, password, username: email };
+        // 对邮箱进行切割
+        const emails = email && email.split('@');
+        const variables = !isSignUp ? { email, password } : { email, password, username: emails[0] };
         return (
             <Mutation
                 mutation={mutation}
@@ -199,6 +291,7 @@ class Login0waf extends PureComponent{
                 update={this.handleUpdate}>
                 {(signin, { loading, error }) => {
                 if (loading) return <Loading />;
+                if (error) return  <Error error={error} />;
                     return (
                         <div className="wrap">
                              <Form row="true" onSubmit={(e)=>{
@@ -237,11 +330,17 @@ class Login0waf extends PureComponent{
                                             return false;
                                         }
                                         this.handlePasswordError(false);
-                                        signin();
-                                        this.props.history.push('/dashboard')
+                                        signin().then(() => {
+                                            this.props.history.push('/dashboard');
+                                        }).catch((e) => {
+                                            console.log(e);
+                                        });
                                     }
-                                    signin();
-                                    this.props.history.push('/dashboard')
+                                    signin().then(() => {
+                                        this.props.history.push('/dashboard');
+                                    }).catch((e) => {
+                                        console.log(e);
+                                    });
                                 }} isSignUp={isSignUp} />
                                 {
                                     isOpen && (
@@ -250,13 +349,13 @@ class Login0waf extends PureComponent{
                                             <Mutation 
                                                 mutation={sendNknCode}
                                                 variables={{
-                                                    username: 'mike'
+                                                    email,
                                                 }}
                                             >
                                                 {
                                                     (sendCode, { loading, error }) => {
                                                         if (loading) return 'loading';
-                                                        if (error) return 'error33';
+                                                        if (error) return <Error error={error} />;
                                                         return (
                                                             <span className="webauthn" onClick={() => this.sendNknCode(sendCode)}>NKN</span>
                                                         );
@@ -283,4 +382,12 @@ class Login0waf extends PureComponent{
     }
 }
 
-export default withRouter(Login0waf);
+const newJobOperation = graphql(setDefaultNknAddr, {
+    props: ({ mutate }) => ({   //mutate为自带参数
+        addJob: factor => mutate({  //自定义addJob并接受从视图页传来的factor,在视图也可直接使用this.props.addJob(args)来调用该方法
+        variables: factor,  //修改参数
+        }),
+    }),
+})(withRouter(Login0waf));
+
+export default newJobOperation;
