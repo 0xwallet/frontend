@@ -19,7 +19,7 @@ import "antd/dist/antd.css";
 const nknWallet = require('nkn-wallet');
 
 const SIGNIN_MUTATION = gql`
-  mutation SignIn($email: String!, $password: String, $loginCode: String) {
+  mutation signin($email: String!, $password: String, $loginCode: String) {
     signin(email: $email, password: $password, loginCode: $loginCode) {
       token
       user {
@@ -96,7 +96,7 @@ class Login0waf extends PureComponent{
         })
     }
 
-    loginInByNknCode = async (signin) => {
+    loginInByNknCode = (signin) => {
         signin().then(() => {
             this.nknLogin();
         }).catch((e) => {
@@ -152,7 +152,13 @@ class Login0waf extends PureComponent{
                 }).then(res => {
                     console.log(res, 'set default');
                 })
-            })
+            });
+            client.query({
+                query: GET_CURRENT_USER_QUERY,
+            }).then((res) => {
+                console.log(res, 'client query login');
+                this.props.history.push('/dashboard')
+            });
         }  
     };
     
@@ -232,6 +238,7 @@ class Login0waf extends PureComponent{
                     email,
                 }}
                 onCompleted={this.handleCompleted}
+                update={this.handleUpdate}
             >
                 {(signin, {loading, error}) => {
                     if (loading) return (

@@ -6,7 +6,6 @@ import Signout from "./Signout";
 const Header = () => (
   <CurrentUser>
     {currentUser => {
-        console.log(currentUser,'currentUser')
         return(
             <header>
         <nav>
