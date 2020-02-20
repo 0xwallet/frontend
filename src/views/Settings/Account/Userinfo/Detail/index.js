@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col , FormGroup, Label, Input, Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { Query, Mutation, graphql } from 'react-apollo';
+import propTypes from 'prop-types';
 import { Tooltip } from 'antd';
 import gql from 'graphql-tag'; 
 import "antd/dist/antd.css";
@@ -70,7 +71,7 @@ function Dogs(props) {
             setdefault();
         }
     };
-    const active = (bind, setdefault) => {
+    const active = (bind) => {
         // props.addJob(params);
         bind().then((res) => {
             const walletId = res.data.bindNknAddress.id;
@@ -94,7 +95,7 @@ function Dogs(props) {
 
     return (
             <div className="detail">
-                <header className="title">Public info</header>
+                {/* <header className="title">Profile</header> */}
                 <Query query={LAUNCHES_QUERY}>
                     {
                         ({ loading, error, data }) => {
@@ -298,6 +299,8 @@ const newJobOperation = graphql(setDefaultNknAddr, {
     }),
 })(Dogs);
 
-export default newJobOperation;
+Dogs.propTypes = {
+    addJob: propTypes.func.isRequired,
+}
 
-// export default compose(graphql(bindNknAddr, { name: 'bindNknAddr' }), graphql(setDefaultNknAddr, { name: 'setDefaultNknAddr' }))(Dogs);
+export default newJobOperation;

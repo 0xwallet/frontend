@@ -5,7 +5,6 @@ import Userinfo from './Userinfo';
 import Payinfo from './Payinfo';
 import Appinfo from './Appinfo';
 
-
 export default class Account extends PureComponent{
     state = {
         userInfoAuth: false,

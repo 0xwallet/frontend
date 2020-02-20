@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Input,Label } from 'reactstrap';
+import propTypes from 'prop-types';
 // import gql from 'graphql-tag'; 
 import crypto from 'crypto';
 import Identicon from 'identicon.js';
@@ -21,8 +22,9 @@ let imgUrl = 'data:image/png;base64,'+imgData // 这就是头像的base64码;
 // }
 // `;
 
-export default () => {
+function Avatar(props){
     const [img,setImg] = useState(imgUrl);
+    const { username } = props;
     /* get avatar
     const { loading, error, data } = useQuery(LAUNCHES_QUERY);
     if (loading) return 'Loading...';
@@ -44,19 +46,30 @@ export default () => {
     }
 
     return(
-        <div className="setting_avatar">
-            <div className="avatarimg">
-                <img src={img} alt="avatar" id="avatar"></img>
+        <>
+            <div className="setting_avatar">
+                {/* <div className="avatarimg">
+                    <img src={img} alt="avatar" id="avatar"></img>
+                </div> */}
+                <div style={{ borderBottom: '1px solid #c8ced3', width: '100%' }}>
+                    <form id="advForm">
+                        <Input type="file" id="fileavatar" className="avatarinput"
+                        accept="image/png, image/jpeg, image/gif, image/jpg"
+                        onChange={changepic} name="avatar" style={{ display: 'none' }}/>
+                        <Label htmlFor="fileavatar" className="avatarlabel">
+                            <div className="avatarimg">
+                                <img src={img} alt="avatar" id="avatar"></img>
+                            </div>
+                        </Label>
+                        <span style={{ paddingLeft: '10px', color: '#2f353a', fontSize: '18px' }}>{username}</span>
+                    </form>
+                </div>
             </div>
-            <div>
-                <form id="advForm">
-                    <Input type="file" id="fileavatar" className="avatarinput"
-                    accept="image/png, image/jpeg, image/gif, image/jpg"
-                    onChange={changepic} name="avatar" />
-                    <Label htmlFor="fileavatar" className="avatarlabel">Edit avatar</Label>
-                </form>
+            <div style={{ borderBottom: '1px solid #c8ced3', width: '100%', padding: '10px 0' }}>
+                <img src={img} alt="avatar" id="avatar" style={{ height: '30px', width: '30px', borderRadius: '15px' }}></img>
+                <span style={{ paddingLeft: '5px' }}>1BSV = 256USD</span>
             </div>
-        </div>
+        </>
     )
 }
 
@@ -72,4 +85,8 @@ function getObjectURL(file) {
     return url ;
 }
 
+Avatar.propTypes = {
+    username: propTypes.string.isRequired,
+}
 
+export default Avatar;
