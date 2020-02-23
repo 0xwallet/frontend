@@ -16,7 +16,10 @@ function PrivateInfo(props) {
   ])(publicKeyWallet);
 
   const { seedUseRestore } = JSON.parse(localStorage.getItem(email)) || { seedUseRestore: '' };
-  const walletFromSeed = nknWallet.restoreWalletBySeed(seedUseRestore, 'new-wallet-password');
+  let walletFromSeed = '';
+  if (seedUseRestore) {
+    walletFromSeed = nknWallet.restoreWalletBySeed(seedUseRestore, 'new-wallet-password');
+  }
   const arr = [
     { label: 'Email', value: email, verified: true },
     { label: 'Country', value: 'China', verified: true },

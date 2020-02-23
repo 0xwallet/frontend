@@ -69,14 +69,14 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
     closeToggle();
   }
   console.log(username);
-  const seed = JSON.parse(localStorage.getItem(email)).seedUseRestore;
+  const { seedUseRestore } = JSON.parse(localStorage.getItem(email)) || { seedUseRestore: '' };
   return (
     <Modal isOpen={importOpen} toggle={closeToggle}>
       <ModalHeader toggle={closeToggle}>{actionItem}</ModalHeader>
       <ModalBody>
         { 
           actionItem === 'show seed' 
-          ? <span>{seed}</span> 
+          ? <span>{seedUseRestore}</span> 
           : <>
               <Input onChange={(e) => setSeedImport(e.target.value)} placeholder="please input nkn addr like username.xxx" />
               <Input 
