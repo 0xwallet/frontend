@@ -15,7 +15,7 @@ function PrivateInfo(props) {
     programHashStringToAddress
   ])(publicKeyWallet);
 
-  const { seedUseRestore } = JSON.parse(localStorage.getItem(email));
+  const { seedUseRestore } = JSON.parse(localStorage.getItem(email)) || { seedUseRestore: '' };
   const walletFromSeed = nknWallet.restoreWalletBySeed(seedUseRestore, 'new-wallet-password');
   const arr = [
     { label: 'Email', value: email, verified: true },
