@@ -17,8 +17,10 @@ function PrivateInfo(props) {
 
   const { seedUseRestore } = JSON.parse(localStorage.getItem(email)) || { seedUseRestore: '' };
   let walletFromSeed = '';
+  let file = '';
   if (seedUseRestore) {
     walletFromSeed = nknWallet.restoreWalletBySeed(seedUseRestore, 'new-wallet-password');
+    file = walletFromSeed.toJSON();
   }
   const arr = [
     { label: 'Email', value: email, verified: true },
@@ -60,7 +62,7 @@ function PrivateInfo(props) {
           <div>NKN ID</div>
           <p>{nknAddr}</p>
           <div style={{ position: 'absolute', bottom: 0, right: 0 }}>
-            <Button block color="dark" className="btn-pill" onClick={() => download(walletFromSeed.toJSON(), 'seed.txt', "text/plain")}>back up your wallet</Button>
+            <Button block color="dark" className="btn-pill" onClick={() => download(file, 'seed.txt', "text/plain")}>back up your wallet</Button>
           </div>
       </div>
     </>

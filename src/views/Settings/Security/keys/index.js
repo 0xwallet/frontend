@@ -69,6 +69,7 @@ export default class Keys extends PureComponent{
         bindSucc: false,
         walletId: 0,
         wallets: [],
+        loading: false,
     };
 
     componentDidMount() {
@@ -101,7 +102,9 @@ export default class Keys extends PureComponent{
             that.setState({
                 walletId,
             });
-
+            that.setState({
+                loading: true,
+            });
             client.mutate({
                 mutation: sendNknCode,
                 variables: { email, walletId }
@@ -117,6 +120,7 @@ export default class Keys extends PureComponent{
                 // }
                 that.setState({
                     bindSucc: true,
+                    loading: false,
                 })
             })
 
@@ -170,7 +174,7 @@ export default class Keys extends PureComponent{
 
     modalBindNkn = () => {
         const { open } = this.props;
-        const { bindSucc } = this.state;
+        const { bindSucc, loading } = this.state;
         return (
             <Modal isOpen={open} toggle={this.handleClose}>
             <ModalHeader toggle={this.handleClose}>Bind Nkn Addr for login</ModalHeader>
@@ -186,7 +190,7 @@ export default class Keys extends PureComponent{
                     ) : (
                         <>
                             <Input type="text" onChange={this.handleChange} placeholder="please input nkn addr" style={{ marginBottom: '5px' }} id="nknAddr" />
-                            <Button color="primary" onClick={this.handleBind}>send code</Button>
+                            <Button color="primary" onClick={this.handleBind}>{loading? 'loading' : 'send code'}</Button>
                         </>
                     )
                 }
