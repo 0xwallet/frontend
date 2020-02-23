@@ -21,7 +21,8 @@ query me{
             info{
                 publicKey,
                 identifier
-            }
+            },
+            tags,
         }
     }
 }
@@ -36,17 +37,24 @@ function UserInfo(props) {
                   if (error) return 'error';
                   if (loading) return 'loading';
                   const { username, email, wallets } = data.me;
-                  console.log(email, wallets, 'test');
+                  console.log(email, wallets, 'test_ walllets');
+                  let address = '';
+                  let publicKeyWallet = '';
+                  if (wallets.length > 0) {
+                    const { publicKey, identifier } = wallets[0].info;
+                    address = `${identifier}.${publicKey}`;
+                    publicKeyWallet = publicKey;
+                  }
                   const avatarProps = {
                       username,
                   };
                   const privateProps = {
                       email,
                       username,
+                      publicKeyWallet,
                   };
                   const addr = {
-                      username,
-                      email,
+                      address,
                   };
                   return (
                     <Card>

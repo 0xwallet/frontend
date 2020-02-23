@@ -1,5 +1,7 @@
 import React ,{PureComponent}from 'react';
-import { Row, Col } from 'reactstrap';
+import { 
+    Row, Col, 
+} from 'reactstrap';
 // import { connect } from 'react-redux';
 // import exampleAction from '../../../store/actions';
 // import settingAction from '../../../store/actions/setting';
@@ -14,8 +16,7 @@ class Security extends PureComponent{
         Authorizations: false,
         keys: false,
         backup: false,
-        token: localStorage.getItem('token'),
-        user: localStorage.getItem('email')
+        open: false,
     }
 
     handleKeys = ()=>{
@@ -36,8 +37,10 @@ class Security extends PureComponent{
         })
     }
 
-    addkeys = ()=>{
-        // this.props.actions.register(this.state.token);
+    toggle = () => {
+        this.setState((preState) => ({
+            open: !preState.open,
+        }))
     }
 
     getkeyslist = ()=>new Promise((resolve)=>{
@@ -51,11 +54,12 @@ class Security extends PureComponent{
 
     render(){
         const keysprops = {
-            getkeyslist: this.getkeyslist,
+            toggle: this.toggle,
             auth: this.state.keys,
+            open: this.state.open,
             onAuth: this.handleKeys,
-            addkeys: this.addkeys
-        }
+        };
+        
         return(
             <Row>
                 <Col xs="24" sm="12" lg="6"> 

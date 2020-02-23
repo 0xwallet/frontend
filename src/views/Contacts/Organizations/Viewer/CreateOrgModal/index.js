@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Modal, ModalHeader, 
   ModalBody,ModalFooter,Button,FormGroup,Label,Input,Col, Dropdown, DropdownToggle, DropdownItem, DropdownMenu,
-  FormText, InputGroup, InputGroupAddon, InputGroupText, Progress, Form
+  FormText, InputGroup, InputGroupAddon, InputGroupText , Form
 } from 'reactstrap';
 import { TextMask, InputAdapter } from 'react-text-mask-hoc';
 import { Mutation, Query, graphql } from "react-apollo";
@@ -40,10 +40,7 @@ const MapCard = {
 }
 
 class OrgModal extends React.Component{
-    constructor(props) {
-      super(props);
-    }
-    state={
+    state = {
         name: "",
         orgnameInChannels: "3",
         type: "",
@@ -242,18 +239,6 @@ class OrgModal extends React.Component{
             </FormText>
           </FormGroup>
           <Button color="info">confirm</Button>
-        </>
-      );
-    }
-
-    render_deposit() {
-      const imgURl = './code.png';
-      return (
-        <>
-          <h2>your deposit address</h2>
-          <img src={imgURl} alt="qr code" style={{ height: '150px', width: '150px'}}/>
-          <h5>sssssssssssssssssssssssssssssssssssssss</h5>
-          <Button color="info">copy address</Button>
         </>
       );
     }

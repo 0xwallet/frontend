@@ -4,13 +4,14 @@ import '../containers/DefaultLayout';
 import DefaultLayout from '../containers/DefaultLayout';
 import Login from '../views/Pages/Login0waf';
 
-export default ()=>{
-    return(
+function Home() {
+    return (
         <CurrentUser>
-            {currentUser=>{
+            {currentUser => {
                 return currentUser? <DefaultLayout /> : <Login/>
             }}
         </CurrentUser>
-        // <DefaultLayout />
-    )
+    );
 }
+
+export default Home;

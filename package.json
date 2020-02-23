@@ -44,6 +44,7 @@
     "graphql-tag": "^2.10.1",
     "http-proxy-middleware": "^0.19.1",
     "identicon.js": "^2.3.3",
+    "lodash": "^4.17.15",
     "marked": "^0.7.0",
     "nkn-client": "^0.7.2",
     "nkn-multiclient": "^0.1.1",

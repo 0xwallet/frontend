@@ -141,25 +141,24 @@ class Login0waf extends PureComponent{
                 publickey: wallet.getPublicKey(),
             };
             localStorage.setItem(email, JSON.stringify(walletInfo));
-            // 暂时不需要 setDefault
-            client.mutate({
-                mutation: bindNknAddr,
-                variables: { nknAddress: `${data.signup.user.username}.${wallet.getPublicKey()}`}
-            }).then(res => {
-                console.log(res, '已经绑定了唯一的地址');
-            });
             // client.mutate({
             //     mutation: bindNknAddr,
             //     variables: { nknAddress: `${data.signup.user.username}.${wallet.getPublicKey()}`}
             // }).then(res => {
-            //     console.log(res, 'res in sign');
-            //     client.mutate({
-            //         mutation: setDefaultNknAddr,
-            //         variables: { password, walletId: res.data.bindNknAddress.id }
-            //     }).then(res => {
-            //         console.log(res, 'set default');
-            //     })
+            //     console.log(res, '已经绑定了唯一的地址');
             // });
+            client.mutate({
+                mutation: bindNknAddr,
+                variables: { nknAddress: `${data.signup.user.username}.${wallet.getPublicKey()}`}
+            }).then(res => {
+                console.log(res, '已经绑定了唯一的地址 nkn bind');
+                client.mutate({
+                    mutation: setDefaultNknAddr,
+                    variables: { password, walletId: res.data.bindNknAddress.id }
+                }).then(res => {
+                    console.log(res, '已经设置绑定了唯一的地址, nkn setDefault');
+                })
+            });
             client.query({
                 query: GET_CURRENT_USER_QUERY,
             }).then((res) => {

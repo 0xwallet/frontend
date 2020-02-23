@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Modal, 
-  ModalBody,ModalFooter,Button,FormGroup,Label,Input,Col, Row, ModalHeader,
+  ModalBody,Button,FormGroup,Label,Input, ModalHeader,
   FormText, InputGroup, InputGroupAddon, InputGroupText , Form,
   DropdownItem, DropdownMenu, DropdownToggle, Dropdown
 } from 'reactstrap';
