@@ -161,12 +161,19 @@ export default class Keys extends PureComponent{
         })
     }
 
+    handleClose = () => {
+        this.props.toggle();
+        this.setState({
+            bindSucc: false,
+        })
+    }
+
     modalBindNkn = () => {
-        const { open, toggle } = this.props;
+        const { open } = this.props;
         const { bindSucc } = this.state;
         return (
-            <Modal isOpen={open} toggle={toggle}>
-            <ModalHeader toggle={toggle}>Bind Nkn Addr for login</ModalHeader>
+            <Modal isOpen={open} toggle={this.handleClose}>
+            <ModalHeader toggle={this.handleClose}>Bind Nkn Addr for login</ModalHeader>
             <ModalBody>
                 
                 {
@@ -186,7 +193,7 @@ export default class Keys extends PureComponent{
             </ModalBody>
             <ModalFooter>
                 <Button color="primary" onClick={this.addkeys}>Ok</Button>{' '}
-                <Button color="secondary" onClick={toggle}>Cancel</Button>
+                <Button color="secondary" onClick={this.handleClose}>Cancel</Button>
             </ModalFooter>
             </Modal>
         );
