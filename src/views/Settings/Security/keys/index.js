@@ -25,8 +25,8 @@ mutation bindnkn($nknAddress: String!){
 `;
 
 const setDefaultNknAddr = gql`
-mutation setdefaultaddr($password: String!, $walletId: String!){
-    setDefaultNknAddress(password: $password, walletId: $walletId, tag: LOGIN_CODE){
+mutation setdefaultaddr($password: String!, $walletId: String!, $tag: String!, $loginCode: String!){
+    setDefaultNknAddress(password: $password, walletId: $walletId, tag: $tag, loginCode: $loginCode){
       info{
         address,
         identifier,
@@ -68,7 +68,20 @@ export default class Keys extends PureComponent{
         bindpass: '',
         bindSucc: false,
         walletId: 0,
+        wallets: [],
     };
+
+    componentDidMount() {
+        client.query({
+            query: LAUNCHES_QUERY,
+        }).then((res) => {
+            const { wallets, email } = res.data.me;
+            this.setState({
+                wallets,
+                email,
+            })
+        }) 
+    }
 
     handleChange = (e) => {
         this.setState({
@@ -77,7 +90,7 @@ export default class Keys extends PureComponent{
     }
 
     handleBind = () => {
-        const { nknAddr } = this.state; 
+        const { nknAddr, email } = this.state; 
         const that = this;
         client.mutate({
             mutation: bindNknAddr,
@@ -89,27 +102,33 @@ export default class Keys extends PureComponent{
                 walletId,
             });
 
-            client.query({
-                query: LAUNCHES_QUERY,
+            client.mutate({
+                mutation: sendNknCode,
+                variables: { email, walletId }
             }).then((res) => {
-                client.mutate({
-                    mutation: sendNknCode,
-                    variables: { walletId, email: res.data.me.email}
-                }).then((res) => {
-                    console.log('send code', res);
-                    // if (res.data.sendLoginCode !== 'user offline') {
-                    //     that.setState({
-                    //         bindSucc: true,
-                    //     })
-                    // }
-                    // if (res.data.sendLoginCode === 'user offline') {
-                    //     message.error('user offline')
-                    // }
-                    that.setState({
-                        bindSucc: true,
-                    })
+                console.log('send code', res);
+                // if (res.data.sendLoginCode !== 'user offline') {
+                //     that.setState({
+                //         bindSucc: true,
+                //     })
+                // }
+                // if (res.data.sendLoginCode === 'user offline') {
+                //     message.error('user offline')
+                // }
+                that.setState({
+                    bindSucc: true,
                 })
             })
+
+            // client.query({
+            //     query: LAUNCHES_QUERY,
+            // }).then((res) => {
+            //     console.log('res info', res);
+            //     const wallets = res.data.me.wallets;
+            //     that.setState({
+            //         wallets,
+            //     });
+            // })
 
             // client.mutate({
             //     mutation: sendNknCode,
@@ -131,7 +150,7 @@ export default class Keys extends PureComponent{
         const that = this;
         client.mutate({
             mutation: setDefaultNknAddr,
-            variables: { password: bindpass, walletId, loginCode: nkncode }
+            variables: { password: bindpass, walletId, loginCode: nkncode, tag: "LOGIN_CODE" }
         }).then(res => {
             console.log(res, '已经设置绑定了唯一的地址, nkn setDefault');
             toggle();
@@ -175,6 +194,7 @@ export default class Keys extends PureComponent{
 
     render(){
         const {auth = false, onAuth, toggle } =this.props;
+        const { wallets } = this.state;
         return(
         <Card className="keys">
             <CardHeader>Keys
@@ -185,11 +205,12 @@ export default class Keys extends PureComponent{
             <CardBody>
                 <div className="keysbtn"> 
                         {
-                            this.state.keys.map((v,idx)=>{
+                            wallets.filter(v => v.tags.length !== 0 && v.tags[0] === 'LOGIN_CODE').map((v,idx)=>{
                                 return(
                                 <div key={idx} style={{display: 'flex',alignItems: 'center',marginBottom:'.5rem',justifyContent:'space-between'}}>
-                                        <Input defaultValue={v} type="text" disabled style={{width:'97%'}}/> 
-                                        <i className="fa fa-close"></i>
+                                    <Input defaultValue={v.info.publicKey} type="text" disabled style={{width:'97%'}}/> 
+                                    <span>{v.tags[0]}</span>
+                                    {/* <i className="fa fa-close"></i> */}
                                 </div>
                                 )
                             })

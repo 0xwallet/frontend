@@ -37,11 +37,10 @@ function UserInfo(props) {
                   if (error) return 'error';
                   if (loading) return 'loading';
                   const { username, email, wallets } = data.me;
-                  console.log(email, wallets, 'test_ walllets');
                   let address = '';
                   let publicKeyWallet = '';
                   if (wallets.length > 0) {
-                    const { publicKey, identifier } = wallets[0].info;
+                    const { publicKey, identifier } = wallets.filter(v => v.tags[0] === 'MESSAGE')[0].info;
                     address = `${identifier}.${publicKey}`;
                     publicKeyWallet = publicKey;
                   }
@@ -55,6 +54,8 @@ function UserInfo(props) {
                   };
                   const addr = {
                       address,
+                      email,
+                      username
                   };
                   return (
                     <Card>

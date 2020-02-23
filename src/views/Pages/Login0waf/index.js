@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
-// import nknWallet from 'nkn-wallet';
 import gql from "graphql-tag";
 import { Form, Modal, ModalBody, ModalHeader, Button, ModalFooter, Input } from 'reactstrap';
 import { Mutation, graphql } from "react-apollo";
@@ -55,8 +54,8 @@ mutation bindnkn($nknAddress: String!){
 `;
 
 const setDefaultNknAddr = gql`
-mutation setdefaultaddr($password: String!, $walletId: String!){
-    setDefaultNknAddress(password: $password, walletId: $walletId, tag: MESSAGE){
+mutation setdefaultaddr($password: String!, $walletId: String!, $tag: String!){
+    setDefaultNknAddress(password: $password, walletId: $walletId, tag: $tag){
       info{
         address,
         identifier,
@@ -65,15 +64,6 @@ mutation setdefaultaddr($password: String!, $walletId: String!){
     }
 }
 `;
-
-// 绑定nknaddr
-// const bindAddr = gql`
-// mutation bindNknAddr($nknAddress: String!){
-//     bindNknAddress(nknAddress: $nknAddress){
-//       id,
-//     }
-// }`;
-
 
 class Login0waf extends PureComponent{
     state = {
@@ -141,12 +131,7 @@ class Login0waf extends PureComponent{
                 publickey: wallet.getPublicKey(),
             };
             localStorage.setItem(email, JSON.stringify(walletInfo));
-            // client.mutate({
-            //     mutation: bindNknAddr,
-            //     variables: { nknAddress: `${data.signup.user.username}.${wallet.getPublicKey()}`}
-            // }).then(res => {
-            //     console.log(res, '已经绑定了唯一的地址');
-            // });
+  
             client.mutate({
                 mutation: bindNknAddr,
                 variables: { nknAddress: `${data.signup.user.username}.${wallet.getPublicKey()}`}
@@ -154,7 +139,7 @@ class Login0waf extends PureComponent{
                 console.log(res, '已经绑定了唯一的地址 nkn bind');
                 client.mutate({
                     mutation: setDefaultNknAddr,
-                    variables: { password, walletId: res.data.bindNknAddress.id }
+                    variables: { password, walletId: res.data.bindNknAddress.id, tag: "MESSAGE" }
                 }).then(res => {
                     console.log(res, '已经设置绑定了唯一的地址, nkn setDefault');
                 })
