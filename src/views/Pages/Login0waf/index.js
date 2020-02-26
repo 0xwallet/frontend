@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
 import gql from "graphql-tag";
-import { Form, Modal, ModalBody, ModalHeader, Button, ModalFooter, Input } from 'reactstrap';
+import { Form, Modal, ModalBody, ModalHeader, Input, Spinner } from 'reactstrap';
 import { Mutation, graphql } from "react-apollo";
 import { Tooltip } from 'antd';
+import InputGroup from 'react-input-groups';
 import client from '../../../client';
 import { GET_CURRENT_USER_QUERY } from "../../../components/CurrentUser";
 import Loading from "../../../components/Loading";
@@ -14,6 +15,7 @@ import Logo from './Logo';
 import ButtonCom from './Button';
 import './index.scss';
 import "antd/dist/antd.css";
+import 'react-input-groups/lib/css/styles.css'
 
 const nknWallet = require('nkn-wallet');
 
@@ -78,6 +80,7 @@ class Login0waf extends PureComponent{
         nknCode: "",
         sendLoginCode: "",
         publickey: '',
+        time: 60,
     };
 
     nknLogin = () => {
@@ -205,22 +208,47 @@ class Login0waf extends PureComponent{
         }
     }
 
-    sendNknCode = async (sendCode) => {
+    sendNknCode = async (sendCode, isresend) => {
         const { data: { sendLoginCode } } = await sendCode();
         this.setState({
             sendLoginCode,
         });
-        this.nknLogin();
+
+        if (!isresend) {
+            this.timer();
+            // open modal
+            this.nknLogin();
+        }
+        // 开始计时重新设置时间
+        if (isresend) {
+            this.setState({
+                time: 60,
+            }, () => this.timer())
+        }
     }
 
-    handleChangeCode = (e) => {
+    getValue = (value, signin) => {
         this.setState({
-            nknCode: e.target.value,
-        });
+            nknCode: value,
+        })
+        if (value.length === 6) {
+            console.log('login');
+            this.loginInByNknCode(signin)
+        }
+    }
+
+    timer = () => {
+        const timet = setInterval(() => {
+           this.setState(preState => ({ time: preState.time - 1}), () => {
+                if (this.state.time === 0) {
+                    clearInterval(timet);
+                }
+           })
+        }, 1000)
     }
 
     nknModal() {
-        const { nknCode, email, nknModal, sendLoginCode } = this.state;
+        const { nknCode, email, nknModal, time } = this.state;
         return (
             <Mutation 
                 mutation={SIGNIN_MUTATION} 
@@ -231,47 +259,76 @@ class Login0waf extends PureComponent{
                 onCompleted={this.handleCompleted}
                 update={this.handleUpdate}
             >
-                {(signin, {loading, error}) => {
-                    if (loading) return (
-                        <Modal isOpen={nknModal} toggle={this.nknLogin}>
-                            <ModalHeader>Nmobile</ModalHeader>
-                            <ModalBody>
-                                <Loading />
-                            </ModalBody>
-                        </Modal>
-                    );
-                    if (error) return (
-                        <Modal isOpen={nknModal} toggle={this.nknLogin}>
-                            <ModalHeader toggle={this.nknLogin}>Nmobile</ModalHeader>
-                            <ModalBody>
-                                <Input type="text" placeholder="please input your code" onChange={this.handleChangeCode} />
-                                <Error error={error} />
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" onClick={() => this.loginInByNknCode(signin)}>login</Button>{' '}
-                                <Button color="secondary" onClick={this.nknLogin}>Cancel</Button>
-                            </ModalFooter>
-                        </Modal>
-                    );
+                {(signin) => {
+                    // if (loading) return (
+                    //     <Modal isOpen={nknModal} toggle={this.nknLogin}>
+                    //         <ModalHeader>{email}</ModalHeader>
+                    //         <ModalBody>
+                    //             <Loading />
+                    //         </ModalBody>
+                    //     </Modal>
+                    // );
+                    // if (error) return (
+                    //     <Modal isOpen={nknModal} toggle={this.nknLogin}>
+                    //         <ModalHeader toggle={this.nknLogin}>{email}</ModalHeader>
+                    //         <ModalBody>
+                    //             <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    //                 <InputGroup
+                    //                     getValue={(value) => this.getValue(value, signin)}
+                    //                     length={6}
+                    //                     type={'box'}
+                    //                 />
+                    //             </div>
+                    //             <Error error={error} />
+                    //         </ModalBody>
+                    //     </Modal>
+                    // );
                     return (
                         <Modal isOpen={nknModal} toggle={this.nknLogin}>
-                            <ModalHeader toggle={this.nknLogin}>Nmobile</ModalHeader>
+                            <ModalHeader toggle={this.nknLogin}>{email}</ModalHeader>
                             <ModalBody>
-                                { 
-                                    sendLoginCode 
-                                ?   <Tooltip title={sendLoginCode}>{sendLoginCode.slice(0, 16)}...</Tooltip> 
-                                    : ''
-                                }
-                                <Input type="text" placeholder="please input your code" onChange={this.handleChangeCode} />
+                                <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                                    <InputGroup
+                                        getValue={(value) => this.getValue(value, signin)}
+                                        length={6}
+                                        type={'box'}
+                                    />
+                                    {
+                                        time === 0 
+                                        ? (
+                                            <Mutation 
+                                                mutation={sendNknCode}
+                                                variables={{
+                                                    email,
+                                                }}
+                                            >
+                                                {
+                                                    (sendCode, { loading, error }) => {
+                                                        if (loading) return <div style={{ position: 'absolute', right: 10 }}><Spinner type="grow" color="primary" /></div>;
+                                                        if (error) return this.error(error);
+                                                        return (
+                                                            <span style={{ position: 'absolute', right: 10 }} className="webauthn" onClick={() => this.sendNknCode(sendCode, true)}>resend</span>
+                                                        );
+                                                    }
+                                                }
+                                            </Mutation>
+                                        ) 
+                                        : <span className="webauthn" style={{ position: 'absolute', right: 10 }}>{time}s</span>
+                                    }
+                                </div>
                             </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" onClick={() => this.loginInByNknCode(signin)}>login</Button>{' '}
-                                <Button color="secondary" onClick={this.nknLogin}>Cancel</Button>
-                            </ModalFooter>
                         </Modal>
                     );
                 }}
             </Mutation>
+        );
+    }
+
+    error = () => {
+        return (
+            <Tooltip title="username is not" className="webauthn">
+                NKN
+            </Tooltip>
         );
     }
 
@@ -343,7 +400,9 @@ class Login0waf extends PureComponent{
                                 {
                                     isOpen && (
                                         <div className="loginItem wenauthn">
-                                            <span className="webauthn">WebAuthn</span>
+                                            <Tooltip title="Login with FIDO Authentication Key.">
+                                                <span className="webauthn">WebAuthn</span>
+                                            </Tooltip>
                                             <Mutation 
                                                 mutation={sendNknCode}
                                                 variables={{
@@ -352,10 +411,12 @@ class Login0waf extends PureComponent{
                                             >
                                                 {
                                                     (sendCode, { loading, error }) => {
-                                                        if (loading) return 'loading';
-                                                        if (error) return <Error error={error} />;
+                                                        if (loading) return <><Spinner type="grow" color="primary" /></>;
+                                                        if (error) return this.error(error);
                                                         return (
-                                                            <span className="webauthn" onClick={() => this.sendNknCode(sendCode)}>NKN</span>
+                                                            <Tooltip title="Login with NKN Verification Code.">
+                                                                <span className="webauthn" onClick={() => this.sendNknCode(sendCode, false)}>NKN</span>
+                                                            </Tooltip>
                                                         );
                                                     }
                                                 }
