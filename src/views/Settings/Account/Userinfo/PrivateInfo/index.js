@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 import download from 'downloadjs';
 import nknWallet from 'nkn-wallet';
 import propTypes from 'prop-types';
@@ -7,7 +7,7 @@ import { programHashStringToAddress, hexStringToProgramHash, publicKeyToSignatur
 import _ from 'lodash';
 
 function PrivateInfo(props) {
-  const { email, username, publicKeyWallet } = props;
+  const { email, username, publicKeyWallet, auth } = props;
   // const { programHashStringToAddress, hexStringToProgramHash, publicKeyToSignatureRedeem } = nknWallet;
   const nknAddr = _.flow([
     publicKeyToSignatureRedeem,
@@ -42,18 +42,23 @@ function PrivateInfo(props) {
               <p>{v.label}</p>
               <p>{v.value}</p>
               <p style={{ display: 'flex', alignItems: 'center' }}>
-                <span> <i className="cui-check icons" style={{ color: '#4dbd74' }}></i> </span><span>verified</span>
+                <span> <i className="cui-check icons"></i> </span><span>Unverified</span>
+                {/* style={{ color: '#4dbd74' }} */}
               </p>
             </div>
           ))
         }
       </div>
-      <div style={{ paddingTop: '10px', borderBottom: '1px solid #c8ced3', display: 'flex' }}>
+      <div style={{ paddingTop: '10px', /*borderBottom: '1px solid #c8ced3', */ display: 'flex' }}>
         {
             arrPublic.map((v, i) => (
-              <div key={i} style={{ flex: 1 }}>
-                <p> <i className="cui-pencil icons"></i> {v.label}</p>
-                <p>{v.value}</p>
+              <div key={i} style={{ flex: 1, paddingRight: '10px' }}>
+                <p> 
+                  {/* /*<i className="cui-pencil icons"></i> */}
+                 {v.label}
+                </p>
+                {/* <p>{v.value}</p> */}
+                <Input type="text" disabled={!auth} defaultValue={v.value} />
               </div>
             ))
           }
@@ -62,7 +67,7 @@ function PrivateInfo(props) {
           <div>NKN ID</div>
           <p>{nknAddr}</p>
           <div style={{ position: 'absolute', bottom: 0, right: 0 }}>
-            <Button block color="dark" className="btn-pill" onClick={() => download(file, 'seed.txt', "text/plain")}>back up your wallet</Button>
+            <Button block color="dark" className="btn-pill" onClick={() => download(file, `${nknAddr}.json`, "text/plain")}>back up your wallet</Button>
           </div>
       </div>
     </>
@@ -73,6 +78,7 @@ PrivateInfo.propTypes = {
   username: propTypes.string.isRequired,
   email: propTypes.string.isRequired,
   publicKeyWallet: propTypes.string.isRequired,
+  auth: propTypes.bool.isRequired,
 }
 
 export default PrivateInfo;

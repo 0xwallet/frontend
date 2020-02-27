@@ -4,6 +4,7 @@ import propTypes from 'prop-types';
 // import gql from 'graphql-tag'; 
 import crypto from 'crypto';
 import Identicon from 'identicon.js';
+import url from './us.jpg';
 import './index.scss';
 
 let hash = crypto.createHash('md5');
@@ -48,10 +49,7 @@ function Avatar(props){
     return(
         <>
             <div className="setting_avatar">
-                {/* <div className="avatarimg">
-                    <img src={img} alt="avatar" id="avatar"></img>
-                </div> */}
-                <div style={{ borderBottom: '1px solid #c8ced3', width: '100%' }}>
+                <div style={{ borderBottom: '1px solid #c8ced3', width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <form id="advForm">
                         <Input type="file" id="fileavatar" className="avatarinput"
                         accept="image/png, image/jpeg, image/gif, image/jpg"
@@ -61,12 +59,12 @@ function Avatar(props){
                                 <img src={img} alt="avatar" id="avatar"></img>
                             </div>
                         </Label>
-                        <span style={{ paddingLeft: '10px', color: '#2f353a', fontSize: '18px' }}>{username}</span>
+                        {/* <span style={{ paddingLeft: '10px', color: '#2f353a', fontSize: '18px' }}>{username}</span> */}
                     </form>
                 </div>
             </div>
             <div style={{ borderBottom: '1px solid #c8ced3', width: '100%', padding: '10px 0' }}>
-                <img src={img} alt="avatar" id="avatar" style={{ height: '30px', width: '30px', borderRadius: '15px' }}></img>
+                <img src={url} alt="avatar" id="avatar" style={{ height: '30px', width: '30px', borderRadius: '15px' }}></img>
                 <span style={{ paddingLeft: '5px' }}>1BSV = 256USD</span>
             </div>
         </>

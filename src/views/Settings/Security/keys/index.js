@@ -5,6 +5,7 @@ import {
 } from 'reactstrap';// ListGroupItem
 import gql from "graphql-tag";
 import { message } from 'antd';
+import classnames from 'classnames';
 import client from '../../../../client';
 import Locking from '../components/Locking';
 import './index.scss';
@@ -205,28 +206,30 @@ export default class Keys extends PureComponent{
 
     render(){
         const {auth = false, onAuth, toggle } =this.props;
-        const { wallets } = this.state;
+        // const { wallets } = this.state;
+        const keys = [{ name: 'Fido Key', icon: 'fa fa-usb'}, { name: 'Fido FP', icon: 'fa fa-microchip'}];
         return(
         <Card className="keys">
-            <CardHeader>Keys
+            <CardHeader>Hardware Devices
             <div className="card-header-actions">
                 <Locking onAuth={onAuth} auth={auth}/>
             </div>
             </CardHeader>
             <CardBody>
                 <div className="keysbtn"> 
-                        {
-                            wallets.filter(v => v.tags.length !== 0 && v.tags[0] === 'LOGIN_CODE').map((v,idx)=>{
-                                return(
-                                <div key={idx} style={{display: 'flex',alignItems: 'center',marginBottom:'.5rem',justifyContent:'space-between'}}>
-                                    <Input defaultValue={v.info.publicKey} type="text" disabled style={{width:'97%'}}/> 
-                                    <span>{v.tags[0]}</span>
-                                    {/* <i className="fa fa-close"></i> */}
-                                </div>
-                                )
-                            })
-                        }
-                    <Button color="primary" className="add" onClick={toggle} disabled={auth?false:true}>Add Nkn Addr for login</Button>
+                    {/* <Button color="primary" className="add" onClick={toggle} disabled={auth?false:true}>Add Nkn Addr for login</Button> */}
+                   
+                    {
+                        keys.map((v, i) => (
+                            <Card className="text-white bg-primary text-center">
+                                <CardBody>
+                                    <p key={i}><i className={classnames(v.icon)}></i>{v.name}<i className="cui-check icons"></i></p>
+                                </CardBody>
+                            </Card>
+                        ))
+                    }
+                    <Button color="primary" className="add" onClick={toggle} disabled={auth?false:true}>+</Button>
+                    {/* <i className="fa fa-plus"></i> */}
                 </div>
                 {this.modalBindNkn()}
             </CardBody>
@@ -234,3 +237,15 @@ export default class Keys extends PureComponent{
         )   
     }
 }
+
+// {
+//     wallets.filter(v => v.tags.length !== 0 && v.tags[0] === 'LOGIN_CODE').map((v,idx)=>{
+//         return(
+//         <div key={idx} style={{display: 'flex',alignItems: 'center',marginBottom:'.5rem',justifyContent:'space-between'}}>
+//             <Input defaultValue={v.info.publicKey} type="text" disabled style={{width:'97%'}}/> 
+//             <span>{v.tags[0]}</span>
+//             {/* <i className="fa fa-close"></i> */}
+//         </div>
+//         )
+//     })
+// }

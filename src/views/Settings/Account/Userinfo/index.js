@@ -51,11 +51,14 @@ function UserInfo(props) {
                       email,
                       username,
                       publicKeyWallet,
+                      auth,
                   };
                   const addr = {
                       address,
                       email,
-                      username
+                      username,
+                      auth,
+                      onAuth,
                   };
                   return (
                     <Card>
