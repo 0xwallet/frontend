@@ -24,7 +24,8 @@ const SIGNIN_MUTATION = gql`
     signin(email: $email, password: $password, loginCode: $loginCode) {
       token
       user {
-        username
+        username,
+        email,
       }
     }
   }
@@ -35,7 +36,8 @@ const SIGNUP_MUTATION = gql`
         signup(email: $email, password: $password, username: $username){
             token
             user {
-                username
+                username,
+                email,
             }
         }
     }
@@ -106,29 +108,64 @@ class Login0waf extends PureComponent{
         const { email, password } = this.state;
         const emails = email && email.split('@');
         console.log('hello world', 'ssss');
+        this.setState({
+            isSignUp: true,
+        })
         client.mutate({
             mutation: SIGNUP_MUTATION,
             variables: { email, username: emails[0], password },
             errorPolicy: 'all',
         }).then((res) => {
             console.log(res, 'res');
-            if (res.errors[0].message === 'Could not create account') {
-                this.setState({
-                    isSignUp: false,
-                });
-                message.warning('account has been signup')
-            } else {
-                this.setState({
-                    isSignUp: true,
-                })
+            if (res.errors) {
+                // password null
+                const { details } = res.errors[0];
+                if (details.password) {
+                    console.log('sfdsdfsdf');
+                    message.warn('input password');
+                    this.setState({
+                        isSignUp: false,
+                    });
+                } else if (details.email) {
+                    console.log('ioiooioioioiioii');
+                    message.warn('email has been sign up');
+                    this.setState({
+                        isSignUp: false,
+                    })
+                }
             }
+            // 已经注册了直接登录
+            // this.setState({
+            //     isSignUp: false,
+            // });
+            // message.warn('已经登录了');
+            // if (!res.data.signup) {
+            //     this.setState({
+            //         isSignUp: false,
+            //     });
+            //     message.warning('account has been signup');
+            // }
+            // if (res.errors[0].details[0].email) {
+            //     this.setState({
+            //         isSignUp: false,
+            //     });
+            //     message.warning('account has been signup')
+            // } else {
+            //     this.setState({
+            //         isSignUp: true,
+            //     });
+            // }
+            // this.setState({
+            //     isSignUp: true,
+            // })
         }).catch((e) => {
-            if (e.errors[0].message === 'Could not create account') {
-                this.setState({
-                    isSignUp: false,
-                });
-                message.warning('account has been signup')
-            }
+            console.log(e, 'eeeee');
+            // if (e.errors[0].message === 'Could not create account') {
+            //     this.setState({
+            //         isSignUp: false,
+            //     });
+            //     message.warning('account has been signup')
+            // }
         })
     }
 
@@ -139,7 +176,9 @@ class Login0waf extends PureComponent{
     };
 
     handleCompleted = data => {
+        console.log(data, 'data');
         const { isSignUp } = this.state;  
+        console.log(isSignUp, 'ssssssssssssssss');
         if (!isSignUp) {
             localStorage.setItem("auth-token", data.signin.token);
             localStorage.setItem("username", data.signin.user.username);
@@ -372,7 +411,7 @@ class Login0waf extends PureComponent{
                 update={this.handleUpdate}>
                 {(signin, { loading, error }) => {
                 if (loading) return <Loading />;
-                if (error) return  <Error error={error} />;
+                // if (error) return  <Error error={error} />;
                     return (
                         <div className="wrap">
                              <Form row="true" onSubmit={(e)=>{
@@ -403,7 +442,7 @@ class Login0waf extends PureComponent{
                                 {
                                     passwordError && <span style={{ color: 'red' }}>Please enter the same password</span>
                                 }
-                                <Error error={error} />
+                                {/* <Error error={error} /> */}
                                 <ButtonCom sendCode={this.sendCode} isOpen={isOpen} signin={() => {
                                     if (isSignUp) {
                                         if (validatePassword !== password) {
