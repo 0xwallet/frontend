@@ -108,18 +108,27 @@ class Login0waf extends PureComponent{
         console.log('hello world', 'ssss');
         client.mutate({
             mutation: SIGNUP_MUTATION,
-            variables: { email, username: emails[0], password } 
+            variables: { email, username: emails[0], password },
+            errorPolicy: 'all',
         }).then((res) => {
             console.log(res, 'res');
-            this.setState({
-                isSignUp: true,
-            })
+            if (res.errors[0].message === 'Could not create account') {
+                this.setState({
+                    isSignUp: false,
+                });
+                message.warning('account has been signup')
+            } else {
+                this.setState({
+                    isSignUp: true,
+                })
+            }
         }).catch((e) => {
-            console.log(e.data, 'eeeee');
-            this.setState({
-                isSignUp: false,
-            });
-            message.success('account has been signup')
+            if (e.errors[0].message === 'Could not create account') {
+                this.setState({
+                    isSignUp: false,
+                });
+                message.warning('account has been signup')
+            }
         })
     }
 
@@ -271,6 +280,7 @@ class Login0waf extends PureComponent{
                     loginCode: nknCode,
                     email,
                 }}
+                errorPolicy="all"
                 onCompleted={this.handleCompleted}
                 update={this.handleUpdate}
             >
@@ -357,6 +367,7 @@ class Login0waf extends PureComponent{
             <Mutation
                 mutation={mutation}
                 variables={variables}
+                errorPolicy="all"
                 onCompleted={this.handleCompleted}
                 update={this.handleUpdate}>
                 {(signin, { loading, error }) => {
@@ -423,6 +434,7 @@ class Login0waf extends PureComponent{
                                                 variables={{
                                                     email,
                                                 }}
+                                                errorPolicy="all"
                                             >
                                                 {
                                                     (sendCode, { loading, error }) => {
