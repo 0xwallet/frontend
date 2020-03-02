@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import gql from "graphql-tag";
 import { Form, Modal, ModalBody, ModalHeader, Input, Spinner } from 'reactstrap';
 import { Mutation, graphql } from "react-apollo";
-import { Tooltip } from 'antd';
+import { Tooltip, message } from 'antd';
 import InputGroup from 'react-input-groups';
 import client from '../../../client';
 import { GET_CURRENT_USER_QUERY } from "../../../components/CurrentUser";
@@ -103,9 +103,24 @@ class Login0waf extends PureComponent{
     };
 
     signUp = () => {
-        this.setState(preState => ({
-            isSignUp: !preState.isSignUp,
-        }))
+        const { email, password } = this.state;
+        const emails = email && email.split('@');
+        console.log('hello world', 'ssss');
+        client.mutate({
+            mutation: SIGNUP_MUTATION,
+            variables: { email, username: emails[0], password } 
+        }).then((res) => {
+            console.log(res, 'res');
+            this.setState({
+                isSignUp: true,
+            })
+        }).catch((e) => {
+            console.log(e.data, 'eeeee');
+            this.setState({
+                isSignUp: false,
+            });
+            message.success('account has been signup')
+        })
     }
 
     handleKeyDown = event => {
@@ -280,7 +295,7 @@ class Login0waf extends PureComponent{
                     //                 />
                     //             </div>
                     //             <Error error={error} />
-                    //         </ModalBody>
+                    //         </Mo dalBody>
                     //     </Modal>
                     // );
                     return (

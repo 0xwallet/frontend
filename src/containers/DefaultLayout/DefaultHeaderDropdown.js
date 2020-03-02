@@ -43,12 +43,14 @@ class DefaultHeaderDropdown extends Component {
     });
   }
 
-  Logout = ()=>{
+  Logout = () => {
     localStorage.removeItem("auth-token");
     localStorage.removeItem("username");
     this.props.history.push('/');
     
     this.props.client.resetStore();
+    // 取消重定向
+    this.props.onLogout();
   }
 
   goTask = ()=>{

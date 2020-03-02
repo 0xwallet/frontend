@@ -8,7 +8,8 @@ import Loading from '../components/Loading';
 const GET_CURRENT_USER_QUERY = gql`
   query GetCurrentUser {
     me {
-      username
+      username,
+      email
     }
   }
 `;

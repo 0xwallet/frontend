@@ -8,7 +8,7 @@ function Home() {
     return (
         <CurrentUser>
             {currentUser => {
-                return currentUser? <DefaultLayout /> : <Login/>
+                return currentUser? <DefaultLayout currentuser={currentUser} /> : <Login/>
             }}
         </CurrentUser>
     );

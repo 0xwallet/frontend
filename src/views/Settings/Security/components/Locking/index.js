@@ -100,7 +100,10 @@ class Locking extends PureComponent{
     canEdit = ()=>{
         this.props.onAuth();
         if(this.props.auth === true){
-            this.handleIsOpen();
+            // 绑定nkn地址用于登录
+            // this.handleIsOpen();
+            console.log('hell owr;d');
+            this.props.handleLock();
         }
     }
 

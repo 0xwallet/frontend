@@ -33,7 +33,8 @@ class DefaultLayout extends Component {
   state = {
     currentChannel: "",
     // channels: [{id: 123,user: "New Tab"}],
-    channels: [{id: 123,user: "New Tab"}]
+    channels: [{id: 123,user: "New Tab"}],
+    isLogout: false,
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
@@ -61,7 +62,6 @@ class DefaultLayout extends Component {
 
       
   connectChannel = (channelName,id)=>{
-    console.log(channelName,'chanelename')
     const cloneChannels = [...this.state.channels];
     cloneChannels[id].user = channelName;
     this.setState({
@@ -109,8 +109,15 @@ class DefaultLayout extends Component {
    })
   }
 
+  logout = () => {
+    this.setState({
+      isLogout: true,
+    })
+  }
+
   render() {
     const { channels, currentChannel } = this.state;
+    const { currentuser } = this.props;
     return (
       <Provider value={{ 
         channels,
@@ -118,73 +125,76 @@ class DefaultLayout extends Component {
         closeChannels: this.closeChannels,
         connectChannel: this.connectChannel,
         connectHaveChannel: this.connectHaveChannel,
-        currentChannel
-        }}>
-            <div className="app">
-              <AppHeader fixed>
-                <Suspense fallback={this.loading()}>
-                  <DefaultHeader logout={this.logout} upgrade={this.upgrade}/>
-                </Suspense>
-              </AppHeader>
-              <div className="app-body">
-                <AppSidebar fixed display="lg">
-                  <AppSidebarHeader />
-                  <AppSidebarForm />
-                  <Suspense>
-                  {/* <Fragment>
-                      <Query query={LAUNCHES_QUERY}>
-                          {
-                            ({ loading, error, data }) => {
-                                if(!loading){
-                                  data.user.accountType === 'basic'? navigation.items.splice(20,1): navigation.items.splice(19,1)
-                                }
-                                return <AppSidebarNav navConfig={navigation} {...this.props} />
+        currentChannel,
+        currentuser,
+      }}>
+        <div className="app">
+          <AppHeader fixed>
+            <Suspense fallback={this.loading()}>
+              <DefaultHeader logout={this.logout} upgrade={this.upgrade}/>
+            </Suspense>
+          </AppHeader>
+          <div className="app-body">
+            <AppSidebar fixed display="lg">
+              <AppSidebarHeader />
+              <AppSidebarForm />
+              <Suspense>
+              {/* <Fragment>
+                  <Query query={LAUNCHES_QUERY}>
+                      {
+                        ({ loading, error, data }) => {
+                            if(!loading){
+                              data.user.accountType === 'basic'? navigation.items.splice(20,1): navigation.items.splice(19,1)
                             }
-                          }
-                      </Query>
-                  </Fragment> */}
-                      <AppSidebarNav navConfig={navigation} {...this.props} />
-                  </Suspense>
-                  <AppSidebarFooter />
-                  <AppSidebarMinimizer />
-                </AppSidebar>
-                <main className="main" style={{
-                  position: "relative"
-                }}>
-                  <AppBreadcrumb appRoutes={routes}/>
-                  <Container fluid>
-                    <Suspense fallback={this.loading()}>
-                      <Switch>
-                        {routes.map((route, idx) => {
-                          return route.component ? (
-                            <Route
-                              key={idx}
-                              path={route.path}
-                              exact={route.exact}
-                              name={route.name}
-                              render={props => (
-                                <route.component {...props} />
-                              )} />
-                          ) : (null);
-                        })}
-                         <Redirect from="/" to="/dashboard" />
-                      </Switch>
-                    </Suspense>
-                  </Container>
-                </main>
-                <AppAside fixed>
-                  <Suspense fallback={this.loading()}>
-                    <DefaultAside />
-                  </Suspense>
-                </AppAside>
-              </div>
-              <AppFooter>
+                            return <AppSidebarNav navConfig={navigation} {...this.props} />
+                        }
+                      }
+                  </Query>
+              </Fragment> */}
+                  <AppSidebarNav navConfig={navigation} {...this.props} />
+              </Suspense>
+              <AppSidebarFooter />
+              <AppSidebarMinimizer />
+            </AppSidebar>
+            <main className="main" style={{
+              position: "relative"
+            }}>
+              <AppBreadcrumb appRoutes={routes}/>
+              <Container fluid>
                 <Suspense fallback={this.loading()}>
-                  <DefaultFooter />
+                  <Switch>
+                    {routes.map((route, idx) => {
+                      return route.component ? (
+                        <Route
+                          key={idx}
+                          path={route.path}
+                          exact={route.exact}
+                          name={route.name}
+                          render={props => (
+                            <route.component {...props} />
+                          )} />
+                      ) : (null);
+                    })}
+                      {
+                        !this.state.isLogout && <Redirect from="/" to="/dashboard" />
+                      }
+                  </Switch>
                 </Suspense>
-              </AppFooter>
-            </div>
-            </Provider>
+              </Container>
+            </main>
+            <AppAside fixed>
+              <Suspense fallback={this.loading()}>
+                <DefaultAside />
+              </Suspense>
+            </AppAside>
+          </div>
+          <AppFooter>
+            <Suspense fallback={this.loading()}>
+              <DefaultFooter />
+            </Suspense>
+          </AppFooter>
+        </div>
+        </Provider>
     );
   }
 }

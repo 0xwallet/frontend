@@ -221,7 +221,7 @@ export default class Keys extends PureComponent{
                    
                     {
                         keys.map((v, i) => (
-                            <Card className="text-white bg-primary text-center">
+                            <Card className="text-white bg-primary text-center" key={i}>
                                 <CardBody>
                                     <p key={i}><i className={classnames(v.icon)}></i>{v.name}<i className="cui-check icons"></i></p>
                                 </CardBody>

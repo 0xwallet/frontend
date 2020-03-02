@@ -6,7 +6,7 @@ import {
 // import exampleAction from '../../../store/actions';
 // import settingAction from '../../../store/actions/setting';
 // import { bindActionCreators } from 'redux';
-
+import { Consumer } from '../../../containers/DefaultLayout/DefaultLayout'
 import Config from './Config';
 import Keys from './keys';
 import Backup from './Backup';
@@ -60,24 +60,29 @@ class Security extends PureComponent{
             onAuth: this.handleKeys,
         };
         
-        return(
-            <Row>
-                <Col xs="24" sm="12" lg="6"> 
-                    <Config auth={this.state.Authorizations} onAuth={this.handleAuthor}/>
-                </Col>
-                <Col xs="24" sm="12" lg="6"> 
-                   <Row>
-                       <Col>
-                         <Keys {...keysprops}/>
-                       </Col>
-                   </Row>
-                   <Row>
-                      <Col>
-                         <Backup auth={this.state.backup} onAuth={this.handleBackup}/>
-                       </Col>
-                   </Row>
-                </Col>
-            </Row>
+        return (
+            <Consumer>
+                {
+                    ({ currentuser }) => (
+                        <Row>
+                            <Col xs="24" sm="12" lg="6"> 
+                                <Config auth={this.state.Authorizations} onAuth={this.handleAuthor}/>
+                            </Col>
+                            <Col xs="24" sm="12" lg="6"> 
+                            <Row>
+                                <Col>
+                                    <Keys {...keysprops} />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Backup auth={this.state.backup} onAuth={this.handleBackup} currentuser={currentuser} />
+                                </Col>
+                            </Row>
+                            </Col>
+                        </Row>
+                    )}
+            </Consumer>
         )
     }
 }
