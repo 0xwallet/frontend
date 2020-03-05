@@ -1,28 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useImperativeHandle, useEffect } from 'react';
 import debounce from 'debounce';
 import { InputGroup, InputGroupAddon, InputGroupText, Input} from 'reactstrap';
+import gql from "graphql-tag";
+import client from '../../../client';
 
 function Code (props) {
-    const { isOpen, onChangeCodeValue, onKeyDownCode, isSignUp, isNknLogin, sendNknCode } = props;
+    const { email, isOpen, onChangeCodeValue, onKeyDownCode, isSignUp, isNknLogin, sendNknCode } = props;
     let [time, setTime] = useState(5);
-
+    const [start, setStart] = useState(false);
     const handleTime = debounce(() => {
         let timer = null;
-        sendNknCode();
-        if (timer) {
-            clearInterval(timer)
-        } else {
-            timer = setInterval(() => {
-                time = time - 1;
-                setTime(time);
-                if (time === 0) {
-                    clearInterval(timer);
-                    setTime(5);
+        setStart(true);
+        if (start && time === 5) {
+            const sendNknCode = gql`
+                mutation sendLoginCode($email: String!) {
+                    sendLoginCode(email: $email)
                 }
-            }, 1000);
+            `;
+            client.mutate({
+                mutation: sendNknCode,
+                variables: { email },
+            })
         }
-        
-    }, 1000)
+        timer = setInterval(() => {
+            time = time - 1;
+            setTime(time);
+            if (time === 0) {
+                clearInterval(timer);
+                setTime(5);
+            }
+        }, 1000);
+    }, 1000);
+
+    useEffect(() => {
+        if (start) {
+            handleTime();
+        }
+    }, [start])
+
+    useImperativeHandle(props.cref, () => {
+        return {
+            resend: () => setStart(true),
+        }
+    });
 
     if (isOpen && !isSignUp && !isNknLogin) {
         return (

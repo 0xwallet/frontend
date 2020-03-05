@@ -8,7 +8,7 @@ import InputGroup from 'react-input-groups';
 import client from '../../../client';
 import { GET_CURRENT_USER_QUERY } from "../../../components/CurrentUser";
 import Loading from "../../../components/Loading";
-import Error from "../../../components/Error";
+// import Error from "../../../components/Error";
 import Email from './Email';
 import Code from './Code';
 import Logo from './Logo';
@@ -70,7 +70,9 @@ mutation setdefaultaddr($password: String!, $walletId: String!, $tag: String!){
 `;
 
 class Login0waf extends PureComponent{
-    state = {
+    constructor(props) {
+      super(props);
+      this.state = {
         email: "",
         password: "",
         loginCode: "",
@@ -84,7 +86,10 @@ class Login0waf extends PureComponent{
         publickey: '',
         time: 60,
         isNknLogin: true,
-    };
+      };
+
+      this.codeRef = React.createRef();
+    }
 
     nknLogin = () => {
         this.setState({
@@ -146,9 +151,7 @@ class Login0waf extends PureComponent{
     };
 
     handleCompleted = data => {
-        console.log(data, 'data');
         const { isSignUp } = this.state;  
-        console.log(isSignUp, 'ssssssssssssssss');
         if (!isSignUp) {
             localStorage.setItem("auth-token", data.signin.token);
             localStorage.setItem("username", data.signin.user.username);
@@ -172,18 +175,15 @@ class Login0waf extends PureComponent{
                 mutation: bindNknAddr,
                 variables: { nknAddress: `${data.signup.user.username}.${wallet.getPublicKey()}`}
             }).then(res => {
-                console.log(res, '已经绑定了唯一的地址 nkn bind');
                 client.mutate({
                     mutation: setDefaultNknAddr,
                     variables: { password, walletId: res.data.bindNknAddress.id, tag: "MESSAGE" }
                 }).then(res => {
-                    console.log(res, '已经设置绑定了唯一的地址, nkn setDefault');
                 })
             });
             client.query({
                 query: GET_CURRENT_USER_QUERY,
             }).then((res) => {
-                console.log(res, 'client query login');
                 this.props.history.push('/dashboard')
             });
         }  
@@ -227,13 +227,11 @@ class Login0waf extends PureComponent{
             });
         }
         if(email !== "" && !reg.test(email)){
-            console.log('format');
             this.setState({
                 isCorrect: false,
             });
         }
         if(email !== "" && reg.test(email)){
-            console.log('correct');
             this.setState({
                 isCorrect: true,
             });
@@ -242,12 +240,9 @@ class Login0waf extends PureComponent{
     }
 
     sendNknCode = () => {
-        const { email } = this.state;
         // sendCode();
-        client.mutate({
-          mutation: sendNknCode,
-          variables: { email }
-        })
+        this.codeRef.current.resend();
+
         // this.setState({
         //     sendLoginCode,
         // });
@@ -280,7 +275,6 @@ class Login0waf extends PureComponent{
             nknCode: value,
         })
         if (value.length === 6) {
-            console.log('login');
             this.loginInByNknCode(signin)
         }
     }
@@ -388,7 +382,6 @@ class Login0waf extends PureComponent{
         const emails = email && email.split('@');
         // const variables = !isSignUp ? { email, password } : { email, password, username: emails[0] };
         let variables = {};
-        console.log(isNknLogin, 'logn');
         if (!isNknLogin && !isSignUp) {
           variables = {
             email,
@@ -424,7 +417,9 @@ class Login0waf extends PureComponent{
                              }} id="login">
                                 <Logo />
                                 <Email onChangeEmailValue={this.handleChange} onKeyDown={this.handleKeyDown} isCorrect={isCorrect} />
-                                <Code 
+                                <Code
+                                    email={email}
+                                    cref={this.codeRef}
                                     isOpen={isOpen}
                                     onChangeCodeValue={this.handleChange}
                                     isSignUp={isSignUp}
@@ -437,6 +432,14 @@ class Login0waf extends PureComponent{
                                                     this.handlePasswordError(true);
                                                     return false;
                                                 }
+                                                if (password === '') {
+                                                  return false;
+                                                }
+                                                if (!password || !validatePassword) {
+                                                  console.log('hrer', password);
+                                                  this.handlePasswordError(true);
+                                                  return false;
+                                                }
                                                 this.handlePasswordError(false);
                                                 signin();
                                                 this.props.history.push('/dashboard')
@@ -447,7 +450,7 @@ class Login0waf extends PureComponent{
                                     }} 
                                 /> 
                                 {
-                                    passwordError && <span style={{ color: 'red' }}>Please enter the same password</span>
+                                    passwordError && <span style={{ color: 'red' }}>Please enter the same password and can't not null</span>
                                 }
                                 {/* <Error error={error} /> */}
                                 <ButtonCom sendCode={this.sendCode} isOpen={isOpen} signin={() => {
@@ -455,6 +458,15 @@ class Login0waf extends PureComponent{
                                         if (validatePassword !== password) {
                                             this.handlePasswordError(true);
                                             return false;
+                                        }
+                                        if (password === '') {
+                                          this.handlePasswordError(true);
+                                          return false;
+                                        }
+                                        if (!password || !validatePassword) {
+                                          console.log('hrer23', password);
+                                          this.handlePasswordError(true);
+                                          return false;
                                         }
                                         this.handlePasswordError(false);
                                         signin().then(() => {
