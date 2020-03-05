@@ -110,6 +110,12 @@ class Login0waf extends PureComponent{
         this.setState({ [name]: value });
     };
 
+    handleSignIn = () => {
+      this.setState({
+        isSignUp: false,
+      })
+    }
+
     signUp = () => {
         // const { email, password } = this.state;
         // const emails = email && email.split('@');
@@ -512,11 +518,16 @@ class Login0waf extends PureComponent{
                                                 <span className="webauthn" onClick={this.handlePassword}>password</span>
                                               )
                                             }
-                                            <span className="webauthn" onClick={this.signUp}>
+                                            {/* <span className="webauthn" onClick={this.signUp}>
                                                 {
                                                     isSignUp ? 'Sign In' : 'Sign Up'
                                                 }
-                                            </span>
+                                            </span> */}
+                                            {
+                                              isSignUp 
+                                              ? <span className="webauthn" onClick={this.handleSignIn}>Sign In</span> 
+                                              : <span className="webauthn" onClick={this.signUp}>Sign Up</span>
+                                            }
                                         </div>
                                     )
                                 }
