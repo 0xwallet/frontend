@@ -34,6 +34,7 @@
     "codemirror": "^5.44.0",
     "core-js": "^2.6.5",
     "crypto": "^1.0.1",
+    "debounce": "^1.2.0",
     "downloadjs": "^1.4.7",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.10.0",

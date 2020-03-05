@@ -73,16 +73,17 @@ class Login0waf extends PureComponent{
     state = {
         email: "",
         password: "",
+        loginCode: "",
         openCodeInput: false,
         isCorrect: true,
         isSignUp: false,
         validatePassword: "",
         passwordError: false,
         nknModal: false,
-        nknCode: "",
         sendLoginCode: "",
         publickey: '',
         time: 60,
+        isNknLogin: true,
     };
 
     nknLogin = () => {
@@ -105,68 +106,37 @@ class Login0waf extends PureComponent{
     };
 
     signUp = () => {
-        const { email, password } = this.state;
-        const emails = email && email.split('@');
-        console.log('hello world', 'ssss');
+        // const { email, password } = this.state;
+        // const emails = email && email.split('@');
         this.setState({
             isSignUp: true,
-        })
-        client.mutate({
-            mutation: SIGNUP_MUTATION,
-            variables: { email, username: emails[0], password },
-            errorPolicy: 'all',
-        }).then((res) => {
-            console.log(res, 'res');
-            if (res.errors) {
-                // password null
-                const { details } = res.errors[0];
-                if (details.password) {
-                    console.log('sfdsdfsdf');
-                    message.warn('input password');
-                    this.setState({
-                        isSignUp: false,
-                    });
-                } else if (details.email) {
-                    console.log('ioiooioioioiioii');
-                    message.warn('email has been sign up');
-                    this.setState({
-                        isSignUp: false,
-                    })
-                }
-            }
-            // 已经注册了直接登录
-            // this.setState({
-            //     isSignUp: false,
-            // });
-            // message.warn('已经登录了');
-            // if (!res.data.signup) {
-            //     this.setState({
-            //         isSignUp: false,
-            //     });
-            //     message.warning('account has been signup');
-            // }
-            // if (res.errors[0].details[0].email) {
-            //     this.setState({
-            //         isSignUp: false,
-            //     });
-            //     message.warning('account has been signup')
-            // } else {
-            //     this.setState({
-            //         isSignUp: true,
-            //     });
-            // }
-            // this.setState({
-            //     isSignUp: true,
-            // })
-        }).catch((e) => {
-            console.log(e, 'eeeee');
-            // if (e.errors[0].message === 'Could not create account') {
-            //     this.setState({
-            //         isSignUp: false,
-            //     });
-            //     message.warning('account has been signup')
-            // }
-        })
+        });
+        // client.mutate({
+        //     mutation: SIGNUP_MUTATION,
+        //     variables: { email, username: emails[0], password },
+        //     errorPolicy: 'all',
+        // }).then((res) => {
+        //     console.log(res, 'res');
+        //     if (res.errors) {
+        //         // password null
+        //         const { details } = res.errors[0];
+        //         if (details.password) {
+        //             console.log('sfdsdfsdf');
+        //             message.warn('input password');
+        //             this.setState({
+        //                 isSignUp: false,
+        //             });
+        //         } else if (details.email) {
+        //             console.log('ioiooioioioiioii');
+        //             message.warn('email has been sign up');
+        //             this.setState({
+        //                 isSignUp: false,
+        //             })
+        //         }
+        //     }
+        // }).catch((e) => {
+        //     console.log(e, 'eeeee');
+        // })
     }
 
     handleKeyDown = event => {
@@ -271,23 +241,38 @@ class Login0waf extends PureComponent{
         }
     }
 
-    sendNknCode = async (sendCode, isresend) => {
-        const { data: { sendLoginCode } } = await sendCode();
+    sendNknCode = () => {
+        const { email } = this.state;
+        // sendCode();
+        client.mutate({
+          mutation: sendNknCode,
+          variables: { email }
+        })
+        // this.setState({
+        //     sendLoginCode,
+        // });
+
         this.setState({
-            sendLoginCode,
+          isNknLogin: false,
         });
 
-        if (!isresend) {
-            this.timer();
-            // open modal
-            this.nknLogin();
-        }
-        // 开始计时重新设置时间
-        if (isresend) {
-            this.setState({
-                time: 60,
-            }, () => this.timer())
-        }
+        // if (!isresend) {
+        //     this.timer();
+        //     // open modal
+        //     this.nknLogin();
+        // }
+        // // 开始计时重新设置时间
+        // if (isresend) {
+        //     this.setState({
+        //         time: 60,
+        //     }, () => this.timer())
+        // }
+    }
+
+    handlePassword = () => {
+      this.setState({
+        isNknLogin: true,
+      })
     }
 
     getValue = (value, signin) => {
@@ -300,23 +285,23 @@ class Login0waf extends PureComponent{
         }
     }
 
-    timer = () => {
-        const timet = setInterval(() => {
-           this.setState(preState => ({ time: preState.time - 1}), () => {
-                if (this.state.time === 0) {
-                    clearInterval(timet);
-                }
-           })
-        }, 1000)
-    }
+    // timer = () => {
+    //     const timet = setInterval(() => {
+    //        this.setState(preState => ({ time: preState.time - 1}), () => {
+    //             if (this.state.time === 0) {
+    //                 clearInterval(timet);
+    //             }
+    //        })
+    //     }, 1000)
+    // }
 
     nknModal() {
-        const { nknCode, email, nknModal, time } = this.state;
+        const { loginCode, email, nknModal, time } = this.state;
         return (
             <Mutation 
                 mutation={SIGNIN_MUTATION} 
                 variables={{
-                    loginCode: nknCode,
+                    loginCode,
                     email,
                 }}
                 errorPolicy="all"
@@ -371,7 +356,7 @@ class Login0waf extends PureComponent{
                                                         if (loading) return <div style={{ position: 'absolute', right: 10 }}><Spinner type="grow" color="primary" /></div>;
                                                         if (error) return this.error(error);
                                                         return (
-                                                            <span style={{ position: 'absolute', right: 10 }} className="webauthn" onClick={() => this.sendNknCode(sendCode, true)}>resend</span>
+                                                            <span style={{ position: 'absolute', right: 10 }} className="webauthn" onClick={sendCode}>resend</span>
                                                         );
                                                     }
                                                 }
@@ -397,11 +382,31 @@ class Login0waf extends PureComponent{
     }
 
     render() {
-        const { openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
+        const { loginCode, isNknLogin, openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
         const mutation = !isSignUp ? SIGNIN_MUTATION : SIGNUP_MUTATION;
         // 对邮箱进行切割
         const emails = email && email.split('@');
-        const variables = !isSignUp ? { email, password } : { email, password, username: emails[0] };
+        // const variables = !isSignUp ? { email, password } : { email, password, username: emails[0] };
+        let variables = {};
+        console.log(isNknLogin, 'logn');
+        if (!isNknLogin && !isSignUp) {
+          variables = {
+            email,
+            loginCode
+          }
+        }
+
+        if (isNknLogin && !isSignUp) {
+          variables = {
+            email,
+            password
+          }
+        }
+
+        if (isSignUp) {
+          variables = { email, password, username: emails[0] };
+        }
+
         return (
             <Mutation
                 mutation={mutation}
@@ -423,6 +428,8 @@ class Login0waf extends PureComponent{
                                     isOpen={isOpen}
                                     onChangeCodeValue={this.handleChange}
                                     isSignUp={isSignUp}
+                                    isNknLogin={isNknLogin}
+                                    sendNknCode={this.sendNknCode}
                                     onKeyDownCode={(e) => {
                                         if (e.keyCode === 13) {
                                             if (isSignUp) {
@@ -468,25 +475,31 @@ class Login0waf extends PureComponent{
                                             <Tooltip title="Login with FIDO Authentication Key.">
                                                 <span className="webauthn">WebAuthn</span>
                                             </Tooltip>
-                                            <Mutation 
-                                                mutation={sendNknCode}
-                                                variables={{
-                                                    email,
-                                                }}
-                                                errorPolicy="all"
-                                            >
-                                                {
-                                                    (sendCode, { loading, error }) => {
-                                                        if (loading) return <><Spinner type="grow" color="primary" /></>;
-                                                        if (error) return this.error(error);
-                                                        return (
-                                                            <Tooltip title="Login with NKN Verification Code.">
-                                                                <span className="webauthn" onClick={() => this.sendNknCode(sendCode, false)}>NKN</span>
-                                                            </Tooltip>
-                                                        );
+                                            {
+                                              isNknLogin ? (
+                                                <Mutation 
+                                                    mutation={sendNknCode}
+                                                    variables={{
+                                                        email,
+                                                    }}
+                                                    errorPolicy="all"
+                                                >
+                                                    {
+                                                        (sendCode, { loading, error }) => {
+                                                            if (loading) return <><Spinner type="grow" color="primary" /></>;
+                                                            if (error) return this.error(error);
+                                                            return (
+                                                                <Tooltip title="Login with NKN Verification Code.">
+                                                                    <span className="webauthn" onClick={() => this.sendNknCode(sendCode, false)}>NKN</span>
+                                                                </Tooltip>
+                                                            );
+                                                        }
                                                     }
-                                                }
-                                            </Mutation>
+                                                  </Mutation>
+                                              ) : (
+                                                <span className="webauthn" onClick={this.handlePassword}>password</span>
+                                              )
+                                            }
                                             <span className="webauthn" onClick={this.signUp}>
                                                 {
                                                     isSignUp ? 'Sign In' : 'Sign Up'
