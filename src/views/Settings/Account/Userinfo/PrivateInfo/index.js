@@ -7,8 +7,8 @@ import { programHashStringToAddress, hexStringToProgramHash, publicKeyToSignatur
 import _ from 'lodash';
 
 function PrivateInfo(props) {
-  const { email, username, publicKeyWallet, auth } = props;
-  // const { programHashStringToAddress, hexStringToProgramHash, publicKeyToSignatureRedeem } = nknWallet;
+  const { email, username, publicKeyWallet, auth, status } = props;
+  console.log(status, 'status');
   const nknAddr = _.flow([
     publicKeyToSignatureRedeem,
     hexStringToProgramHash,

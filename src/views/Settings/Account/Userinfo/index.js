@@ -15,6 +15,10 @@ query me{
     me{
         avatar,
         email,
+        emails {
+            status,
+            address,
+        }
         username,
         wallets{
             id,
@@ -36,14 +40,21 @@ function UserInfo(props) {
               ({ loading, error, data }) => {
                   if (error) return 'error';
                   if (loading) return 'loading';
-                  const { username, email, wallets } = data.me;
+                  const { username, email, wallets, emails } = data.me;
                   let address = '';
                   let publicKeyWallet = '';
+                  let status = '';
                   if (wallets.length > 0) {
-                    const { publicKey, identifier } = wallets.filter(v => v.tags[0] === 'MESSAGE')[0].info;
+                    const walletsMessage = wallets.filter(v => v.tags[0] === 'MESSAGE')[0];
+                    const { publicKey, identifier } = walletsMessage ? walletsMessage.info : { publicKey: '', identifier: '' };
                     address = `${identifier}.${publicKey}`;
                     publicKeyWallet = publicKey;
                   }
+
+                  if (emails) {
+                      status = emails[0].status;
+                  }
+
                   const avatarProps = {
                       username,
                   };
@@ -52,6 +63,7 @@ function UserInfo(props) {
                       username,
                       publicKeyWallet,
                       auth,
+                      status,
                   };
                   const addr = {
                       address,

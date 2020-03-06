@@ -388,6 +388,9 @@ class Login0waf extends PureComponent{
         const emails = email && email.split('@');
         // const variables = !isSignUp ? { email, password } : { email, password, username: emails[0] };
         let variables = {};
+
+        console.log('render tset');
+
         if (!isNknLogin && !isSignUp) {
           variables = {
             email,
@@ -481,8 +484,13 @@ class Login0waf extends PureComponent{
                                             console.log(e);
                                         });
                                     }
+                                    if (!password) {
+                                      message.warn('please input password');
+                                      return false;
+                                    }
+
                                     signin().then(() => {
-                                        this.props.history.push('/dashboard');
+                                      this.props.history.push('/dashboard');
                                     }).catch((e) => {
                                         console.log(e);
                                     });

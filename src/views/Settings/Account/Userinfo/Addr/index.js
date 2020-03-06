@@ -135,7 +135,6 @@ CodeQr.propTypes = {
 
 function Addr(props) {
   const { address, email, username, auth, onAuth } = props;
-  console.log(auth);
   const [open, setOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [qropen, setQropen] = useState(false);
