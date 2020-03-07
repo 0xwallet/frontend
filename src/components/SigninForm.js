@@ -38,7 +38,6 @@ class SigninForm extends Component {
   };
 
   handleUpdate = (cache, { data }) => {
-    console.log(data, 'data in sign in');
     cache.writeQuery({
       query: GET_CURRENT_USER_QUERY,
       data: { me: data.signin.user }

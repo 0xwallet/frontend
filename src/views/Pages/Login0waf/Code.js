@@ -5,7 +5,7 @@ import gql from "graphql-tag";
 import client from '../../../client';
 
 function Code (props) {
-    const { email, isOpen, onChangeCodeValue, onKeyDownCode, isSignUp, isNknLogin, sendNknCode } = props;
+    const { email, isOpen, onChangeCodeValue, onKeyDownCode, isSignUp, isNknLogin } = props;
     let [time, setTime] = useState(5);
     const [start, setStart] = useState(false);
     const handleTime = debounce(() => {
@@ -87,6 +87,14 @@ function Code (props) {
     if (isSignUp && isOpen) {
         return (
             <>
+                <InputGroup style={{ marginBottom: '18px' }}>
+                    <InputGroupAddon addonType="append">
+                        <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
+                    </InputGroupAddon>
+                    <Input type="text" id="code" name="code" placeholder="email code"
+                        onChange={onChangeCodeValue} spellCheck={false}
+                    />
+                </InputGroup>
                 <InputGroup style={{ marginBottom: '18px' }}>
                     <InputGroupAddon addonType="append">
                         <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>

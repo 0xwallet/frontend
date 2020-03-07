@@ -32,8 +32,8 @@ const SIGNIN_MUTATION = gql`
 `;
 
 const SIGNUP_MUTATION = gql`
-    mutation signup($email: String!, $password: String!, $username: String!) {
-        signup(email: $email, password: $password, username: $username){
+    mutation signup($email: String!, $password: String!, $username: String!, $code: String!) {
+        signup(email: $email, password: $password, username: $username, code: $code){
             token
             user {
                 username,
@@ -86,6 +86,7 @@ class Login0waf extends PureComponent{
         publickey: '',
         time: 60,
         isNknLogin: true,
+        code: '', // email code
       };
 
       this.codeRef = React.createRef();
@@ -285,16 +286,6 @@ class Login0waf extends PureComponent{
         }
     }
 
-    // timer = () => {
-    //     const timet = setInterval(() => {
-    //        this.setState(preState => ({ time: preState.time - 1}), () => {
-    //             if (this.state.time === 0) {
-    //                 clearInterval(timet);
-    //             }
-    //        })
-    //     }, 1000)
-    // }
-
     nknModal() {
         const { loginCode, email, nknModal, time } = this.state;
         return (
@@ -382,14 +373,12 @@ class Login0waf extends PureComponent{
     }
 
     render() {
-        const { loginCode, isNknLogin, openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
+        const { code, loginCode, isNknLogin, openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
         const mutation = !isSignUp ? SIGNIN_MUTATION : SIGNUP_MUTATION;
         // 对邮箱进行切割
         const emails = email && email.split('@');
         // const variables = !isSignUp ? { email, password } : { email, password, username: emails[0] };
         let variables = {};
-
-        console.log('render tset');
 
         if (!isNknLogin && !isSignUp) {
           variables = {
@@ -406,7 +395,7 @@ class Login0waf extends PureComponent{
         }
 
         if (isSignUp) {
-          variables = { email, password, username: emails[0] };
+          variables = { email, password, username: emails[0], code };
         }
 
         return (
@@ -425,7 +414,7 @@ class Login0waf extends PureComponent{
                                  e.preventDefault();
                              }} id="login">
                                 <Logo />
-                                <Email onChangeEmailValue={this.handleChange} onKeyDown={this.handleKeyDown} isCorrect={isCorrect} />
+                                <Email email={email} isSignUp={isSignUp} isOpen={isOpen} onChangeEmailValue={this.handleChange} onKeyDown={this.handleKeyDown} isCorrect={isCorrect} />
                                 <Code
                                     email={email}
                                     cref={this.codeRef}

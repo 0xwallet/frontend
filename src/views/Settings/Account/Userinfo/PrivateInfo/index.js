@@ -8,7 +8,10 @@ import _ from 'lodash';
 
 function PrivateInfo(props) {
   const { email, username, publicKeyWallet, auth, status } = props;
-  console.log(status, 'status');
+  const emailVerified = status !== 'INACTIVATED';
+  const countryVerfied = false;
+  const passwordVerfied = false;
+
   const nknAddr = _.flow([
     publicKeyToSignatureRedeem,
     hexStringToProgramHash,
@@ -23,9 +26,9 @@ function PrivateInfo(props) {
     file = walletFromSeed.toJSON();
   }
   const arr = [
-    { label: 'Email', value: email, verified: true },
-    { label: 'Country', value: 'China', verified: true },
-    { label: 'Passport', value: 'G301222', verified: true }
+    { label: 'Email', value: email, verified: emailVerified },
+    { label: 'Country', value: 'China', verified: countryVerfied },
+    { label: 'Passport', value: 'G301222', verified: passwordVerfied }
   ]
 
   const arrPublic = [
@@ -42,8 +45,12 @@ function PrivateInfo(props) {
               <p>{v.label}</p>
               <p>{v.value}</p>
               <p style={{ display: 'flex', alignItems: 'center' }}>
-                <span> <i className="cui-check icons"></i> </span><span>Unverified</span>
                 {/* style={{ color: '#4dbd74' }} */}
+                {
+                  v.verified
+                  ? <> <i className="cui-check icons" style={{ color: '#4dbd74' }}></i> <span>verified</span> </>
+                  : <> <i className="cui-check icons"></i> <span>Unverified</span> </>
+                }
               </p>
             </div>
           ))
@@ -79,6 +86,7 @@ PrivateInfo.propTypes = {
   email: propTypes.string.isRequired,
   publicKeyWallet: propTypes.string.isRequired,
   auth: propTypes.bool.isRequired,
+  status: propTypes.string.isRequired,
 }
 
 export default PrivateInfo;

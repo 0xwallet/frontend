@@ -50,6 +50,12 @@
             }
         }
     }
+
+    .email-code {
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
 
 %message-common {
