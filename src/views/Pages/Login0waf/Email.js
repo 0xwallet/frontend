@@ -11,7 +11,7 @@ mutation sendVerifyCode($email: String!){
 }`;
 
 function Email(props) {
-    const { onChangeEmailValue, onKeyDown, isCorrect, isOpen, isSignUp, email } = props;
+    const { onChangeEmailValue, onKeyDown, isCorrect, isOpen, isSignUp, email, forget } = props;
     let [time, setTime] = useState(5);
 
     const handleSendCode = debounce((sendCode) => {
@@ -27,6 +27,34 @@ function Email(props) {
         }, 1000);
     }, 1000);
 
+    const EmailCode = (time) => {
+        if (time === 5) {
+            return (
+                <InputGroupAddon addonType="append" className="email-code" onClick={() => handleSendCode(sendCode)}>
+                    <InputGroupText>
+                        send
+                    </InputGroupText>
+                </InputGroupAddon>
+            );
+        }
+        if (time === 0) {
+            return (
+                <InputGroupAddon addonType="append" className="email-code" onClick={() => handleSendCode(sendCode)}>
+                    <InputGroupText>
+                        resend
+                    </InputGroupText>
+                </InputGroupAddon>
+            );
+        }
+        return (
+            <InputGroupAddon addonType="append">
+                <InputGroupText>
+                    {time}s
+                </InputGroupText>
+            </InputGroupAddon>
+        );
+    }
+
     return (
         <InputGroup style={{margin : '1.3rem 0', position: 'relative' }}>
             <InputGroupAddon addonType="append">
@@ -40,11 +68,10 @@ function Email(props) {
                 onKeyDown={onKeyDown}
             />
             {
-                (isSignUp && isOpen) && (
+                ((isSignUp && isOpen) || (forget && isOpen)) && (
                     <Mutation mutation={sendCode} variables={{ email }}>
                         {
-                            (sendCode, { loading, error }) => {
-                                console.log(loading, error);
+                            (sendCode) => {
                                 return (
                                     <InputGroupAddon addonType="append" className="email-code" onClick={() => handleSendCode(sendCode)}>
                                         <InputGroupText>
@@ -72,6 +99,7 @@ Email.propTypes = {
     isOpen: propTypes.bool.isRequired,
     isSignUp: propTypes.bool.isRequired,
     email: propTypes.string.isRequired,
+    forget: propTypes.bool.isRequired,
 }
 
 export default Email;

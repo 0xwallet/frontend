@@ -240,9 +240,11 @@ class Login0waf extends PureComponent{
     }
 
     sendNknCode = () => {
-        this.codeRef.current.resend();
+        // this.codeRef.current.resend();
+        // console.log(this.codeRef, 'codeRef');
         this.setState({
           isNknLogin: false,
+          isSignUp: false,
         });
     }
 
@@ -257,6 +259,7 @@ class Login0waf extends PureComponent{
     handlePassword = () => {
       this.setState({
         isNknLogin: true,
+        isSignUp: false,
       })
     }
 

@@ -8,11 +8,9 @@ import client from '../../../client';
 function Code (props) {
     const { email, isOpen, onChangeCodeValue, onKeyDownCode, isSignUp, isNknLogin, onRemember, forget, onForget, onLogin } = props;
     let [time, setTime] = useState(5);
-    const [start, setStart] = useState(false);
     const handleTime = debounce(() => {
         let timer = null;
-        setStart(true);
-        if (start && time === 5) {
+        if (time === 5) {
             const sendNknCode = gql`
                 mutation sendLoginCode($email: String!) {
                     sendLoginCode(email: $email)
@@ -33,19 +31,39 @@ function Code (props) {
         }, 1000);
     }, 1000);
 
-    useEffect(() => {
-        if (start) {
-            handleTime();
-        }
-    }, [start])
+    // useEffect(() => {
+    //     if (start) {
+    //         handleTime();
+    //     }
+    // }, [start])
 
-    useImperativeHandle(props.cref, () => {
-        return {
-            resend: () => setStart(true),
-        }
-    });
+    // useImperativeHandle(props.cref, () => {
+    //     return {
+    //         resend: () => setStart(true),
+    //     }
+    // });
 
-    console.log(forget, isOpen, 'forget open');
+    const SendCom = (value) => {
+        if (value === 5) {
+            return (
+                <InputGroupAddon addonType="append" onClick={handleTime} style={{ cursor: 'pointer' }}> 
+                    <InputGroupText>rend</InputGroupText>
+                </InputGroupAddon>
+            );
+        }
+        if (value === 0) {
+            return (
+                <InputGroupAddon addonType="append" onClick={handleTime} style={{ cursor: 'pointer' }}> 
+                    <InputGroupText>resend</InputGroupText>
+                </InputGroupAddon>
+            );
+        }
+        return (
+             <InputGroupAddon addonType="append"> 
+                <InputGroupText>{time}s</InputGroupText>
+            </InputGroupAddon>
+        );
+    }
 
     if (isOpen && !isSignUp && !isNknLogin && !forget) {
         return (
@@ -57,17 +75,18 @@ function Code (props) {
                     onChange={onChangeCodeValue} spellCheck={false}
                     onKeyDown={onKeyDownCode}
                 />
-                {
+                {SendCom(time)}
+                {/* {
                     time === 5 ? (
                         <InputGroupAddon addonType="append" onClick={handleTime}> 
-                            <InputGroupText>resend</InputGroupText>
+                            <InputGroupText>rend</InputGroupText>
                         </InputGroupAddon>
                     ) : (
                         <InputGroupAddon addonType="append"> 
                             <InputGroupText>{time}s</InputGroupText>
                         </InputGroupAddon>
                     )
-                }
+                } */}
             </InputGroup>
         );
     }
