@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 
-export default (props)=>{
-   const { sendCode, isOpen, signin, isSignUp } = props;
+function ButtonComs(props) {
+   const { sendCode, isOpen, signin, isSignUp, forget } = props;
    function ButtonCom() {
-        if (isOpen && !isSignUp) {
+        if (isOpen && !isSignUp && !forget) {
                 return (
                         <Button color="primary" onClick={() => {
                                 signin();
@@ -18,6 +18,13 @@ export default (props)=>{
                         }}>Sign Up</Button>
                 );
            }
+           if (isOpen && !isSignUp && forget) {
+                return (
+                        <Button color="primary" onClick={() => {
+                                console.log('重置');
+                        }}>reset</Button>
+                );
+           }
            return <Button color="primary" onClick={sendCode}>Enter</Button>;
    }
    return(
@@ -25,4 +32,6 @@ export default (props)=>{
                 <ButtonCom />
         </div>
    )
-};
+}
+
+export default ButtonComs;

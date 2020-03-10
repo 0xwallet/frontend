@@ -86,10 +86,25 @@ class Login0waf extends PureComponent{
         publickey: '',
         time: 60,
         isNknLogin: true,
-        code: '', // email code
+        code: '', // email code,
+        forget: false, // 重置
+        remember: false, // 是否记住token
       };
 
       this.codeRef = React.createRef();
+    }
+
+    handleForget = () => {
+        this.setState({
+            forget: true,
+            isSignUp: false,
+        })
+    }
+
+    handleRemember = () => {
+        this.setState({
+            remember: true,
+        })
     }
 
     nknLogin = () => {
@@ -118,37 +133,9 @@ class Login0waf extends PureComponent{
     }
 
     signUp = () => {
-        // const { email, password } = this.state;
-        // const emails = email && email.split('@');
         this.setState({
             isSignUp: true,
         });
-        // client.mutate({
-        //     mutation: SIGNUP_MUTATION,
-        //     variables: { email, username: emails[0], password },
-        //     errorPolicy: 'all',
-        // }).then((res) => {
-        //     console.log(res, 'res');
-        //     if (res.errors) {
-        //         // password null
-        //         const { details } = res.errors[0];
-        //         if (details.password) {
-        //             console.log('sfdsdfsdf');
-        //             message.warn('input password');
-        //             this.setState({
-        //                 isSignUp: false,
-        //             });
-        //         } else if (details.email) {
-        //             console.log('ioiooioioioiioii');
-        //             message.warn('email has been sign up');
-        //             this.setState({
-        //                 isSignUp: false,
-        //             })
-        //         }
-        //     }
-        // }).catch((e) => {
-        //     console.log(e, 'eeeee');
-        // })
     }
 
     handleKeyDown = event => {
@@ -158,10 +145,16 @@ class Login0waf extends PureComponent{
     };
 
     handleCompleted = data => {
-        const { isSignUp } = this.state;  
+        const { isSignUp, remember } = this.state;  
         if (!isSignUp) {
-            localStorage.setItem("auth-token", data.signin.token);
-            localStorage.setItem("username", data.signin.user.username);
+            //  如果点击记住我就存储token
+            console.log('remember');
+            if (remember) {
+                localStorage.setItem("auth-token", data.signin.token);
+                localStorage.setItem("username", data.signin.user.username);
+            } else {
+                console.log('no remember');
+            }
         }
         if (isSignUp) {
             const { password, email } = this.state;
@@ -247,28 +240,18 @@ class Login0waf extends PureComponent{
     }
 
     sendNknCode = () => {
-        // sendCode();
         this.codeRef.current.resend();
-
-        // this.setState({
-        //     sendLoginCode,
-        // });
-
         this.setState({
           isNknLogin: false,
         });
+    }
 
-        // if (!isresend) {
-        //     this.timer();
-        //     // open modal
-        //     this.nknLogin();
-        // }
-        // // 开始计时重新设置时间
-        // if (isresend) {
-        //     this.setState({
-        //         time: 60,
-        //     }, () => this.timer())
-        // }
+    handleLogin = () => {
+        this.setState({
+            isSignUp: false,
+            forget: false,
+            isOpen: true,
+        })
     }
 
     handlePassword = () => {
@@ -372,8 +355,15 @@ class Login0waf extends PureComponent{
         );
     }
 
+    renderButton(isSignUp) {
+        if (isSignUp) {
+            return <span className="webauthn" onClick={this.handleSignIn}>Sign In</span> 
+        }
+        return <span className="webauthn" onClick={this.signUp}>Sign Up</span>
+    }
+
     render() {
-        const { code, loginCode, isNknLogin, openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
+        const { forget, code, loginCode, isNknLogin, openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
         const mutation = !isSignUp ? SIGNIN_MUTATION : SIGNUP_MUTATION;
         // 对邮箱进行切割
         const emails = email && email.split('@');
@@ -414,13 +404,22 @@ class Login0waf extends PureComponent{
                                  e.preventDefault();
                              }} id="login">
                                 <Logo />
-                                <Email email={email} isSignUp={isSignUp} isOpen={isOpen} onChangeEmailValue={this.handleChange} onKeyDown={this.handleKeyDown} isCorrect={isCorrect} />
+                                <Email
+                                    forget={forget}
+                                    email={email}
+                                    isSignUp={isSignUp}
+                                    isOpen={isOpen} 
+                                    onChangeEmailValue={this.handleChange} onKeyDown={this.handleKeyDown} isCorrect={isCorrect} />
                                 <Code
+                                    onLogin={this.handleLogin}
                                     email={email}
                                     cref={this.codeRef}
                                     isOpen={isOpen}
                                     onChangeCodeValue={this.handleChange}
+                                    onRemember={this.handleRemember}
                                     isSignUp={isSignUp}
+                                    forget={forget}
+                                    onForget={this.handleForget}
                                     isNknLogin={isNknLogin}
                                     sendNknCode={this.sendNknCode}
                                     onKeyDownCode={(e) => {
@@ -445,13 +444,13 @@ class Login0waf extends PureComponent{
                                             signin();
                                             this.props.history.push('/dashboard')
                                         }
-                                    }} 
+                                    }}
                                 /> 
                                 {
                                     passwordError && <span style={{ color: 'red' }}>Please enter the same password and can't not null</span>
                                 }
                                 {/* <Error error={error} /> */}
-                                <ButtonCom sendCode={this.sendCode} isOpen={isOpen} signin={() => {
+                                <ButtonCom sendCode={this.sendCode} isOpen={isOpen} forget={forget} signin={() => {
                                     if (isSignUp) {
                                         if (validatePassword !== password) {
                                             this.handlePasswordError(true);
@@ -515,16 +514,7 @@ class Login0waf extends PureComponent{
                                                 <span className="webauthn" onClick={this.handlePassword}>password</span>
                                               )
                                             }
-                                            {/* <span className="webauthn" onClick={this.signUp}>
-                                                {
-                                                    isSignUp ? 'Sign In' : 'Sign Up'
-                                                }
-                                            </span> */}
-                                            {
-                                              isSignUp 
-                                              ? <span className="webauthn" onClick={this.handleSignIn}>Sign In</span> 
-                                              : <span className="webauthn" onClick={this.signUp}>Sign Up</span>
-                                            }
+                                            {this.renderButton(isSignUp)}
                                         </div>
                                     )
                                 }
