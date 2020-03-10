@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle, useEffect } from 'react';
+import React, { useState } from 'react';
 import debounce from 'debounce';
 import { InputGroup, InputGroupAddon, InputGroupText, Input} from 'reactstrap';
 import gql from "graphql-tag";
@@ -47,7 +47,7 @@ function Code (props) {
         if (value === 5) {
             return (
                 <InputGroupAddon addonType="append" onClick={handleTime} style={{ cursor: 'pointer' }}> 
-                    <InputGroupText>send</InputGroupText>
+                    <InputGroupText>ssend</InputGroupText>
                 </InputGroupAddon>
             );
         }
@@ -141,7 +141,7 @@ function Code (props) {
         );
     }
 
-    if (forget && isOpen) {
+    if (forget && isOpen && !isSignUp) {
         return (
             <>
                 <InputGroup style={{ marginBottom: '18px' }}>

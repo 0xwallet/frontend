@@ -242,6 +242,7 @@ class Login0waf extends PureComponent{
     sendNknCode = () => {
         // this.codeRef.current.resend();
         // console.log(this.codeRef, 'codeRef');
+        console.log('hrer');
         this.setState({
           isNknLogin: false,
           isSignUp: false,
