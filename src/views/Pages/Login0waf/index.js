@@ -464,7 +464,6 @@ class Login0waf extends PureComponent{
                                           return false;
                                         }
                                         if (!password || !validatePassword) {
-                                          console.log('hrer23', password);
                                           this.handlePasswordError(true);
                                           return false;
                                         }
@@ -474,17 +473,18 @@ class Login0waf extends PureComponent{
                                         }).catch((e) => {
                                             console.log(e);
                                         });
+                                    } else {
+                                        if (!password) {
+                                        message.warn('please input password');
+                                            return false;
+                                        }
+    
+                                        signin().then(() => {
+                                        this.props.history.push('/dashboard');
+                                        }).catch((e) => {
+                                            console.log(e);
+                                        });
                                     }
-                                    if (!password) {
-                                      message.warn('please input password');
-                                      return false;
-                                    }
-
-                                    signin().then(() => {
-                                      this.props.history.push('/dashboard');
-                                    }).catch((e) => {
-                                        console.log(e);
-                                    });
                                 }} isSignUp={isSignUp} />
                                 {
                                     isOpen && (
@@ -522,9 +522,9 @@ class Login0waf extends PureComponent{
                                     )
                                 }
                             </Form>
-                            {
+                            {/* {
                                 this.nknModal()
-                            }
+                            } */}
                         </div>
                     );
                 }}

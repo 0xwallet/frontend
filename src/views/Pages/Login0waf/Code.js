@@ -47,7 +47,7 @@ function Code (props) {
         if (value === 5) {
             return (
                 <InputGroupAddon addonType="append" onClick={handleTime} style={{ cursor: 'pointer' }}> 
-                    <InputGroupText>rend</InputGroupText>
+                    <InputGroupText>send</InputGroupText>
                 </InputGroupAddon>
             );
         }
