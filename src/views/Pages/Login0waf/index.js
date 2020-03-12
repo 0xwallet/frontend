@@ -135,6 +135,8 @@ class Login0waf extends PureComponent{
     signUp = () => {
         this.setState({
             isSignUp: true,
+            isOpen: true,
+            forget: false,
         });
     }
 
@@ -461,7 +463,10 @@ class Login0waf extends PureComponent{
                                         signin().then(() => {
                                         this.props.history.push('/dashboard');
                                         }).catch((e) => {
-                                            message.error(e.graphQLErrors[0].details);
+                                            // console.log(e.graphQLErrors[0]);
+                                            message.error('login code not correct');
+                                            // message.error(e.graphQLErrors[0].details || message.error(e.graphQLErrors[0].message));
+                                            // message.error(e.graphQLErrors[0].details);
                                         });
                                     }
                             
@@ -469,7 +474,8 @@ class Login0waf extends PureComponent{
                                         signin().then(() => {
                                             this.props.history.push('/dashboard');
                                         }).catch((e) => {
-                                            message.error(e.graphQLErrors[0].details);
+                                            console.log(e.graphQLErrors[0]);
+                                            // message.error(e.graphQLErrors[0].details);
                                         });
                                     }
                             

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import debounce from 'debounce';
 import { InputGroup, InputGroupAddon, InputGroupText, Input} from 'reactstrap';
 import gql from "graphql-tag";
-import { message } from 'antd';
 import Remember from '../Remember';
 import client from '../../../client';
 import "antd/dist/antd.css";
@@ -22,18 +21,15 @@ function Code (props) {
                 mutation: sendNknCode,
                 variables: { email },
                 errorPolicy: 'all',
-            }).then(() => {
-                timer = setInterval(() => {
-                    time = time - 1;
-                    setTime(time);
-                    if (time === 0) {
-                        clearInterval(timer);
-                        setTime(60);
-                    }
-                }, 1000);
-            }).catch((error) => {
-                message.error(error.graphQLErrors[0].details);
             });
+            timer = setInterval(() => {
+                time = time - 1;
+                setTime(time);
+                if (time === 0) {
+                    clearInterval(timer);
+                    setTime(60);
+                }
+            }, 1000);
         }
     }, 1000);
 
@@ -147,7 +143,7 @@ function Code (props) {
                     <InputGroupAddon addonType="append">
                         <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
                     </InputGroupAddon>
-                    <Input type="password" id="validate-sig" name="validatePassword" placeholder="new password" autoComplete="current-password"
+                    <Input type="password" id="validate-sig" name="validatePassword" placeholder="validate new password" autoComplete="current-password"
                         onChange={onChangeCodeValue} spellCheck={false}
                         onKeyDown={onKeyDownCode}
                     />
