@@ -12,7 +12,7 @@ mutation sendVerifyCode($email: String!){
 
 function Email(props) {
     const { onChangeEmailValue, onKeyDown, isCorrect, isOpen, isSignUp, email, forget } = props;
-    let [time, setTime] = useState(5);
+    let [time, setTime] = useState(60);
 
     const handleSendCode = debounce((sendCode) => {
         sendCode();
@@ -22,13 +22,13 @@ function Email(props) {
             setTime(time);
             if (time === 0) {
                 clearInterval(timer);
-                setTime(5);
+                setTime(60);
             }
         }, 1000);
     }, 1000);
 
-    const EmailCode = (time) => {
-        if (time === 5) {
+    const EmailCode = ({ time, sendCode }) => {
+        if (time === 60) {
             return (
                 <InputGroupAddon addonType="append" className="email-code" onClick={() => handleSendCode(sendCode)}>
                     <InputGroupText>
@@ -73,11 +73,12 @@ function Email(props) {
                         {
                             (sendCode) => {
                                 return (
-                                    <InputGroupAddon addonType="append" className="email-code" onClick={() => handleSendCode(sendCode)}>
-                                        <InputGroupText>
-                                            {time === 5 ? 'send' : `${time}s`}
-                                        </InputGroupText>
-                                    </InputGroupAddon>
+                                    // <InputGroupAddon addonType="append" className="email-code" onClick={() => handleSendCode(sendCode)}>
+                                    //     <InputGroupText>
+                                    //         {time === 5 ? 'send' : `${time}s`}
+                                    //     </InputGroupText>
+                                    // </InputGroupAddon>
+                                    <EmailCode time={time} sendCode={sendCode} />
                                 );
                             }
                         }

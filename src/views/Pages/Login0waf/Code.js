@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import debounce from 'debounce';
 import { InputGroup, InputGroupAddon, InputGroupText, Input} from 'reactstrap';
 import gql from "graphql-tag";
+import { message } from 'antd';
 import Remember from '../Remember';
 import client from '../../../client';
+import "antd/dist/antd.css";
 
 function Code (props) {
     const { email, isOpen, onChangeCodeValue, onKeyDownCode, isSignUp, isNknLogin, onRemember, forget, onForget, onLogin } = props;
-    let [time, setTime] = useState(5);
+    let [time, setTime] = useState(60);
     const handleTime = debounce(() => {
         let timer = null;
-        if (time === 5) {
+        if (time === 60) {
             const sendNknCode = gql`
                 mutation sendLoginCode($email: String!) {
                     sendLoginCode(email: $email)
@@ -19,35 +21,27 @@ function Code (props) {
             client.mutate({
                 mutation: sendNknCode,
                 variables: { email },
-            })
+                errorPolicy: 'all',
+            }).then(() => {
+                timer = setInterval(() => {
+                    time = time - 1;
+                    setTime(time);
+                    if (time === 0) {
+                        clearInterval(timer);
+                        setTime(60);
+                    }
+                }, 1000);
+            }).catch((error) => {
+                message.error(error.graphQLErrors[0].details);
+            });
         }
-        timer = setInterval(() => {
-            time = time - 1;
-            setTime(time);
-            if (time === 0) {
-                clearInterval(timer);
-                setTime(5);
-            }
-        }, 1000);
     }, 1000);
 
-    // useEffect(() => {
-    //     if (start) {
-    //         handleTime();
-    //     }
-    // }, [start])
-
-    // useImperativeHandle(props.cref, () => {
-    //     return {
-    //         resend: () => setStart(true),
-    //     }
-    // });
-
     const SendCom = (value) => {
-        if (value === 5) {
+        if (value === 60) {
             return (
                 <InputGroupAddon addonType="append" onClick={handleTime} style={{ cursor: 'pointer' }}> 
-                    <InputGroupText>ssend</InputGroupText>
+                    <InputGroupText>send</InputGroupText>
                 </InputGroupAddon>
             );
         }
@@ -76,17 +70,6 @@ function Code (props) {
                     onKeyDown={onKeyDownCode}
                 />
                 {SendCom(time)}
-                {/* {
-                    time === 5 ? (
-                        <InputGroupAddon addonType="append" onClick={handleTime}> 
-                            <InputGroupText>rend</InputGroupText>
-                        </InputGroupAddon>
-                    ) : (
-                        <InputGroupAddon addonType="append"> 
-                            <InputGroupText>{time}s</InputGroupText>
-                        </InputGroupAddon>
-                    )
-                } */}
             </InputGroup>
         );
     }

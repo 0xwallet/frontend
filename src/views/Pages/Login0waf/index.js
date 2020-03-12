@@ -148,7 +148,6 @@ class Login0waf extends PureComponent{
         const { isSignUp, remember } = this.state;  
         if (!isSignUp) {
             //  如果点击记住我就存储token
-            console.log('remember');
             if (remember) {
                 localStorage.setItem("auth-token", data.signin.token);
                 localStorage.setItem("username", data.signin.user.username);
@@ -240,9 +239,6 @@ class Login0waf extends PureComponent{
     }
 
     sendNknCode = () => {
-        // this.codeRef.current.resend();
-        // console.log(this.codeRef, 'codeRef');
-        console.log('hrer');
         this.setState({
           isNknLogin: false,
           isSignUp: false,
@@ -400,7 +396,7 @@ class Login0waf extends PureComponent{
                 onCompleted={this.handleCompleted}
                 update={this.handleUpdate}>
                 {(signin, { loading, error }) => {
-                if (loading) return <Loading />;
+                // if (loading) return <Loading />;
                 // if (error) return  <Error error={error} />;
                     return (
                         <div className="wrap">
@@ -428,6 +424,16 @@ class Login0waf extends PureComponent{
                                     sendNknCode={this.sendNknCode}
                                     onKeyDownCode={(e) => {
                                         if (e.keyCode === 13) {
+                                            if (!isNknLogin && !isSignUp) {
+                                                signin();
+                                                this.props.history.push('/dashboard')
+                                            }
+                                    
+                                            if (isNknLogin && !isSignUp) {
+                                                signin();
+                                                this.props.history.push('/dashboard')
+                                            }
+                                    
                                             if (isSignUp) {
                                                 if (validatePassword !== password) {
                                                     this.handlePasswordError(true);
@@ -437,7 +443,6 @@ class Login0waf extends PureComponent{
                                                   return false;
                                                 }
                                                 if (!password || !validatePassword) {
-                                                  console.log('hrer', password);
                                                   this.handlePasswordError(true);
                                                   return false;
                                                 }
@@ -445,16 +450,29 @@ class Login0waf extends PureComponent{
                                                 signin();
                                                 this.props.history.push('/dashboard')
                                             }
-                                            signin();
-                                            this.props.history.push('/dashboard')
                                         }
                                     }}
                                 /> 
                                 {
                                     passwordError && <span style={{ color: 'red' }}>Please enter the same password and can't not null</span>
                                 }
-                                {/* <Error error={error} /> */}
                                 <ButtonCom sendCode={this.sendCode} isOpen={isOpen} forget={forget} signin={() => {
+                                    if (!isNknLogin && !isSignUp) {
+                                        signin().then(() => {
+                                        this.props.history.push('/dashboard');
+                                        }).catch((e) => {
+                                            message.error(e.graphQLErrors[0].details);
+                                        });
+                                    }
+                            
+                                    if (isNknLogin && !isSignUp) {
+                                        signin().then(() => {
+                                            this.props.history.push('/dashboard');
+                                        }).catch((e) => {
+                                            message.error(e.graphQLErrors[0].details);
+                                        });
+                                    }
+                            
                                     if (isSignUp) {
                                         if (validatePassword !== password) {
                                             this.handlePasswordError(true);
@@ -472,18 +490,7 @@ class Login0waf extends PureComponent{
                                         signin().then(() => {
                                             this.props.history.push('/dashboard');
                                         }).catch((e) => {
-                                            console.log(e);
-                                        });
-                                    } else {
-                                        if (!password) {
-                                        message.warn('please input password');
-                                            return false;
-                                        }
-    
-                                        signin().then(() => {
-                                        this.props.history.push('/dashboard');
-                                        }).catch((e) => {
-                                            console.log(e);
+                                            message.error(e.graphQLErrors[0].details);
                                         });
                                     }
                                 }} isSignUp={isSignUp} />
