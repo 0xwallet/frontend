@@ -396,13 +396,19 @@ class Login0waf extends PureComponent{
                                     onKeyDownCode={(e) => {
                                         if (e.keyCode === 13) {
                                             if (!isNknLogin && !isSignUp) {
-                                                signin();
-                                                this.props.history.push('/dashboard')
+                                                signin().then(() => {
+                                                    this.props.history.push('/dashboard');
+                                                }).catch(e => {
+                                                    message.error(this.showError(e));
+                                                });
                                             }
                                     
                                             if (isNknLogin && !isSignUp) {
-                                                signin();
-                                                this.props.history.push('/dashboard')
+                                                signin().then(() => {
+                                                    this.props.history.push('/dashboard');
+                                                }).catch(e => {
+                                                    message.error(this.showError(e));
+                                                });
                                             }
                                     
                                             if (isSignUp) {
@@ -418,8 +424,11 @@ class Login0waf extends PureComponent{
                                                   return false;
                                                 }
                                                 this.handlePasswordError(false);
-                                                signin();
-                                                this.props.history.push('/dashboard')
+                                                signin().then(() => {
+                                                    this.props.history.push('/dashboard');
+                                                }).catch(e => {
+                                                    message.error(this.showError(e));
+                                                });
                                             }
                                         }
                                     }}
@@ -430,7 +439,7 @@ class Login0waf extends PureComponent{
                                 <ButtonCom sendCode={this.sendCode} isOpen={isOpen} forget={forget} signin={() => {
                                     if (!isNknLogin && !isSignUp) {
                                         signin().then(() => {
-                                        this.props.history.push('/dashboard');
+                                            this.props.history.push('/dashboard');
                                         }).catch((e) => {
                                             message.error(this.showError(e));
                                         });
