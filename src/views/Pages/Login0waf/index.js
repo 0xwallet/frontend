@@ -43,6 +43,18 @@ const SIGNUP_MUTATION = gql`
     }
 `;
 
+const resetPassword = gql`
+    mutation resetPassword($email: String!, $code: String!, $newPassword: String!) {
+        resetPassword(email: $email, code: $code, newPassword: $newPassword){
+            token
+            user {
+                username,
+                email,
+            }
+        }
+    }
+`;
+
 const sendNknCode = gql`
     mutation sendLoginCode($email: String!) {
         sendLoginCode(email: $email)
@@ -89,6 +101,7 @@ class Login0waf extends PureComponent{
         code: '', // email code,
         forget: false, // 重置
         remember: false, // 是否记住token
+        newPassword: '',
       };
 
       this.codeRef = React.createRef();
@@ -147,8 +160,8 @@ class Login0waf extends PureComponent{
     };
 
     handleCompleted = data => {
-        const { isSignUp, remember } = this.state;  
-        if (!isSignUp) {
+        const { isSignUp, remember, forget } = this.state;  
+        if (!isSignUp && !forget) {
             //  如果点击记住我就存储token
             if (remember) {
                 localStorage.setItem("auth-token", data.signin.token);
@@ -187,12 +200,16 @@ class Login0waf extends PureComponent{
             }).then((res) => {
                 this.props.history.push('/dashboard')
             });
-        }  
+        }
+        if (forget) {
+            localStorage.setItem("auth-token", data.resetPassword.token);
+            localStorage.setItem("username", data.resetPassword.user.username);
+        }
     };
     
     handleUpdate = (cache, { data }) => {
-        const { isSignUp } = this.state;  
-        if (!isSignUp) {
+        const { isSignUp, forget } = this.state;  
+        if (!isSignUp && !forget) {
             cache.writeQuery({
                 query: GET_CURRENT_USER_QUERY,
                 data: { me: data.signin.user }
@@ -202,6 +219,12 @@ class Login0waf extends PureComponent{
             cache.writeQuery({
                 query: GET_CURRENT_USER_QUERY,
                 data: { me: data.signup.user }
+            });
+        }
+        if (forget) {
+            cache.writeQuery({
+                query: GET_CURRENT_USER_QUERY,
+                data: { me: data.resetPassword.user }
             });
         } 
     };
@@ -271,61 +294,6 @@ class Login0waf extends PureComponent{
         }
     }
 
-    nknModal() {
-        const { loginCode, email, nknModal, time } = this.state;
-        return (
-            <Mutation 
-                mutation={SIGNIN_MUTATION} 
-                variables={{
-                    loginCode,
-                    email,
-                }}
-                errorPolicy="all"
-                onCompleted={this.handleCompleted}
-                update={this.handleUpdate}
-            >
-                {(signin) => {
-                    return (
-                        <Modal isOpen={nknModal} toggle={this.nknLogin}>
-                            <ModalHeader toggle={this.nknLogin}>{email}</ModalHeader>
-                            <ModalBody>
-                                <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-                                    <InputGroup
-                                        getValue={(value) => this.getValue(value, signin)}
-                                        length={6}
-                                        type={'box'}
-                                    />
-                                    {
-                                        time === 0 
-                                        ? (
-                                            <Mutation 
-                                                mutation={sendNknCode}
-                                                variables={{
-                                                    email,
-                                                }}
-                                            >
-                                                {
-                                                    (sendCode, { loading, error }) => {
-                                                        if (loading) return <div style={{ position: 'absolute', right: 10 }}><Spinner type="grow" color="primary" /></div>;
-                                                        if (error) return this.error(error);
-                                                        return (
-                                                            <span style={{ position: 'absolute', right: 10 }} className="webauthn" onClick={sendCode}>resend</span>
-                                                        );
-                                                    }
-                                                }
-                                            </Mutation>
-                                        ) 
-                                        : <span className="webauthn" style={{ position: 'absolute', right: 10 }}>{time}s</span>
-                                    }
-                                </div>
-                            </ModalBody>
-                        </Modal>
-                    );
-                }}
-            </Mutation>
-        );
-    }
-
     error = () => {
         return (
             <Tooltip title="username is not" className="webauthn">
@@ -341,14 +309,32 @@ class Login0waf extends PureComponent{
         return <span className="webauthn" onClick={this.signUp}>Sign Up</span>
     }
 
+    showError = (error) => {
+        let messageTip = '';
+        let detailTip = '';
+        error.graphQLErrors.forEach(({ message, details }, i) => {
+            messageTip += message;
+            if (details && Array.isArray(details)) {
+                {Object.keys(details).forEach(key => {
+                    const detail = key + ' ' + details[key];
+                    detailTip += detail;
+                })}
+            }
+            if (details && typeof(details) === 'string') {
+                detailTip = details;
+            }
+        })
+        console.log(messageTip, detailTip);
+        return messageTip + ',' +detailTip;
+    }
+
     render() {
-        const { forget, code, loginCode, isNknLogin, openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
-        const mutation = !isSignUp ? SIGNIN_MUTATION : SIGNUP_MUTATION;
+        const { forget, code, newPassword, loginCode, isNknLogin, openCodeInput: isOpen, email, password, isCorrect, isSignUp, validatePassword, passwordError } = this.state;
         // 对邮箱进行切割
         const emails = email && email.split('@');
         // const variables = !isSignUp ? { email, password } : { email, password, username: emails[0] };
         let variables = {};
-
+        let mutation = SIGNIN_MUTATION;
         if (!isNknLogin && !isSignUp) {
           variables = {
             email,
@@ -365,6 +351,12 @@ class Login0waf extends PureComponent{
 
         if (isSignUp) {
           variables = { email, password, username: emails[0], code };
+          mutation = SIGNUP_MUTATION;
+        }
+
+        if (forget) {
+            variables = { email, code, newPassword };
+            mutation = resetPassword;
         }
 
         return (
@@ -440,10 +432,7 @@ class Login0waf extends PureComponent{
                                         signin().then(() => {
                                         this.props.history.push('/dashboard');
                                         }).catch((e) => {
-                                            // console.log(e.graphQLErrors[0]);
-                                            message.error('login code not correct');
-                                            // message.error(e.graphQLErrors[0].details || message.error(e.graphQLErrors[0].message));
-                                            // message.error(e.graphQLErrors[0].details);
+                                            message.error(this.showError(e));
                                         });
                                     }
                             
@@ -451,8 +440,7 @@ class Login0waf extends PureComponent{
                                         signin().then(() => {
                                             this.props.history.push('/dashboard');
                                         }).catch((e) => {
-                                            console.log(e.graphQLErrors[0]);
-                                            // message.error(e.graphQLErrors[0].details);
+                                            message.error(this.showError(e));
                                         });
                                     }
                             
@@ -473,7 +461,7 @@ class Login0waf extends PureComponent{
                                         signin().then(() => {
                                             this.props.history.push('/dashboard');
                                         }).catch((e) => {
-                                            message.error(e.graphQLErrors[0].details);
+                                            message.error(this.showError(e));
                                         });
                                     }
                                 }} isSignUp={isSignUp} />
@@ -513,9 +501,6 @@ class Login0waf extends PureComponent{
                                     )
                                 }
                             </Form>
-                            {/* {
-                                this.nknModal()
-                            } */}
                         </div>
                     );
                 }}

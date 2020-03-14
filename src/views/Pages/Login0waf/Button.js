@@ -22,6 +22,7 @@ function ButtonComs(props) {
                 return (
                         <Button color="primary" onClick={() => {
                                 console.log('重置');
+                                signin();
                         }}>reset</Button>
                 );
            }

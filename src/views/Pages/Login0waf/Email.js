@@ -73,8 +73,6 @@ function Email(props) {
         variables.type = 'RESET_PASSWORD';
     }
 
-    // console.log(variables, '', mutation, 'mutation');
-
     return (
         <InputGroup style={{margin : '1.3rem 0', position: 'relative' }}>
             <InputGroupAddon addonType="append">

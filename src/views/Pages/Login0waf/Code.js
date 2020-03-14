@@ -135,7 +135,7 @@ function Code (props) {
                     <InputGroupAddon addonType="append">
                         <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
                     </InputGroupAddon>
-                    <Input type="password" id="sig" name="password" placeholder="new password" autoComplete="current-password"
+                    <Input type="password" id="sig" name="newPassword" placeholder="new password" autoComplete="current-password"
                         onChange={onChangeCodeValue} spellCheck={false}
                     />
                 </InputGroup>
