@@ -314,7 +314,7 @@ class Login0waf extends PureComponent{
         let detailTip = '';
         error.graphQLErrors.forEach(({ message, details }, i) => {
             messageTip += message;
-            if (details && Array.isArray(details)) {
+            if (details && Object.prototype.toString.call(details) === '[object Object]') {
                 {Object.keys(details).forEach(key => {
                     const detail = key + ' ' + details[key];
                     detailTip += detail;
