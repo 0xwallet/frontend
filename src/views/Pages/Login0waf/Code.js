@@ -139,7 +139,7 @@ function Code (props) {
                         onChange={onChangeCodeValue} spellCheck={false}
                     />
                 </InputGroup>
-                <InputGroup>
+                {/* <InputGroup>
                     <InputGroupAddon addonType="append">
                         <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
                     </InputGroupAddon>
@@ -147,7 +147,7 @@ function Code (props) {
                         onChange={onChangeCodeValue} spellCheck={false}
                         onKeyDown={onKeyDownCode}
                     />
-                </InputGroup>
+                </InputGroup> */}
                 <Remember onForget={onForget} onRemember={onRemember} forget={forget} onLogin={onLogin} />
             </>
         );

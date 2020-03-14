@@ -6,8 +6,13 @@ import { Mutation } from 'react-apollo';
 import debounce from 'debounce';
 
 const sendCode = gql`
-mutation sendVerifyCode($email: String!){
-    sendVerifyCode(email: $email)
+mutation sendVerifyCode($email: String!, $type: String!){
+    sendVerifyCode(email: $email, type: $type)
+}`;
+
+const resetPassword = gql`
+mutation sendVerifyCode($email: String!, $type: String!){
+    sendVerifyCode(email: $email, type: $type)
 }`;
 
 function Email(props) {
@@ -55,6 +60,21 @@ function Email(props) {
         );
     }
 
+    let mutation = sendCode;
+    let variables = { email };
+    if (isSignUp && !forget) {
+        mutation = sendCode;
+        variables.type = 'ACTIVE_EMAIL';
+    }
+
+    
+    if (!isSignUp && forget) {
+        mutation = resetPassword;
+        variables.type = 'RESET_PASSWORD';
+    }
+
+    // console.log(variables, '', mutation, 'mutation');
+
     return (
         <InputGroup style={{margin : '1.3rem 0', position: 'relative' }}>
             <InputGroupAddon addonType="append">
@@ -69,15 +89,10 @@ function Email(props) {
             />
             {
                 ((isSignUp && isOpen) || (forget && isOpen)) && (
-                    <Mutation mutation={sendCode} variables={{ email }}>
+                    <Mutation mutation={mutation} variables={variables}>
                         {
                             (sendCode) => {
                                 return (
-                                    // <InputGroupAddon addonType="append" className="email-code" onClick={() => handleSendCode(sendCode)}>
-                                    //     <InputGroupText>
-                                    //         {time === 5 ? 'send' : `${time}s`}
-                                    //     </InputGroupText>
-                                    // </InputGroupAddon>
                                     <EmailCode time={time} sendCode={sendCode} />
                                 );
                             }

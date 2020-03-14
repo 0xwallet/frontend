@@ -285,29 +285,6 @@ class Login0waf extends PureComponent{
                 update={this.handleUpdate}
             >
                 {(signin) => {
-                    // if (loading) return (
-                    //     <Modal isOpen={nknModal} toggle={this.nknLogin}>
-                    //         <ModalHeader>{email}</ModalHeader>
-                    //         <ModalBody>
-                    //             <Loading />
-                    //         </ModalBody>
-                    //     </Modal>
-                    // );
-                    // if (error) return (
-                    //     <Modal isOpen={nknModal} toggle={this.nknLogin}>
-                    //         <ModalHeader toggle={this.nknLogin}>{email}</ModalHeader>
-                    //         <ModalBody>
-                    //             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    //                 <InputGroup
-                    //                     getValue={(value) => this.getValue(value, signin)}
-                    //                     length={6}
-                    //                     type={'box'}
-                    //                 />
-                    //             </div>
-                    //             <Error error={error} />
-                    //         </Mo dalBody>
-                    //     </Modal>
-                    // );
                     return (
                         <Modal isOpen={nknModal} toggle={this.nknLogin}>
                             <ModalHeader toggle={this.nknLogin}>{email}</ModalHeader>
