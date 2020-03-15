@@ -38,7 +38,7 @@ mutation setdefaultaddr($password: String!, $walletId: String!, $tag: String!){
 
 const signin = gql`
 mutation signin($email: String!, $password: String, $loginCode: String) {
-  signin(email: $email, password: $password, $loginCode: String) {
+  signin(email: $email, password: $password, $loginCode: $loginCode) {
     token
     user {
       username,
