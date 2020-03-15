@@ -36,6 +36,18 @@ mutation setdefaultaddr($password: String!, $walletId: String!, $tag: String!){
 }
 `;
 
+const signin = gql`
+  mutation signin($email: String!, $password: String) {
+    signin(email: $email, password: $password) {
+      token
+      user {
+        username,
+        email,
+      }
+    }
+  }
+`;
+
 function copyUrl2(address) {
   const oInput = document.createElement('input');
   oInput.value = address;
@@ -48,7 +60,6 @@ function copyUrl2(address) {
 }
 
 function ModalImport({ importOpen, setImportOpen, actionItem, email, username, setAddr }) {
-  console.log(username);
   const [seedImport, setSeedImport] = useState('');
   const [seedPass, setImportPass] = useState('');
   const closeToggle = () => setImportOpen(false);
@@ -70,9 +81,35 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
     closeToggle();
   }
   const { seedUseRestore } = JSON.parse(localStorage.getItem(email)) || { seedUseRestore: '' };
-  const Body = (actionItem) => {
+  const Body = ({ actionItem }) => {
+  const [password, setPassword] = useState('');
+  const [auth, setAuth] = useState(false);
+  const [error, setError] = useState(false);
+
+    const handleVerify = (e) => {
+      if (e.keyCode === 13){
+        client.mutate({
+          mutation: signin,
+          variables: { email, password }
+        }).then(() => {
+          setAuth(true);
+        }).catch(() => {
+          setError(true);
+        })
+      }
+    }
+
+    const handleChange = (e) => {
+      setPassword(e.target.value)
+    }
     if (actionItem === 'Show Secret Seed') {
-      return <span>{seedUseRestore}</span>;
+      if (auth) return <span>{seedUseRestore}</span>;
+      return (
+        <>
+          <Input onChange={handleChange} placeholder="please input password" onKeyDown={handleVerify} />
+          <p style={{ color: 'red', display: error ? 'block' : 'none' }}>password is error</p>
+        </>
+      );
     }
     if (actionItem === 'Import Wallet') {
       return (
@@ -88,18 +125,23 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
         </>
       );
     }
-    return <span>Export Wallet</span>
+    if (actionItem === 'Export Wallet') {
+      return <span>Export Wallet</span>
+    }
+    return <span>not data</span>
   }
   return (
     <Modal isOpen={importOpen} toggle={closeToggle}>
       <ModalHeader toggle={closeToggle}>{actionItem}</ModalHeader>
-      <ModalBody>
-        <Body />
+      <ModalBody style={{ minHeight: '100px' }} >
+        <Body actionItem={actionItem} />
       </ModalBody>
-      <ModalFooter>
-        <Button color="primary" onClick={handleImport}>Ok</Button>{' '}
-        <Button color="secondary" onClick={closeToggle}>Cancel</Button>
-      </ModalFooter>
+      { actionItem === 'Import Wallet' && (
+         <ModalFooter>
+          <Button color="primary" onClick={handleImport}>Ok</Button>{' '}
+          <Button color="secondary" onClick={closeToggle}>Cancel</Button>
+        </ModalFooter>
+      )}
     </Modal>
   );
 }
