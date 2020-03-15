@@ -160,15 +160,17 @@ class Login0waf extends PureComponent{
     };
 
     handleCompleted = data => {
-        const { isSignUp, remember, forget } = this.state;  
+        const { isSignUp, remember, forget } = this.state;
         if (!isSignUp && !forget) {
             //  如果点击记住我就存储token
-            if (remember) {
-                localStorage.setItem("auth-token", data.signin.token);
-                localStorage.setItem("username", data.signin.user.username);
-            } else {
-                console.log('no remember');
-            }
+            // if (remember) {
+            //     localStorage.setItem("auth-token", data.signin.token);
+            //     localStorage.setItem("username", data.signin.user.username);
+            // } else {
+            //     console.log('no remember');
+            // }
+            localStorage.setItem("auth-token", data.signin.token);
+            localStorage.setItem("username", data.signin.user.username);
         }
         if (isSignUp) {
             const { password, email } = this.state;
