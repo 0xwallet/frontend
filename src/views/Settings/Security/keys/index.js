@@ -98,7 +98,6 @@ export default class Keys extends PureComponent{
             mutation: bindNknAddr,
             variables: { nknAddress: nknAddr }
         }).then(res => {
-            console.log(res, '已经绑定了唯一的地址 nkn bind');
             const walletId = res.data.bindNknAddress.id;
             that.setState({
                 walletId,
@@ -110,7 +109,6 @@ export default class Keys extends PureComponent{
                 mutation: sendNknCode,
                 variables: { email, walletId }
             }).then((res) => {
-                console.log('send code', res);
                 // if (res.data.sendLoginCode !== 'user offline') {
                 //     that.setState({
                 //         bindSucc: true,
@@ -157,7 +155,6 @@ export default class Keys extends PureComponent{
             mutation: setDefaultNknAddr,
             variables: { password: bindpass, walletId, loginCode: nkncode, tag: "LOGIN_CODE" }
         }).then(res => {
-            console.log(res, '已经设置绑定了唯一的地址, nkn setDefault');
             toggle();
         }).catch(() => {
             that.setState({

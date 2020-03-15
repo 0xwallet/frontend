@@ -73,17 +73,13 @@ function Backup(props) {
             mutation: setDefaultNknAddr,
             variables: { password: params.pass, walletId, loginCode: params.loginCode, tag: "LOGIN_CODE" }
         }).then(res => {
-            console.log(res, '已经设置绑定了唯一的地址, nkn setDefault');
             message.success('success');
             openCode(false);
         }).catch((e) => {
-           console.log(e);
            message.error('bind error');
            openCode(false);
         })
     }
-
-    console.log(params);
 
     const lockProps = {
         auth,

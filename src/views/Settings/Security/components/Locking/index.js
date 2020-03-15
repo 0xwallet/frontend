@@ -102,7 +102,6 @@ class Locking extends PureComponent{
         if(this.props.auth === true){
             // 绑定nkn地址用于登录
             // this.handleIsOpen();
-            console.log('hell owr;d');
             this.props.handleLock();
         }
     }

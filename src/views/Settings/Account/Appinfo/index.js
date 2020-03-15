@@ -29,7 +29,6 @@ function AppItem() {
 }
 
 function Apps() {
-    // const { onAuth, auth, onVerify } = props
     return (
     <Card>
             <CardHeader>

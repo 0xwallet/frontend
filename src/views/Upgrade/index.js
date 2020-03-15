@@ -8,10 +8,8 @@ class Upgrade extends PureComponent{
     }
 
     upGrade(){
-        console.log('upgrade');
         // this.props.upGrade(true);
         // axios.get('/test').then((res)=>{
-            
         // })
     }
 
