@@ -37,15 +37,15 @@ mutation setdefaultaddr($password: String!, $walletId: String!, $tag: String!){
 `;
 
 const signin = gql`
-  mutation signin($email: String!, $password: String) {
-    signin(email: $email, password: $password) {
-      token
-      user {
-        username,
-        email,
-      }
+mutation signin($email: String!, $password: String, $loginCode: String) {
+  signin(email: $email, password: $password, $loginCode: String) {
+    token
+    user {
+      username,
+      email,
     }
   }
+}
 `;
 
 function copyUrl2(address) {
@@ -75,7 +75,7 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
           const { identifier, publicKey } = res.data.setDefaultNknAddress.info;
           const nknAddress = `${identifier}.${publicKey}`;
           setAddr(nknAddress);
-          message.success('mutation success');
+          message.success('set default success');
         })
     });
     closeToggle();
@@ -125,10 +125,10 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
         </>
       );
     }
-    if (actionItem === 'Export Wallet') {
-      return <span>Export Wallet</span>
-    }
-    return <span>not data</span>
+    // if (actionItem === 'Export Wallet') {
+    //   return <span>Export Wallet</span>
+    // }
+    return <span>Export Wallet</span>
   }
   return (
     <Modal isOpen={importOpen} toggle={closeToggle}>
@@ -176,7 +176,7 @@ CodeQr.propTypes = {
 }
 
 function Addr(props) {
-  const { address, email, username, auth, onAuth } = props;
+  const { address, email, username, auth } = props;
   const [open, setOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [qropen, setQropen] = useState(false);
