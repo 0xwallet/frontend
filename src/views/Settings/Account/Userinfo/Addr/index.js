@@ -4,7 +4,9 @@ import {
   ModalBody, ModalFooter, ModalHeader, Modal, Input
 } from 'reactstrap';
 import gql from "graphql-tag";
+import nknClient from 'nkn-client';
 import propTypes from 'prop-types';
+import nknWallet from 'nkn-wallet';
 import QRCode from 'qrcode.react';
 import { Tooltip, Icon, message } from 'antd';
 import client from '../../../../../client';
@@ -60,9 +62,12 @@ function copyUrl2(address) {
 }
 
 function ModalImport({ importOpen, setImportOpen, actionItem, email, username, setAddr }) {
-  const [seedImport, setSeedImport] = useState('');
-  const [seedPass, setImportPass] = useState('');
+  // const [seedImport, setSeedImport] = useState('');
+  let seedImport = '';
+  let seedPass = '';
+  // const [seedPass, setImportPass] = useState('');
   const closeToggle = () => setImportOpen(false);
+  // const getPassword = (v) => setImportPass(v);
   const handleImport = () => {
     client.mutate({
         mutation: bindNknAddr,
@@ -80,6 +85,32 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
     });
     closeToggle();
   }
+
+  const handleImportByJson = (e) => {
+    let tmp1 = '';
+    const file = e.target.files[0];
+    if(file){
+      var reader=new FileReader();
+      reader.readAsText(file, "gbk");//gbk编码
+      reader.onload = function () {
+          tmp1 = this.result;
+          console.log(this.result, JSON.parse(tmp1), 'hello world');//打印检查
+          const restoreWallet = nknWallet.loadJsonWallet(this.result, 'new-wallet-password');
+          console.log(restoreWallet.getSeed(), 'seed', restoreWallet.getPublicKey(), restoreWallet);
+          const newClient = nknClient({
+            identifier: username,
+            seed: restoreWallet.getSeed(),
+          });
+
+          // setSeedImport(`${username}.${newClient.key.publicKey}`);
+          seedImport = `${username}.${newClient.key.publicKey}`;
+          console.log('-------', newClient.key.seed);
+      };
+    }
+    console.log(tmp1, 'hello world');
+
+  }
+
   const { seedUseRestore } = JSON.parse(localStorage.getItem(email)) || { seedUseRestore: '' };
   const Body = ({ actionItem }) => {
   const [password, setPassword] = useState('');
@@ -100,8 +131,11 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
     }
 
     const handleChange = (e) => {
-      setPassword(e.target.value)
+      setPassword(e.target.value);
+      seedPass = e.target.value;
     }
+
+
     if (actionItem === 'Show Secret Seed') {
       if (auth) return <span>{seedUseRestore}</span>;
       return (
@@ -114,13 +148,22 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
     if (actionItem === 'Import Wallet') {
       return (
         <>
-          <Input onChange={(e) => setSeedImport(e.target.value)} placeholder="please input nkn addr like username.xxx" />
+          {/* <Input onChange={(e) => setSeedImport(e.target.value)} placeholder="please input nkn addr like username.xxx" />
           <Input 
             onChange={(e) => setImportPass(e.target.value)} placeholder="please input password" 
             type="password"
             style={{
               marginTop: '5px'
             }}
+          /> */}
+          <Input type="file" onChange={handleImportByJson} />
+          <Input 
+            placeholder="please input password" 
+            type="password"
+            style={{
+              marginTop: '5px'
+            }}
+            onChange={handleChange}
           />
         </>
       );
@@ -136,12 +179,10 @@ function ModalImport({ importOpen, setImportOpen, actionItem, email, username, s
       <ModalBody style={{ minHeight: '100px' }} >
         <Body actionItem={actionItem} />
       </ModalBody>
-      { actionItem === 'Import Wallet' && (
-         <ModalFooter>
-          <Button color="primary" onClick={handleImport}>Ok</Button>{' '}
-          <Button color="secondary" onClick={closeToggle}>Cancel</Button>
-        </ModalFooter>
-      )}
+      <ModalFooter>
+        <Button color="primary" onClick={handleImport}>Ok</Button>{' '}
+        <Button color="secondary" onClick={closeToggle}>Cancel</Button>
+      </ModalFooter>
     </Modal>
   );
 }

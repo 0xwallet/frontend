@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{ useState, useEffect } from 'react';
 import propType from 'prop-types';
 import {Card,CardHeader,CardBody,Input,Form,InputGroup,InputGroupAddon,InputGroupText} from 'reactstrap';
 import PhoneInput from 'react-phone-number-input';
@@ -34,13 +34,31 @@ const sendNknCode = gql`
     }
 `;
 
+const LAUNCHES_QUERY = gql`
+query me{
+    me{
+        avatar,
+        email,
+        username,
+        wallets{
+            id,
+            info{
+                publicKey,
+                identifier
+            },
+            tags,
+        }
+    }
+}
+`;
+
 function Backup(props) {
     const { auth, onAuth, currentuser } = props;
     const [value, setValue] = useState('');
     const [code, openCode] = useState(false);
     const [params, setParams] = useState({});
     const [walletId, setWalletId] = useState(0);
-
+    const [nknaddr, setAddr] = useState('');
     const handleInput = (e) => {
         if (e.keyCode === 13) {
             // 绑定以及发送验证码
@@ -48,9 +66,8 @@ function Backup(props) {
 
             client.mutate({
                 mutation: bindNknAddr,
-                variables: { nknAddress: params.nknaddr }
+                variables: { nknAddress: nknaddr || params.nknaddr }
             }).then(res => {
-                console.log(res, '已经绑定了唯一的地址 nkn bind');
                 const walletId = res.data.bindNknAddress.id;
                 setWalletId(walletId);
                 client.mutate({
@@ -58,7 +75,6 @@ function Backup(props) {
                     variables: { walletId, email: currentuser.email }
                 }).then((res) => {
                     console.log('send code', res);
-
                 })
             });
         }
@@ -87,6 +103,20 @@ function Backup(props) {
         handleLock,
     };
 
+    useEffect(() => {
+        client.query({
+            query: LAUNCHES_QUERY,
+        }).then((res) => {
+            const { wallets } = res.data.me;
+            const hasBindLoginCode = wallets.filter(v => v.tags[0] === 'LOGIN_CODE');
+            if (hasBindLoginCode.length) {
+                const { identifier, publicKey } = hasBindLoginCode[0].info;
+                setAddr(`${identifier}.${publicKey}`);
+            }
+            // console.log('hello world', wallets, publicKey, identifier);
+        }); 
+    }, []);
+
     return(
         <Card className="keys">
         <CardHeader>My Contact
@@ -113,7 +143,7 @@ function Backup(props) {
                             <i className="cui-laptop"></i> 
                         </InputGroupText>
                     </InputGroupAddon> 
-                    <Input type="text" onChange={handleChange} id="nknaddr" name="nknaddr" placeholder="nkn addr" disabled={auth ? false : true} onKeyDown={handleInput} />   
+                    <Input type="text" onChange={handleChange} id="nknaddr" name="nknaddr" defaultValue={nknaddr} placeholder="nkn addr" disabled={auth ? false : true} onKeyDown={handleInput} />   
                    
                 </InputGroup>
                 {
@@ -126,7 +156,6 @@ function Backup(props) {
                                     </InputGroupText>
                                 </InputGroupAddon> 
                                 <Input type="text" onChange={handleChange} id="backupcode" name="loginCode" placeholder="code" disabled={auth ? false : true} />   
-                         
                             </InputGroup>
                             <InputGroup style={{margin : '1.3rem 0'}}>
                                 <InputGroupAddon addonType="append">

@@ -161,6 +161,7 @@ class Login0waf extends PureComponent{
 
     handleCompleted = data => {
         const { isSignUp, remember, forget } = this.state;
+        console.log(remember, 'remember');
         if (!isSignUp && !forget) {
             //  如果点击记住我就存储token
             // if (remember) {

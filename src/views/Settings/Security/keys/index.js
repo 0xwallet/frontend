@@ -81,8 +81,8 @@ export default class Keys extends PureComponent{
             this.setState({
                 wallets,
                 email,
-            })
-        }) 
+            });
+        });
     }
 
     handleChange = (e) => {

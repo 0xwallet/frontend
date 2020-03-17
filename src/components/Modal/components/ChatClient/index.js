@@ -135,10 +135,25 @@
 // }
 
 import React from 'react';
+import { Input } from 'reactstrap';
+import './index.scss';
 
 function Client() {
     return (
-        <div>ss</div>
+        <div className="client-chat">
+            <hr />
+            <div>聊天室</div>
+            <hr />
+            <section className="section">
+                <div className="message-wrap">
+                    <span className="user">username:</span>
+                    <span className="message">message</span>
+                </div>
+            </section>
+            <footer>
+                <Input />
+            </footer>
+        </div>
     );
 }
 
